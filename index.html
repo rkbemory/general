@@ -112,7 +112,8 @@
   <!-- DASHBOARD VIEW -->
   <div id="view-dashboard">
     <!-- QUICK START GUIDE -->
-    <div class="mb-8 bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100/60 rounded-3xl p-6 relative overflow-hidden group shadow-sm">
+    <div id="quick-start-guide" class="mb-8 bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100/60 rounded-3xl p-6 relative overflow-hidden group shadow-sm transition-all duration-300">
+      <button onclick="dismissGuide()" class="absolute top-4 right-4 text-indigo-300 hover:text-indigo-600 transition-colors z-20" title="Dismiss Quick Start Guide"><i class="fas fa-times text-lg"></i></button>
       <div class="relative z-10">
         <h3 class="text-indigo-900 font-extrabold text-lg flex items-center gap-2 mb-3"><i class="fas fa-magic text-indigo-500"></i> Getting Started</h3>
         <ul class="text-sm text-indigo-800 space-y-2 font-medium">
@@ -1016,10 +1017,22 @@ function openVillage(id) {
 // ============================================================
 //  DASHBOARD
 // ============================================================
+function dismissGuide() {
+  const guide = document.getElementById('quick-start-guide');
+  if(guide) guide.classList.add('hidden');
+  state.guideDismissed = true;
+  saveState();
+}
+
 function renderDashboard() {
   const grid = document.getElementById('village-grid');
   const stats = document.getElementById('quick-stats');
   const empty = document.getElementById('empty-state');
+  
+  const guide = document.getElementById('quick-start-guide');
+  if (state.guideDismissed && guide) {
+    guide.classList.add('hidden');
+  }
 
   // Stats
   const totalContacts = state.contacts.length;
