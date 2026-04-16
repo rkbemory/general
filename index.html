@@ -69,8 +69,8 @@
 <header id="main-header" class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-200 z-40 hidden shadow-sm">
   <div class="max-w-3xl mx-auto px-4 h-[72px] flex items-center justify-between transition-all">
     <div class="flex items-center gap-4 cursor-pointer hover:opacity-90 transition-opacity" onclick="goHome()">
-      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg">
-        <span class="text-xl">☂️</span>
+      <div class="w-11 h-11 rounded-[14px] bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-[0_6px_15px_rgba(99,102,241,0.4)] transform transition-transform hover:scale-105">
+        <i class="fas fa-umbrella text-white text-[22px] drop-shadow-md"></i>
       </div>
       <div>
         <div class="text-[22px] font-extrabold leading-none tracking-tight text-indigo-900 drop-shadow-sm font-serif italic">My Village</div>
@@ -482,27 +482,27 @@
 </main>
 
 <!-- ===== BOTTOM NAV ===== -->
-<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
-  <div class="max-w-3xl mx-auto w-full flex items-center px-1">
-    <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all nav-active">
-      <i class="fas fa-home text-xl mb-1"></i>
-      <span>Home</span>
+<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 z-40 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
+  <div class="max-w-3xl mx-auto w-full flex items-center px-1 py-1">
+    <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex-1 py-2.5 flex flex-col items-center text-gray-500 text-[10px] font-extrabold transition-all hover:-translate-y-1 nav-active">
+      <i class="fas fa-home text-[22px] mb-1.5 text-indigo-500 drop-shadow-sm"></i>
+      <span class="uppercase tracking-wider">Home</span>
     </button>
-    <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
-      <i class="fas fa-calendar-check text-xl mb-1"></i>
-      <span>Schedule</span>
+    <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 py-2.5 flex flex-col items-center text-gray-500 text-[10px] font-extrabold transition-all hover:-translate-y-1">
+      <i class="fas fa-calendar-check text-[22px] mb-1.5 text-emerald-500 drop-shadow-sm"></i>
+      <span class="uppercase tracking-wider">Schedule</span>
     </button>
-    <button onclick="navTo('qa')" id="nav-qa" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
-      <i class="fas fa-comments text-xl mb-1"></i>
-      <span>Q&amp;A</span>
+    <button onclick="navTo('qa')" id="nav-qa" class="flex-1 py-2.5 flex flex-col items-center text-gray-500 text-[10px] font-extrabold transition-all hover:-translate-y-1">
+      <i class="fas fa-comments text-[22px] mb-1.5 text-blue-500 drop-shadow-sm"></i>
+      <span class="uppercase tracking-wider">Q&amp;A</span>
     </button>
-    <button onclick="navTo('chat')" id="nav-chat" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
-      <i class="fas fa-robot text-xl mb-1"></i>
-      <span>AI Chat</span>
+    <button onclick="navTo('chat')" id="nav-chat" class="flex-1 py-2.5 flex flex-col items-center text-gray-500 text-[10px] font-extrabold transition-all hover:-translate-y-1">
+      <i class="fas fa-robot text-[22px] mb-1.5 text-purple-500 drop-shadow-sm"></i>
+      <span class="uppercase tracking-wider">AI Chat</span>
     </button>
-    <button onclick="navTo('resources')" id="nav-resources" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
-      <i class="fas fa-globe-americas text-xl mb-1"></i>
-      <span>Resources</span>
+    <button onclick="navTo('resources')" id="nav-resources" class="flex-1 py-2.5 flex flex-col items-center text-gray-500 text-[10px] font-extrabold transition-all hover:-translate-y-1">
+      <i class="fas fa-globe-americas text-[22px] mb-1.5 text-orange-500 drop-shadow-sm"></i>
+      <span class="uppercase tracking-wider">Resources</span>
     </button>
   </div>
 </nav>
