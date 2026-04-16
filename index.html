@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Caregiver Village</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; background: #f0f4ff; padding-bottom: 80px; }
+    .nav-active { color: #6366f1 !important; transform: scale(1.1); transition: all 0.2s; }
+    .nav-active i { color: #6366f1 !important; }
+    .chat-bubble-bot  { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border-radius:18px 18px 18px 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .chat-bubble-user { background: linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border-radius:18px 18px 4px 18px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2); }
+    .expert-badge { background: linear-gradient(135deg,#f59e0b,#d97706); }
+    .like-active   { color:#22c55e; font-weight:800; }
+    .dislike-active{ color:#ef4444; font-weight:800; }
+    .qa-card { transition: all 0.2s ease-in-out; }
+    .qa-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(79,70,229,0.15); border-color: rgba(99,102,241,0.3); }
+    #chatbox { scroll-behavior: smooth; }
+    .village-card { transition: all 0.2s ease-in-out; border: 1px solid rgba(255,255,255,0.2); }
+    .village-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(79,70,229,0.2); }
+    .btn-big { min-height: 54px; font-size: 1.1rem; font-weight: 700; transition: all 0.2s; }
+    .btn-big:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    .modal-overlay { backdrop-filter: blur(6px); background: rgba(0, 0, 0, 0.4); }
+    .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+    .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); }
+    .tab-active { border-bottom: 3px solid #4f46e5; color: #4f46e5; font-weight: 800; background: rgba(79, 70, 229, 0.05); }
+    .task-done { text-decoration: line-through; opacity: 0.5; }
+    input, select, textarea { font-size: 1rem !important; font-family: 'Outfit', sans-serif; transition: border-color 0.2s; }
+    .pulse-btn { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.5)} 50%{box-shadow:0 0 0 12px rgba(239,68,68,0)} }
+    @keyframes ring { 0% { transform: rotate(0); } 10% { transform: rotate(15deg); } 20% { transform: rotate(-15deg); } 30% { transform: rotate(10deg); } 40% { transform: rotate(-10deg); } 50% { transform: rotate(5deg); } 60% { transform: rotate(-5deg); } 70% { transform: rotate(0); } 100% { transform: rotate(0); } }
+    .anim-ring { animation: ring 1.5s infinite; }
+    .avatar { width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff;flex-shrink:0; text-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.4); }
+    .priority-high { border-left: 5px solid #ef4444; }
+    .priority-med  { border-left: 5px solid #f59e0b; }
+    .priority-low  { border-left: 5px solid #22c55e; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+<!-- ===== HEADER ===== -->
+<header class="bg-[#171332] text-white shadow-xl sticky top-0 z-40 relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-800 to-[#1e1b4b] opacity-90"></div>
+  <div class="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500 rounded-full mix-blend-screen filter blur-[40px] opacity-40"></div>
+  <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500 rounded-full mix-blend-screen filter blur-[40px] opacity-40"></div>
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between relative z-10">
+    <div class="flex items-center gap-4 cursor-pointer hover:opacity-90 transition-opacity" onclick="goHome()">
+      <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.5l5 4.5v9h-2v-6H9v6H7v-9l5-4.5z'/%3E%3Cpath d='M12 11c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z'/%3E%3C/svg%3E" class="w-8 h-8 drop-shadow-md" alt="Logo"/>
+      </div>
+      <div>
+        <div class="text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-sm">Caregiver <span class="text-indigo-300">Village</span></div>
+        <div class="text-[10px] text-indigo-200 uppercase tracking-widest font-bold mt-0.5">Your Support Network</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <!-- Role Toggle -->
+      <button onclick="toggleRoleMode()" id="role-mode-btn" class="bg-indigo-700/60 hover:bg-indigo-600 border border-indigo-400/30 text-indigo-100 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
+        <i class="fas fa-user-md"></i> <span class="hidden sm:inline">Caregiver Mode</span>
+      </button>
+      <button onclick="showEmergency()" class="pulse-btn bg-gradient-to-b from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-2 text-sm shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-red-400">
+        <i class="fas fa-phone-alt"></i> SOS
+      </button>
+    </div>
+  </div>
+  <!-- Breadcrumb -->
+  <div id="breadcrumb" class="hidden bg-black/20 backdrop-blur-sm border-t border-white/10 px-4 py-2 text-sm flex items-center gap-2 max-w-5xl mx-auto relative z-10">
+    <button onclick="goHome()" class="text-indigo-300 hover:text-white font-medium transition-colors"><i class="fas fa-home"></i> Home</button>
+    <span class="text-indigo-500">/</span>
+    <span id="breadcrumb-name" class="text-white font-bold tracking-wide"></span>
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="max-w-5xl mx-auto px-4 py-6">
+
+  <!-- DASHBOARD VIEW -->
+  <div id="view-dashboard">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800">My Villages</h2>
+        <p class="text-gray-500 text-sm mt-1">Tap a village to see contacts &amp; tasks</p>
+      </div>
+      <button onclick="openAddVillage()" class="btn-big bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl flex items-center gap-2 shadow">
+        <i class="fas fa-plus"></i> New Village
+      </button>
+    </div>
+
+    <!-- Quick Stats -->
+    <div id="quick-stats" class="grid grid-cols-3 gap-3 mb-6"></div>
+
+    <!-- Village Cards -->
+    <div id="village-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5"></div>
+
+    <div id="empty-state" class="hidden text-center py-16">
+      <div class="text-6xl mb-4">🏘️</div>
+      <p class="text-gray-500 text-lg">No villages yet. Create your first one!</p>
+    </div>
+  </div>
+
+  <!-- VILLAGE DETAIL VIEW -->
+  <div id="view-village" class="hidden">
+    <!-- Village Header -->
+    <div id="village-header" class="rounded-2xl p-5 mb-5 text-white shadow-lg"></div>
+
+    <!-- Broadcast Button -->
+    <div class="mb-4">
+      <button onclick="openBroadcast()" class="w-full btn-big bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-2xl flex items-center justify-center gap-3 shadow-lg py-4">
+        <span class="text-2xl">📣</span>
+        <div class="text-left">
+          <div class="font-bold text-base">Send Group Invite / Broadcast</div>
+          <div class="text-xs opacity-80">Message all members of this village via SMS or WhatsApp</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex border-b border-gray-200 mb-5 bg-white rounded-t-xl overflow-hidden shadow-sm">
+      <button id="tab-contacts" onclick="switchTab('contacts')" class="flex-1 py-3 text-center text-base font-semibold tab-active flex items-center justify-center gap-2">
+        <i class="fas fa-users"></i> Contacts
+      </button>
+      <button id="tab-tasks" onclick="switchTab('tasks')" class="flex-1 py-3 text-center text-base font-semibold text-gray-500 flex items-center justify-center gap-2">
+        <i class="fas fa-tasks"></i> Tasks
+      </button>
+    </div>
+
+    <!-- Contacts Panel -->
+    <div id="panel-contacts">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold text-gray-700"><i class="fas fa-users text-indigo-500 mr-2"></i>People in this village</h3>
+        <button onclick="openAddContact()" class="btn-big bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow">
+          <i class="fas fa-user-plus"></i> Add Person
+        </button>
+      </div>
+      <div id="contact-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+      <div id="contact-empty" class="hidden text-center py-10 text-gray-400">
+        <div class="text-4xl mb-2">👤</div>No contacts yet. Add someone!
+      </div>
+    </div>
+
+    <!-- Tasks Panel -->
+    <div id="panel-tasks" class="hidden">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold text-gray-700"><i class="fas fa-clipboard-list text-indigo-500 mr-2"></i>Tasks &amp; Reminders</h3>
+        <button onclick="openAddTask()" class="btn-big bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow">
+          <i class="fas fa-plus"></i> Add Task
+        </button>
+      </div>
+      <!-- Filter -->
+      <div class="flex gap-2 mb-4 flex-wrap">
+        <button onclick="filterTasks('all')" id="filter-all" class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-semibold text-sm filter-btn-active">All</button>
+        <button onclick="filterTasks('pending')" id="filter-pending" class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm">Pending</button>
+        <button onclick="filterTasks('done')" id="filter-done" class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm">Completed</button>
+      </div>
+      <div id="task-list" class="space-y-3"></div>
+      <div id="task-empty" class="hidden text-center py-10 text-gray-400">
+        <div class="text-4xl mb-2">✅</div>No tasks yet. Add one!
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Q&A VIEW ===== -->
+  <div id="view-qa" class="hidden">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800">💬 Caregiver Q&amp;A</h2>
+        <p class="text-gray-500 text-sm mt-1">Ask &amp; answer everyday caregiving questions</p>
+      </div>
+      <button onclick="openAskQuestion()" class="btn-big bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow">
+        <i class="fas fa-plus"></i> Ask
+      </button>
+    </div>
+
+    <!-- Search + Filter -->
+    <div class="flex gap-2 mb-4">
+      <div class="relative flex-1">
+        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+        <input id="qa-search" type="text" placeholder="Search questions..." oninput="renderQA()"
+          class="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-300 outline-none text-sm"/>
+      </div>
+    </div>
+    <!-- Category pills -->
+    <div class="flex gap-2 flex-wrap mb-5" id="qa-category-pills"></div>
+
+    <!-- Question list -->
+    <div id="qa-list" class="space-y-4"></div>
+    <div id="qa-empty" class="hidden text-center py-14 text-gray-400">
+      <div class="text-5xl mb-3">💬</div>No questions yet. Be the first to ask!
+    </div>
+  </div>
+
+  <!-- ===== CHATBOT VIEW ===== -->
+  <div id="view-chat" class="hidden flex flex-col" style="height:calc(100vh - 180px); min-height:400px;">
+    <div class="mb-3">
+      <h2 class="text-2xl font-bold text-gray-800">🤖 AI Care Assistant</h2>
+      <p class="text-gray-500 text-sm">Ask anything about dementia care &amp; caregiving</p>
+    </div>
+
+    <!-- Quick questions -->
+    <div class="flex gap-2 flex-wrap mb-3" id="quick-qs"></div>
+
+    <!-- Chat window -->
+    <div id="chatbox" class="flex-1 bg-white rounded-2xl shadow p-4 overflow-y-auto space-y-3 mb-3" style="min-height:300px;max-height:50vh;"></div>
+
+    <!-- Input -->
+    <div class="flex gap-2">
+      <input id="chat-input" type="text" placeholder="Type your question here..." onkeydown="if(event.key==='Enter')sendChat()"
+        class="flex-1 border-2 border-indigo-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none text-base"/>
+      <button onclick="sendChat()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl font-bold shadow flex items-center gap-2">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+    <div class="text-center mt-2 text-xs text-gray-400">
+      This assistant provides general caregiving guidance, not medical advice. Always consult a healthcare professional for clinical concerns.
+    </div>
+  </div>
+
+<!-- ===== SCHEDULE VIEW ===== -->
+  <div id="view-schedule" class="hidden">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h2 class="text-2xl font-extrabold text-gray-800">📅 Schedule & Tracking</h2>
+        <p class="text-gray-500 text-sm mt-1">Manage notes, medications, and daily reminders</p>
+      </div>
+      <button onclick="openAddEvent()" class="btn-big bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow">
+        <i class="fas fa-plus"></i> Add
+      </button>
+    </div>
+    
+    <div class="bg-white rounded-2xl shadow-sm border border-indigo-100 p-4 mb-4 flex gap-2">
+      <div class="flex-1 text-center border-r border-gray-100 pr-2">
+         <div class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Today</div>
+         <div class="text-xl font-extrabold text-indigo-600" id="current-day">--</div>
+      </div>
+      <div class="flex-1 text-center pb-2 pl-2">
+         <div class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Current Time</div>
+         <div class="text-xl font-extrabold text-gray-800" id="current-time">--:--</div>
+      </div>
+    </div>
+
+    <!-- Timeline List -->
+    <div id="schedule-list" class="space-y-4 relative">
+       <!-- left timeline bar simulated using border left -->
+    </div>
+    <div id="schedule-empty" class="hidden text-center py-14 text-gray-400">
+      <div class="text-5xl mb-3">📝</div>No events or alarms added for today.
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="fixed bottom-0 left-0 right-0 glass-header border-t border-gray-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-30 flex pb-safe">
+  <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold nav-active transition-all hover:text-indigo-400">
+    <i class="fas fa-home text-2xl mb-1"></i> Villages
+  </button>
+  <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold transition-all hover:text-indigo-400">
+    <i class="fas fa-calendar-check text-2xl mb-1"></i> Schedule
+  </button>
+  <button onclick="navTo('qa')" id="nav-qa" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold transition-all hover:text-indigo-400">
+    <i class="fas fa-comments text-2xl mb-1"></i> Q&amp;A
+  </button>
+  <button onclick="navTo('chat')" id="nav-chat" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold transition-all hover:text-indigo-400">
+    <i class="fas fa-robot text-2xl mb-1"></i> AI Chat
+  </button>
+</nav>
+
+<!-- ===== EMERGENCY OVERLAY ===== -->
+<div id="emergency-overlay" class="hidden fixed inset-0 bg-red-600 z-50 flex flex-col overflow-y-auto">
+  <div class="max-w-2xl mx-auto w-full p-6">
+    <div class="flex items-center justify-between mb-6">
+      <div class="text-white">
+        <div class="text-4xl font-bold">🚨 EMERGENCY</div>
+        <div class="text-red-200 text-lg">Call for help right now</div>
+      </div>
+      <button onclick="closeEmergency()" class="bg-white text-red-600 font-bold px-4 py-2 rounded-full text-sm">✕ Close</button>
+    </div>
+
+    <!-- 911 button -->
+    <a href="tel:911" class="block bg-white text-red-600 text-center font-extrabold text-3xl py-5 rounded-2xl shadow-xl mb-6 hover:bg-red-50">
+      📞 CALL 911
+    </a>
+
+    <h3 class="text-white font-bold text-xl mb-3">My Emergency Contacts</h3>
+    <div id="emergency-contacts" class="space-y-3"></div>
+    <div id="emergency-empty" class="hidden text-center text-red-200 py-6">
+      No emergency contacts saved yet.<br/>Add people to your Emergency village.
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add/Edit Village Modal -->
+<div id="modal-village" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+    <h2 id="modal-village-title" class="text-xl font-bold text-gray-800 mb-5">Create New Village</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Village Name *</label>
+        <input id="v-name" type="text" placeholder="e.g. Blood Donors, Church Friends" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Description</label>
+        <input id="v-desc" type="text" placeholder="What is this group for?" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Icon &amp; Color</label>
+        <div class="grid grid-cols-4 gap-2" id="village-icon-picker">
+          <!-- generated by JS -->
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-village')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold hover:bg-gray-50">Cancel</button>
+      <button onclick="saveVillage()" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Save Village</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Contact Modal -->
+<div id="modal-contact" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 my-4">
+    <h2 id="modal-contact-title" class="text-xl font-bold text-gray-800 mb-5">Add Person</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Full Name *</label>
+        <input id="c-name" type="text" placeholder="e.g. Dr. Smith" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-green-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Phone Number *</label>
+        <input id="c-phone" type="tel" placeholder="+1 (555) 000-0000" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-green-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Relationship</label>
+        <input id="c-rel" type="text" placeholder="e.g. Son, Doctor, Neighbor" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-green-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Email (optional)</label>
+        <input id="c-email" type="email" placeholder="email@example.com" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-green-400 outline-none"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-1">Blood Group</label>
+          <select id="c-blood" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-green-400 outline-none bg-white">
+            <option value="">Unknown</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-1">Priority</label>
+          <select id="c-priority" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-green-400 outline-none bg-white">
+            <option value="normal">Normal</option>
+            <option value="high">High (Call First)</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Notes</label>
+        <textarea id="c-notes" rows="2" placeholder="Any important notes..." class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-green-400 outline-none resize-none"></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-contact')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold hover:bg-gray-50">Cancel</button>
+      <button onclick="saveContact()" class="flex-1 py-3 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold">Save Person</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Task Modal -->
+<div id="modal-task" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 my-4">
+    <h2 id="modal-task-title" class="text-xl font-bold text-gray-800 mb-5">Add Task / Reminder</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Task Title *</label>
+        <input id="t-title" type="text" placeholder="e.g. Pick up medication" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-purple-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Description</label>
+        <textarea id="t-desc" rows="2" placeholder="More details..." class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-purple-400 outline-none resize-none"></textarea>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Assigned To</label>
+        <select id="t-contact" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-purple-400 outline-none bg-white">
+          <option value="">— Unassigned —</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-1">Due Date</label>
+          <input id="t-due" type="date" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-purple-400 outline-none"/>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-1">Priority</label>
+          <select id="t-priority" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-purple-400 outline-none bg-white">
+            <option value="low">Low</option>
+            <option value="med" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-task')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold hover:bg-gray-50">Cancel</button>
+      <button onclick="saveTask()" class="flex-1 py-3 rounded-xl bg-purple-500 hover:bg-purple-600 text-white font-bold">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Contact Modal -->
+<div id="modal-view-contact" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+    <div id="view-contact-body"></div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeModal('modal-view-contact')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">Close</button>
+      <button id="view-contact-edit" class="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-bold">Edit</button>
+      <button id="view-contact-delete" class="py-3 px-4 rounded-xl bg-red-500 text-white font-bold">🗑</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div id="modal-confirm" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+    <div class="text-5xl mb-3">⚠️</div>
+    <h3 id="confirm-title" class="text-xl font-bold text-gray-800 mb-2">Delete this?</h3>
+    <p id="confirm-msg" class="text-gray-500 mb-5 text-sm">This cannot be undone.</p>
+    <div class="flex gap-3">
+      <button onclick="closeModal('modal-confirm')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">Cancel</button>
+      <button id="confirm-ok" class="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE MODAL ===== -->
+<div id="modal-schedule" class="hidden fixed inset-0 modal-overlay bg-black/60 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+    <h2 id="modal-schedule-title" class="text-xl font-bold text-gray-800 mb-5">Add Note / Alarm</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Title *</label>
+        <input id="s-title" type="text" placeholder="e.g. Doctor's Appointment, Afternoon Meds" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+           <label class="block text-gray-700 font-semibold mb-1">Type</label>
+           <select id="s-type" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none bg-white">
+             <option value="note">📝 Note</option>
+             <option value="med">💊 Medication</option>
+             <option value="visit">🏠 Visit / Duty</option>
+             <option value="appt">🩺 Appt</option>
+           </select>
+        </div>
+        <div>
+           <label class="block text-gray-700 font-semibold mb-1">Time</label>
+           <input id="s-time" type="time" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Date</label>
+        <input id="s-date" type="date" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Assigned Person (Optional)</label>
+        <select id="s-contact" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none bg-white">
+          <option value="">— Unassigned —</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-schedule')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors">Cancel</button>
+      <button onclick="saveSchedule()" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-md">Save Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Alarm Ringing Modal (Patient View) -->
+<div id="modal-alarm" class="hidden fixed inset-0 modal-overlay bg-black/80 z-[60] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-[0_0_50px_rgba(255,255,255,0.3)] w-full max-w-sm p-8 text-center border-4 border-red-500 anim-ring mx-auto relative overflow-hidden">
+    <div class="absolute inset-0 bg-red-100 opacity-20 filter blur-2xl"></div>
+    <div class="text-6xl mb-4 relative z-10" id="alarm-icon">🔔</div>
+    <h3 class="text-2xl font-extrabold text-red-600 mb-2 whitespace-pre-wrap relative z-10" id="alarm-title">Alarm!</h3>
+    <p class="text-gray-600 font-medium mb-8 text-lg relative z-10">It's time. Please confirm.</p>
+    <div class="flex flex-col gap-4 relative z-10">
+      <button onclick="stopAlarm()" id="btn-stop-alarm" class="w-full py-4 rounded-2xl bg-green-500 hover:bg-green-600 text-white text-xl font-bold transition-all shadow-lg border border-green-400">
+        ✅ STOP / DONE
+      </button>
+      <button onclick="snoozeAlarm()" id="btn-snooze-alarm" class="w-full py-4 rounded-2xl bg-gray-200 hover:bg-gray-300 text-gray-700 text-xl font-bold transition-all border border-gray-300">
+        💤 SNOOZE 5 MIN
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ASK QUESTION MODAL ===== -->
+<div id="modal-question" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-5">Ask the Community 💬</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Your Question *</label>
+        <textarea id="q-text" rows="3" placeholder="e.g. How do I handle my mother refusing to eat?"
+          class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none resize-none"></textarea>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Your Name / Alias</label>
+        <input id="q-author" type="text" placeholder="e.g. Maria (Caregiver)" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Category</label>
+        <div class="grid grid-cols-3 gap-2" id="q-category-picker"></div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-question')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">Cancel</button>
+      <button onclick="saveQuestion()" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Post Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ANSWER / DETAIL MODAL ===== -->
+<div id="modal-qa-detail" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-lg overflow-y-auto" style="max-height:90vh;">
+    <div class="p-5">
+      <!-- Question -->
+      <div id="qa-detail-question" class="mb-5"></div>
+
+      <!-- Answers -->
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-bold text-gray-700 text-base"><i class="fas fa-comment-dots text-indigo-400 mr-2"></i>Answers</h3>
+        <span id="qa-answer-count" class="text-sm text-gray-400"></span>
+      </div>
+      <div id="qa-detail-answers" class="space-y-3 mb-5"></div>
+      <div id="qa-no-answers" class="hidden text-center text-gray-400 py-4 text-sm mb-5">
+        No answers yet — be the first to help!
+      </div>
+
+      <!-- Add Answer -->
+      <div class="bg-indigo-50 rounded-2xl p-4">
+        <h4 class="font-bold text-indigo-700 mb-3 text-sm">Your Answer</h4>
+        <textarea id="ans-text" rows="3" placeholder="Share your experience or advice..."
+          class="w-full border-2 border-indigo-200 rounded-xl px-3 py-2 focus:border-indigo-400 outline-none resize-none text-sm mb-2"></textarea>
+        <div class="flex gap-2 items-center">
+          <input id="ans-author" type="text" placeholder="Your name (optional)"
+            class="flex-1 border-2 border-indigo-200 rounded-xl px-3 py-2 focus:border-indigo-400 outline-none text-sm"/>
+          <label class="flex items-center gap-2 text-sm text-indigo-700 cursor-pointer whitespace-nowrap">
+            <input type="checkbox" id="ans-expert" class="w-4 h-4 accent-amber-500"/>
+            <span class="font-semibold">🏅 Expert</span>
+          </label>
+        </div>
+        <button onclick="saveAnswer()" class="w-full mt-3 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm">Post Answer</button>
+      </div>
+    </div>
+    <div class="sticky bottom-0 bg-white border-t p-4">
+      <button onclick="closeModal('modal-qa-detail')" class="w-full py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BROADCAST MODAL ===== -->
+<div id="modal-broadcast" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-lg sm:max-w-xl overflow-y-auto max-h-screen">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-5 rounded-t-3xl sm:rounded-t-2xl">
+      <div class="flex items-center justify-between mb-1">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">📣</span>
+          <div>
+            <div class="font-bold text-xl">Group Broadcast</div>
+            <div id="broadcast-village-name" class="text-orange-100 text-sm"></div>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-broadcast')" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold px-3 py-1 rounded-full text-sm">✕</button>
+      </div>
+    </div>
+
+    <div class="p-5 space-y-5">
+
+      <!-- Message Templates -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2 text-sm">Quick Templates</label>
+        <div class="flex flex-wrap gap-2" id="broadcast-templates">
+          <!-- generated by JS -->
+        </div>
+      </div>
+
+      <!-- Message Composer -->
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2">Your Message</label>
+        <textarea id="broadcast-msg" rows="4" placeholder="e.g. Hey! Gym session at 5:00 PM today — who's joining? 💪 Reply YES or NO!"
+          class="w-full border-2 border-orange-200 rounded-xl px-4 py-3 focus:border-orange-400 outline-none resize-none text-base"
+          oninput="updateBroadcastLinks()"></textarea>
+        <div class="flex justify-between items-center mt-1">
+          <span class="text-xs text-gray-400" id="broadcast-char-count">0 characters</span>
+          <button onclick="clearBroadcastMsg()" class="text-xs text-gray-400 hover:text-red-500">Clear</button>
+        </div>
+      </div>
+
+      <!-- Copy All Numbers -->
+      <button onclick="copyAllNumbers()" class="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-600 font-semibold hover:border-orange-400 hover:text-orange-600 flex items-center justify-center gap-2 text-sm">
+        <i class="fas fa-copy"></i> Copy All Phone Numbers to Clipboard
+      </button>
+
+      <!-- Contact Send Buttons -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-gray-700 font-semibold">Send to Members</label>
+          <span id="broadcast-count" class="text-sm text-gray-400"></span>
+        </div>
+        <div id="broadcast-contact-list" class="space-y-2"></div>
+        <div id="broadcast-empty" class="hidden text-center py-6 text-gray-400 text-sm">
+          No contacts in this village yet. Add people first!
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-xl z-50 text-sm font-semibold flex items-center gap-2">
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+const VILLAGE_THEMES = [
+  { icon:'👨‍👩‍👧‍👦', label:'Family',  bg:'bg-rose-500',   grad:'from-rose-500 to-pink-500',   avatar:'bg-rose-400'   },
+  { icon:'🤝',       label:'Friends', bg:'bg-amber-500',  grad:'from-amber-500 to-yellow-400', avatar:'bg-amber-400'  },
+  { icon:'🏥',       label:'Professionals', bg:'bg-blue-500',   grad:'from-blue-500 to-cyan-500',    avatar:'bg-blue-400'   },
+  { icon:'🏘️',       label:'Neighbors',bg:'bg-teal-500',  grad:'from-teal-500 to-cyan-400',   avatar:'bg-teal-400'   },
+  { icon:'⛪',       label:'Groups & Orgs',  bg:'bg-purple-500', grad:'from-purple-500 to-violet-500',avatar:'bg-purple-400' },
+  { icon:'💼',       label:'Colleagues', bg:'bg-indigo-600', grad:'from-indigo-600 to-blue-700', avatar:'bg-indigo-500' },
+  { icon:'⚖️',       label:'Legal', bg:'bg-slate-700', grad:'from-slate-600 to-slate-800', avatar:'bg-slate-500' },
+  { icon:'💰',       label:'Financial', bg:'bg-emerald-600', grad:'from-emerald-500 to-emerald-700', avatar:'bg-emerald-500' },
+  { icon:'🛒',       label:'Store/Errands', bg:'bg-orange-500', grad:'from-orange-500 to-amber-500', avatar:'bg-orange-400' },
+  { icon:'🚨',       label:'Emergency',bg:'bg-red-600',   grad:'from-red-600 to-orange-500',   avatar:'bg-red-400'    },
+  { icon:'💊',       label:'Pharmacy',bg:'bg-orange-600', grad:'from-orange-600 to-red-500', avatar:'bg-orange-500' },
+  { icon:'🧑‍⚕️',     label:'Nurse',  bg:'bg-cyan-500',   grad:'from-cyan-500 to-teal-400',    avatar:'bg-cyan-400'   },
+];
+
+let state = {
+  villages: [], contacts: [], tasks: [], events: [],
+  currentVillageId: null,
+  activeTab: 'contacts',
+  taskFilter: 'all',
+  editingVillageId: null,
+  editingContactId: null,
+  editingTaskId: null,
+  editingEventId: null,
+  selectedThemeIdx: 0,
+  roleMode: 'caregiver'
+};
+
+function loadState() {
+  const saved = localStorage.getItem('cgv_state');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    state.villages  = parsed.villages  || [];
+    state.contacts  = parsed.contacts  || [];
+    state.tasks     = parsed.tasks     || [];
+    state.events    = parsed.events    || [];
+    state.questions = parsed.questions !== undefined ? parsed.questions : null;
+  }
+  if (state.villages.length === 0) seedDefaults();
+}
+
+function saveState() {
+  localStorage.setItem('cgv_state', JSON.stringify({
+    villages: state.villages, contacts: state.contacts, tasks: state.tasks, events: state.events, questions: state.questions
+  }));
+}
+
+function seedDefaults() {
+  const defaults = [
+    { id: uid(), name:'Family',    themeIdx:0, desc:'Immediate family & close relatives' },
+    { id: uid(), name:'Friends & Neighbors',   themeIdx:1, desc:'Social connections & local community'    },
+    { id: uid(), name:'Groups & Organizations',   themeIdx:4, desc:'Faith communities, clubs, agencies'    },
+    { id: uid(), name:'Professionals',   themeIdx:2, desc:'Medical, Legal, Financial' },
+    { id: uid(), name:'Emergency', themeIdx:9, desc:'Call in an emergency'     },
+  ];
+  state.villages = defaults;
+  saveState();
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function goHome() {
+  state.currentVillageId = null;
+  state.activeTab = 'contacts';
+  state.taskFilter = 'all';
+  navTo('dashboard');
+}
+
+function openVillage(id) {
+  state.currentVillageId = id;
+  state.activeTab = 'contacts';
+  state.taskFilter = 'all';
+  ALL_VIEWS.forEach(v => { const el = document.getElementById('view-'+v); if(el) el.classList.add('hidden'); });
+  document.getElementById('view-village').classList.remove('hidden');
+  const bc = document.getElementById('breadcrumb');
+  bc.classList.remove('hidden');
+  const v = state.villages.find(x => x.id === id);
+  document.getElementById('breadcrumb-name').textContent = v ? v.name : '';
+  ['dashboard','qa','chat'].forEach(n => { const b = document.getElementById('nav-'+n); if(b) b.classList.remove('nav-active'); });
+  document.getElementById('nav-dashboard').classList.add('nav-active');
+  renderVillage();
+}
+
+function showView(name) {
+  document.getElementById('view-dashboard').classList.add('hidden');
+  document.getElementById('view-village').classList.add('hidden');
+  document.getElementById('view-' + name).classList.remove('hidden');
+  const bc = document.getElementById('breadcrumb');
+  if (name === 'dashboard') { bc.classList.add('hidden'); }
+  else {
+    bc.classList.remove('hidden');
+    const v = state.villages.find(x => x.id === state.currentVillageId);
+    document.getElementById('breadcrumb-name').textContent = v ? v.name : '';
+  }
+}
+
+// ============================================================
+//  DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const grid = document.getElementById('village-grid');
+  const stats = document.getElementById('quick-stats');
+  const empty = document.getElementById('empty-state');
+
+  // Stats
+  const totalContacts = state.contacts.length;
+  const pendingTasks = state.tasks.filter(t => t.status !== 'done').length;
+  const doneTasks = state.tasks.filter(t => t.status === 'done').length;
+  stats.innerHTML = `
+    <div class="bg-white rounded-xl p-4 shadow text-center">
+      <div class="text-2xl font-bold text-indigo-600">${state.villages.length}</div>
+      <div class="text-gray-500 text-sm">Villages</div>
+    </div>
+    <div class="bg-white rounded-xl p-4 shadow text-center">
+      <div class="text-2xl font-bold text-green-600">${totalContacts}</div>
+      <div class="text-gray-500 text-sm">Contacts</div>
+    </div>
+    <div class="bg-white rounded-xl p-4 shadow text-center">
+      <div class="text-2xl font-bold text-purple-600">${pendingTasks}</div>
+      <div class="text-gray-500 text-sm">Tasks Pending</div>
+    </div>`;
+
+  if (state.villages.length === 0) {
+    grid.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  grid.innerHTML = state.villages.map(v => {
+    const theme = VILLAGE_THEMES[v.themeIdx] || VILLAGE_THEMES[0];
+    const contactCount = state.contacts.filter(c => c.villageId === v.id).length;
+    const taskCount = state.tasks.filter(t => t.villageId === v.id && t.status !== 'done').length;
+    const contacts = state.contacts.filter(c => c.villageId === v.id).slice(0,4);
+    const avatars = contacts.map(c => `<div class="avatar ${theme.avatar} text-sm w-8 h-8 -ml-2 first:ml-0 border-2 border-white">${initials(c.name)}</div>`).join('');
+    return `
+    <div class="village-card bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl" onclick="openVillage('${v.id}')">
+      <div class="bg-gradient-to-r ${theme.grad} p-5 text-white flex items-center justify-between">
+        <div>
+          <div class="text-4xl mb-1">${theme.icon}</div>
+          <div class="text-xl font-bold">${esc(v.name)}</div>
+          <div class="text-sm opacity-80">${esc(v.desc||'')}</div>
+        </div>
+        <div class="text-right">
+          <button onclick="event.stopPropagation();confirmDeleteVillage('${v.id}')" class="text-white opacity-60 hover:opacity-100 text-lg ml-2">🗑</button>
+          <button onclick="event.stopPropagation();openEditVillage('${v.id}')" class="text-white opacity-60 hover:opacity-100 text-lg ml-2">✏️</button>
+        </div>
+      </div>
+      <div class="p-4">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="flex">${avatars || '<span class="text-gray-400 text-sm">No contacts yet</span>'}</div>
+        </div>
+        <div class="flex items-center gap-4 text-sm text-gray-500">
+          <span><i class="fas fa-users text-indigo-400 mr-1"></i>${contactCount} contact${contactCount!==1?'s':''}</span>
+          <span><i class="fas fa-tasks text-purple-400 mr-1"></i>${taskCount} pending task${taskCount!==1?'s':''}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+//  VILLAGE DETAIL
+// ============================================================
+function renderVillage() {
+  const v = state.villages.find(x => x.id === state.currentVillageId);
+  if (!v) { goHome(); return; }
+  const theme = VILLAGE_THEMES[v.themeIdx] || VILLAGE_THEMES[0];
+
+  // Village header
+  document.getElementById('village-header').className = `rounded-2xl p-5 mb-5 text-white shadow-lg bg-gradient-to-r ${theme.grad}`;
+  document.getElementById('village-header').innerHTML = `
+    <div class="flex items-center gap-4">
+      <span class="text-5xl">${theme.icon}</span>
+      <div>
+        <div class="text-2xl font-bold">${esc(v.name)}</div>
+        <div class="text-sm opacity-80">${esc(v.desc||'')}</div>
+      </div>
+    </div>`;
+
+  renderContacts();
+  renderTasks();
+}
+
+function switchTab(tab) {
+  state.activeTab = tab;
+  document.getElementById('panel-contacts').classList.toggle('hidden', tab !== 'contacts');
+  document.getElementById('panel-tasks').classList.toggle('hidden', tab !== 'tasks');
+  document.getElementById('tab-contacts').className = 'flex-1 py-3 text-center text-base font-semibold flex items-center justify-center gap-2 ' +
+    (tab==='contacts' ? 'tab-active' : 'text-gray-500');
+  document.getElementById('tab-tasks').className = 'flex-1 py-3 text-center text-base font-semibold flex items-center justify-center gap-2 ' +
+    (tab==='tasks' ? 'tab-active' : 'text-gray-500');
+}
+
+// ============================================================
+//  CONTACTS
+// ============================================================
+function renderContacts() {
+  const list = document.getElementById('contact-list');
+  const emptyEl = document.getElementById('contact-empty');
+  const contacts = state.contacts.filter(c => c.villageId === state.currentVillageId);
+  const v = state.villages.find(x => x.id === state.currentVillageId);
+  const theme = VILLAGE_THEMES[(v||{}).themeIdx] || VILLAGE_THEMES[0];
+
+  if (contacts.length === 0) {
+    list.innerHTML = ''; emptyEl.classList.remove('hidden'); return;
+  }
+  emptyEl.classList.add('hidden');
+  list.innerHTML = contacts.map(c => `
+    <div class="bg-white rounded-2xl shadow p-4 flex items-start gap-4 cursor-pointer hover:shadow-md transition-shadow ${c.priority==='high'?'ring-2 ring-red-400':''}" onclick="viewContact('${c.id}')">
+      <div class="avatar ${theme.avatar}">${initials(c.name)}</div>
+      <div class="flex-1 min-w-0">
+        <div class="font-bold text-gray-800 text-base">${esc(c.name)} ${c.priority==='high'?'<span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full ml-1">Call First</span>':''}</div>
+        <div class="text-gray-500 text-sm">${esc(c.relationship||'')}</div>
+        <a href="tel:${c.phone}" onclick="event.stopPropagation()" class="text-indigo-600 font-semibold text-sm flex items-center gap-1 mt-1 hover:underline">
+          <i class="fas fa-phone"></i> ${esc(c.phone)}
+        </a>
+        ${c.blood ? `<span class="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full mt-1 inline-block">🩸 ${esc(c.blood)}</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function viewContact(id) {
+  const c = state.contacts.find(x => x.id === id);
+  if (!c) return;
+  const v = state.villages.find(x => x.id === c.villageId);
+  const theme = VILLAGE_THEMES[(v||{}).themeIdx] || VILLAGE_THEMES[0];
+  document.getElementById('view-contact-body').innerHTML = `
+    <div class="text-center mb-4">
+      <div class="avatar ${theme.avatar} mx-auto mb-3 text-2xl w-16 h-16">${initials(c.name)}</div>
+      <h3 class="text-xl font-bold text-gray-800">${esc(c.name)}</h3>
+      <div class="text-gray-500">${esc(c.relationship||'')}</div>
+    </div>
+    <div class="space-y-2 text-sm">
+      <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl">
+        <i class="fas fa-phone text-green-500 w-5"></i>
+        <a href="tel:${c.phone}" class="text-indigo-600 font-semibold hover:underline">${esc(c.phone)}</a>
+      </div>
+      ${c.email?`<div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl"><i class="fas fa-envelope text-blue-500 w-5"></i><span>${esc(c.email)}</span></div>`:''}
+      ${c.blood?`<div class="flex items-center gap-3 bg-red-50 p-3 rounded-xl"><i class="fas fa-tint text-red-500 w-5"></i><span class="font-bold text-red-600">Blood Group: ${esc(c.blood)}</span></div>`:''}
+      ${c.notes?`<div class="flex items-start gap-3 bg-gray-50 p-3 rounded-xl"><i class="fas fa-sticky-note text-yellow-500 w-5 mt-0.5"></i><span>${esc(c.notes)}</span></div>`:''}
+    </div>`;
+  document.getElementById('view-contact-edit').onclick = () => { closeModal('modal-view-contact'); openEditContact(id); };
+  document.getElementById('view-contact-delete').onclick = () => { closeModal('modal-view-contact'); confirmDeleteContact(id); };
+  openModal('modal-view-contact');
+}
+
+function openAddContact() {
+  state.editingContactId = null;
+  document.getElementById('modal-contact-title').textContent = 'Add Person';
+  document.getElementById('c-name').value = '';
+  document.getElementById('c-phone').value = '';
+  document.getElementById('c-rel').value = '';
+  document.getElementById('c-email').value = '';
+  document.getElementById('c-blood').value = '';
+  document.getElementById('c-priority').value = 'normal';
+  document.getElementById('c-notes').value = '';
+  openModal('modal-contact');
+}
+
+function openEditContact(id) {
+  const c = state.contacts.find(x => x.id === id);
+  if (!c) return;
+  state.editingContactId = id;
+  document.getElementById('modal-contact-title').textContent = 'Edit Person';
+  document.getElementById('c-name').value = c.name;
+  document.getElementById('c-phone').value = c.phone;
+  document.getElementById('c-rel').value = c.relationship||'';
+  document.getElementById('c-email').value = c.email||'';
+  document.getElementById('c-blood').value = c.blood||'';
+  document.getElementById('c-priority').value = c.priority||'normal';
+  document.getElementById('c-notes').value = c.notes||'';
+  openModal('modal-contact');
+}
+
+function saveContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  if (!name) { shake('c-name'); return; }
+  if (!phone) { shake('c-phone'); return; }
+
+  const data = {
+    name, phone,
+    relationship: document.getElementById('c-rel').value.trim(),
+    email: document.getElementById('c-email').value.trim(),
+    blood: document.getElementById('c-blood').value,
+    priority: document.getElementById('c-priority').value,
+    notes: document.getElementById('c-notes').value.trim(),
+    villageId: state.currentVillageId,
+  };
+
+  if (state.editingContactId) {
+    const idx = state.contacts.findIndex(x => x.id === state.editingContactId);
+    if (idx > -1) state.contacts[idx] = { ...state.contacts[idx], ...data };
+    toast('Contact updated ✓');
+  } else {
+    state.contacts.push({ id: uid(), ...data });
+    toast('Contact added ✓');
+  }
+  saveState();
+  closeModal('modal-contact');
+  renderContacts();
+  renderDashboard();
+}
+
+function confirmDeleteContact(id) {
+  const c = state.contacts.find(x => x.id === id);
+  showConfirm(`Delete ${c?.name}?`, 'This contact will be removed.', () => {
+    state.contacts = state.contacts.filter(x => x.id !== id);
+    state.tasks = state.tasks.map(t => t.contactId === id ? {...t, contactId:''} : t);
+    saveState();
+    renderContacts();
+    renderDashboard();
+    toast('Contact deleted');
+  });
+}
+
+// ============================================================
+//  TASKS
+// ============================================================
+function renderTasks() {
+  const taskEl = document.getElementById('task-list');
+  const emptyEl = document.getElementById('task-empty');
+  let tasks = state.tasks.filter(t => t.villageId === state.currentVillageId);
+  if (state.taskFilter === 'pending') tasks = tasks.filter(t => t.status !== 'done');
+  if (state.taskFilter === 'done')    tasks = tasks.filter(t => t.status === 'done');
+
+  if (tasks.length === 0) {
+    taskEl.innerHTML = ''; emptyEl.classList.remove('hidden'); return;
+  }
+  emptyEl.classList.add('hidden');
+
+  tasks.sort((a,b) => {
+    const order = {high:0,med:1,low:2};
+    return (order[a.priority]||1) - (order[b.priority]||1);
+  });
+
+  taskEl.innerHTML = tasks.map(t => {
+    const contact = state.contacts.find(c => c.id === t.contactId);
+    const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'done';
+    const pClass = {high:'priority-high',med:'priority-med',low:'priority-low'}[t.priority]||'priority-low';
+    return `
+    <div class="bg-white rounded-xl shadow p-4 ${pClass} ${t.status==='done'?'opacity-60':''}">
+      <div class="flex items-start gap-3">
+        <input type="checkbox" class="w-5 h-5 mt-0.5 cursor-pointer accent-indigo-600 flex-shrink-0"
+          ${t.status==='done'?'checked':''} onchange="toggleTask('${t.id}')"/>
+        <div class="flex-1">
+          <div class="font-semibold text-gray-800 ${t.status==='done'?'task-done':''}">${esc(t.title)}</div>
+          ${t.desc?`<div class="text-gray-500 text-sm mt-0.5">${esc(t.desc)}</div>`:''}
+          <div class="flex flex-wrap gap-2 mt-2 text-xs">
+            ${contact?`<span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full"><i class="fas fa-user mr-1"></i>${esc(contact.name)}</span>`:''}
+            ${t.dueDate?`<span class="px-2 py-0.5 rounded-full ${overdue?'bg-red-100 text-red-600 font-bold':'bg-gray-100 text-gray-500'}"><i class="fas fa-calendar mr-1"></i>${t.dueDate}${overdue?' ⚠ OVERDUE':''}</span>`:''}
+            <span class="px-2 py-0.5 rounded-full ${t.priority==='high'?'bg-red-100 text-red-600':t.priority==='med'?'bg-yellow-100 text-yellow-700':'bg-green-100 text-green-700'}">${t.priority||'low'} priority</span>
+          </div>
+        </div>
+        <div class="flex gap-1 flex-shrink-0">
+          <button onclick="openEditTask('${t.id}')" class="text-gray-400 hover:text-indigo-600 p-1 text-sm">✏️</button>
+          <button onclick="confirmDeleteTask('${t.id}')" class="text-gray-400 hover:text-red-500 p-1 text-sm">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterTasks(filter) {
+  state.taskFilter = filter;
+  ['all','pending','done'].forEach(f => {
+    document.getElementById('filter-'+f).className = 'px-3 py-1 rounded-full text-sm ' +
+      (f===filter ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'bg-gray-100 text-gray-600');
+  });
+  renderTasks();
+}
+
+function toggleTask(id) {
+  const t = state.tasks.find(x => x.id === id);
+  if (t) { t.status = t.status === 'done' ? 'pending' : 'done'; saveState(); renderTasks(); renderDashboard(); }
+}
+
+function openAddTask() {
+  state.editingTaskId = null;
+  document.getElementById('modal-task-title').textContent = 'Add Task / Reminder';
+  document.getElementById('t-title').value = '';
+  document.getElementById('t-desc').value = '';
+  document.getElementById('t-due').value = '';
+  document.getElementById('t-priority').value = 'med';
+
+  // Populate contact dropdown
+  const sel = document.getElementById('t-contact');
+  const contacts = state.contacts.filter(c => c.villageId === state.currentVillageId);
+  sel.innerHTML = '<option value="">— Unassigned —</option>' +
+    contacts.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+
+  openModal('modal-task');
+}
+
+function openEditTask(id) {
+  const t = state.tasks.find(x => x.id === id);
+  if (!t) return;
+  state.editingTaskId = id;
+  document.getElementById('modal-task-title').textContent = 'Edit Task';
+  document.getElementById('t-title').value = t.title;
+  document.getElementById('t-desc').value = t.desc||'';
+  document.getElementById('t-due').value = t.dueDate||'';
+  document.getElementById('t-priority').value = t.priority||'med';
+
+  const sel = document.getElementById('t-contact');
+  const contacts = state.contacts.filter(c => c.villageId === state.currentVillageId);
+  sel.innerHTML = '<option value="">— Unassigned —</option>' +
+    contacts.map(c => `<option value="${c.id}" ${c.id===t.contactId?'selected':''}>${esc(c.name)}</option>`).join('');
+
+  openModal('modal-task');
+}
+
+function saveTask() {
+  const title = document.getElementById('t-title').value.trim();
+  if (!title) { shake('t-title'); return; }
+
+  const data = {
+    title,
+    desc: document.getElementById('t-desc').value.trim(),
+    contactId: document.getElementById('t-contact').value,
+    dueDate: document.getElementById('t-due').value,
+    priority: document.getElementById('t-priority').value,
+    villageId: state.currentVillageId,
+    status: 'pending',
+  };
+
+  if (state.editingTaskId) {
+    const idx = state.tasks.findIndex(x => x.id === state.editingTaskId);
+    if (idx > -1) state.tasks[idx] = { ...state.tasks[idx], ...data };
+    toast('Task updated ✓');
+  } else {
+    state.tasks.push({ id: uid(), ...data });
+    toast('Task added ✓');
+  }
+  saveState();
+  closeModal('modal-task');
+  renderTasks();
+  renderDashboard();
+}
+
+function confirmDeleteTask(id) {
+  const t = state.tasks.find(x => x.id === id);
+  showConfirm(`Delete "${t?.title}"?`, 'This task will be removed.', () => {
+    state.tasks = state.tasks.filter(x => x.id !== id);
+    saveState(); renderTasks(); renderDashboard();
+    toast('Task deleted');
+  });
+}
+
+// ============================================================
+//  VILLAGE ADD/EDIT
+// ============================================================
+function openAddVillage() {
+  state.editingVillageId = null;
+  state.selectedThemeIdx = 0;
+  document.getElementById('modal-village-title').textContent = 'Create New Village';
+  document.getElementById('v-name').value = '';
+  document.getElementById('v-desc').value = '';
+  renderIconPicker(0);
+  openModal('modal-village');
+}
+
+function openEditVillage(id) {
+  const v = state.villages.find(x => x.id === id);
+  if (!v) return;
+  state.editingVillageId = id;
+  state.selectedThemeIdx = v.themeIdx||0;
+  document.getElementById('modal-village-title').textContent = 'Edit Village';
+  document.getElementById('v-name').value = v.name;
+  document.getElementById('v-desc').value = v.desc||'';
+  renderIconPicker(v.themeIdx||0);
+  openModal('modal-village');
+}
+
+function renderIconPicker(selected) {
+  const picker = document.getElementById('village-icon-picker');
+  picker.innerHTML = VILLAGE_THEMES.map((t,i) => `
+    <button onclick="selectTheme(${i})" id="theme-btn-${i}"
+      class="p-2 rounded-xl text-2xl text-center border-2 hover:border-indigo-400 transition-all ${i===selected?'border-indigo-500 bg-indigo-50':'border-gray-200'}"
+      title="${t.label}">${t.icon}</button>`).join('');
+}
+
+function selectTheme(idx) {
+  state.selectedThemeIdx = idx;
+  document.querySelectorAll('[id^=theme-btn-]').forEach((el,i) => {
+    el.className = el.className.replace(/border-(indigo-500|gray-200)/g,'').replace('bg-indigo-50','') + (i===idx?' border-indigo-500 bg-indigo-50':' border-gray-200');
+  });
+}
+
+function saveVillage() {
+  const name = document.getElementById('v-name').value.trim();
+  if (!name) { shake('v-name'); return; }
+  const data = { name, desc: document.getElementById('v-desc').value.trim(), themeIdx: state.selectedThemeIdx };
+  if (state.editingVillageId) {
+    const idx = state.villages.findIndex(x => x.id === state.editingVillageId);
+    if (idx > -1) state.villages[idx] = { ...state.villages[idx], ...data };
+    toast('Village updated ✓');
+  } else {
+    state.villages.push({ id: uid(), ...data });
+    toast('Village created ✓');
+  }
+  saveState();
+  closeModal('modal-village');
+  renderDashboard();
+}
+
+function confirmDeleteVillage(id) {
+  const v = state.villages.find(x => x.id === id);
+  showConfirm(`Delete village "${v?.name}"?`,
+    'All contacts and tasks in this village will be removed.',
+    () => {
+      state.contacts = state.contacts.filter(c => c.villageId !== id);
+      state.tasks = state.tasks.filter(t => t.villageId !== id);
+      state.villages = state.villages.filter(x => x.id !== id);
+      saveState(); renderDashboard();
+      toast('Village deleted');
+    });
+}
+
+// ============================================================
+//  EMERGENCY
+// ============================================================
+function showEmergency() {
+  const emergencyVillages = state.villages.filter(v =>
+    v.name.toLowerCase().includes('emergency') || (v.themeIdx===2)
+  );
+  const emergencyContacts = emergencyVillages.length > 0
+    ? state.contacts.filter(c => emergencyVillages.map(v=>v.id).includes(c.villageId))
+    : state.contacts.filter(c => {
+        const v = state.villages.find(x => x.id === c.villageId);
+        return v && (v.name.toLowerCase().includes('emergency') || v.themeIdx===2);
+      });
+
+  const el = document.getElementById('emergency-contacts');
+  const emptyEl = document.getElementById('emergency-empty');
+
+  if (emergencyContacts.length === 0) {
+    el.innerHTML = '';
+    emptyEl.classList.remove('hidden');
+  } else {
+    emptyEl.classList.add('hidden');
+    el.innerHTML = emergencyContacts.map(c => `
+      <a href="tel:${c.phone}" class="block bg-white rounded-2xl p-4 flex items-center gap-4 shadow-lg hover:bg-red-50 transition-colors">
+        <div class="avatar bg-white text-red-600 text-xl w-14 h-14 border-2 border-red-200">${initials(c.name)}</div>
+        <div class="flex-1">
+          <div class="font-bold text-gray-800 text-lg">${esc(c.name)}</div>
+          <div class="text-gray-500 text-sm">${esc(c.relationship||'')}</div>
+          <div class="text-red-600 font-bold text-lg flex items-center gap-2 mt-1">
+            <i class="fas fa-phone-alt"></i> ${esc(c.phone)}
+          </div>
+          ${c.blood?`<div class="text-sm mt-1">🩸 Blood: <strong>${esc(c.blood)}</strong></div>`:''}
+        </div>
+        <i class="fas fa-chevron-right text-red-400 text-xl"></i>
+      </a>`).join('');
+  }
+  document.getElementById('emergency-overlay').classList.remove('hidden');
+}
+
+function closeEmergency() {
+  document.getElementById('emergency-overlay').classList.add('hidden');
+}
+
+// ============================================================
+//  MODAL HELPERS
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+function showConfirm(title, msg, onOk) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  document.getElementById('confirm-ok').onclick = () => { closeModal('modal-confirm'); onOk(); };
+  openModal('modal-confirm');
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('[id^=modal-]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// ============================================================
+//  UTILS
+// ============================================================
+function initials(name) {
+  return (name||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+}
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function shake(id) {
+  const el = document.getElementById(id);
+  el.classList.add('border-red-400');
+  el.style.animation = 'none';
+  setTimeout(()=>{ el.style.animation=''; el.classList.remove('border-red-400'); }, 1000);
+  el.focus();
+}
+function toast(msg) {
+  const el = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  el.classList.remove('hidden');
+  setTimeout(()=>el.classList.add('hidden'), 2500);
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+const ALL_VIEWS = ['dashboard','village','qa','chat','schedule'];
+
+function navTo(view) {
+  ALL_VIEWS.forEach(v => {
+    const el = document.getElementById('view-'+v);
+    if (el) el.classList.add('hidden');
+  });
+  const target = document.getElementById('view-'+view);
+  if (target) target.classList.remove('hidden');
+
+  // breadcrumb
+  const bc = document.getElementById('breadcrumb');
+  if (view === 'dashboard' || view === 'village') {
+    if (view === 'dashboard') bc.classList.add('hidden');
+  } else {
+    bc.classList.add('hidden');
+  }
+
+  // nav highlight
+  ['dashboard','qa','chat','schedule'].forEach(n => {
+    const btn = document.getElementById('nav-'+n);
+    if (btn) {
+      if (n === view) {
+        btn.classList.add('nav-active', 'text-indigo-600');
+        btn.classList.remove('text-gray-400');
+      } else {
+        btn.classList.remove('nav-active', 'text-indigo-600');
+        btn.classList.add('text-gray-400');
+      }
+    }
+  });
+
+  if (view === 'qa')   { state.qaCategory = 'All'; renderQA(); }
+  if (view === 'chat') { initChat(); }
+  if (view === 'dashboard') { renderDashboard(); }
+  if (view === 'schedule') { renderSchedule(); }
+}
+
+// ============================================================
+//  Q&A
+// ============================================================
+const QA_CATEGORIES = ['All','Behaviour','Daily Care','Nutrition','Sleep','Safety','Communication','Emotions','Resources'];
+
+const SEED_QA = [
+  { id:'q0', text:'My father refuses to take a shower. How do I handle this without upsetting him?',
+    author:'Sarah (Daughter)', category:'Daily Care', date:'2026-04-10', answers:[
+      { id:'a0', text:'Try switching to a warm sponge bath instead of a full shower. Offering choices — "Do you want to wash up now or after breakfast?" — gives a sense of control. Play his favourite music during the routine.',
+        author:'Linda (Caregiver)', expert:true, likes:12, dislikes:1, userVote:null },
+      { id:'a1', text:'Same issue here. I found that my mum responds better when I say "let\'s freshen up" instead of "shower time". Framing matters a lot.',
+        author:'James', expert:false, likes:8, dislikes:0, userVote:null },
+    ]},
+  { id:'q1', text:'My wife with dementia keeps asking for her mother who passed away decades ago. Should I correct her?',
+    author:'Tom (Husband)', category:'Communication', date:'2026-04-12', answers:[
+      { id:'a1b', text:'Do not correct or argue — it causes distress without benefit. Instead, meet her in her reality. Ask "Tell me about your mum" and redirect to a fond memory. This is called validation therapy.',
+        author:'Dr. Rivera (Dementia Specialist)', expert:true, likes:22, dislikes:0, userVote:null },
+    ]},
+  { id:'q2', text:'How do I prevent my dad from wandering at night?',
+    author:'Priya', category:'Safety', date:'2026-04-14', answers:[
+      { id:'a2', text:'Door alarms and sensor mats near the bed work well. Also try to keep a consistent bedtime routine and ensure enough physical activity during the day — tiredness helps.',
+        author:'Maria (Home Carer)', expert:false, likes:9, dislikes:0, userVote:null },
+    ]},
+  { id:'q3', text:'I feel completely burnt out. Is this normal for caregivers?',
+    author:'Anonymous', category:'Emotions', date:'2026-04-15', answers:[
+      { id:'a3', text:'Absolutely normal — and it\'s one of the most underreported issues. Caregiver burnout is real. Please look into respite care services, and consider joining a local or online support group. You cannot pour from an empty cup.',
+        author:'Counsellor Ahmed', expert:true, likes:31, dislikes:0, userVote:null },
+    ]},
+  { id:'q4', text:'My mum asks the same question every 5 minutes. I know she can\'t help it, but how do I stay patient?',
+    author:'Kezia (Daughter)', category:'Behaviour', date:'2026-04-13', answers:[
+      { id:'a4a', text:'Repetitive questioning is one of the most common and exhausting dementia behaviours. Your mum is likely feeling anxious or uncertain — she\'s not doing it to frustrate you. Try to answer the feeling behind the question, not just the words. If she keeps asking "when are we going home?" she may be feeling unsafe. Try: "You\'re safe here. We\'re together." Then redirect to a calming activity.',
+        author:'Dr. Osei (Geriatric Psychiatrist)', expert:true, likes:27, dislikes:0, userVote:null },
+      { id:'a4b', text:'I use sticky notes in key spots — "Today is Tuesday. Lunch is at noon." It doesn\'t stop the questions but it gives her something to look at between asking me.',
+        author:'Grace (Caregiver)', expert:false, likes:14, dislikes:0, userVote:null },
+    ]},
+  { id:'q5', text:'My husband follows me from room to room all day and won\'t let me out of his sight. I can\'t even use the bathroom alone. What should I do?',
+    author:'Helen (Wife)', category:'Behaviour', date:'2026-04-11', answers:[
+      { id:'a5a', text:'This is called "shadowing" and it\'s very common in moderate dementia. He is following you because you are his anchor — his sense of safety. Try: give him a meaningful task to do while you step away (folding towels, looking at a photo album). Start with short separations (2 minutes) and gradually increase. A familiar object you\'ve handled (like a handkerchief) can be a comfort item.',
+        author:'SW Mitchell (Social Worker)', expert:true, likes:19, dislikes:0, userVote:null },
+      { id:'a5b', text:'TV or radio with familiar programmes worked for my dad. He\'d get absorbed and I could get 15 minutes. It\'s not perfect but it helps.',
+        author:'Carol', expert:false, likes:11, dislikes:0, userVote:null },
+    ]},
+  { id:'q6', text:'Every afternoon around 4 PM my dad becomes very confused and agitated. He accuses us of things and paces constantly. Is this sundowning?',
+    author:'Rajan (Son)', category:'Behaviour', date:'2026-04-09', answers:[
+      { id:'a6a', text:'Yes — this is classic sundowning (late-afternoon/evening agitation). It\'s thought to relate to changes in the brain\'s internal clock. Strategies that help: maximise morning light exposure, keep afternoons calm and low-stimulation, schedule activities before 3 PM, avoid TV news or loud sounds after lunch, offer a light snack around 3 PM, and use soft music or familiar songs. Vitamin D deficiency sometimes worsens it — worth checking with your doctor.',
+        author:'Nurse Practitioner Yemi', expert:true, likes:33, dislikes:0, userVote:null },
+    ]},
+  { id:'q7', text:'My wife refuses to eat and has lost a lot of weight. She used to love food. What can I do?',
+    author:'Paul (Husband)', category:'Nutrition', date:'2026-04-08', answers:[
+      { id:'a7a', text:'Appetite loss in dementia can have many causes: difficulty recognising food, swallowing problems, mouth pain, medication side effects, or depression. Try: offer small frequent meals instead of three large ones, use bright-coloured plates (high contrast helps recognition), serve favourite childhood foods, eat together at the table, and make mealtimes social. Finger foods work well when cutlery becomes confusing. If weight loss continues, ask for a referral to a dietitian or speech therapist (swallowing assessment).',
+        author:'Dietitian Priya', expert:true, likes:21, dislikes:0, userVote:null },
+      { id:'a7b', text:'We switched to smoothies and protein drinks for a while — easier to take, lots of nutrition. Also warmed meals slightly — the smell seemed to stimulate her appetite.',
+        author:'Diane', expert:false, likes:9, dislikes:0, userVote:null },
+    ]},
+  { id:'q8', text:'My father becomes aggressive and combative when I try to help him with personal care like dressing and toileting. How do I keep us both safe?',
+    author:'Tunde (Son)', category:'Daily Care', date:'2026-04-07', answers:[
+      { id:'a8a', text:'Combativeness during personal care often comes from fear, confusion, or loss of dignity — he may not understand what is happening. Key strategies: explain every step before you do it ("I\'m going to help you with your shirt now"), use a calm low voice, don\'t rush, give him choices ("Would you like to start with your shirt or trousers?"), and try to preserve his independence as much as possible — let him do what he can. If he becomes very distressed, pause and return in 10 minutes. Morning care when he is less fatigued often works better.',
+        author:'Occupational Therapist Kim', expert:true, likes:24, dislikes:0, userVote:null },
+    ]},
+  { id:'q9', text:'My mum accuses me of stealing her money and hiding her things. It\'s deeply hurtful. How do I respond?',
+    author:'Fatima (Daughter)', category:'Communication', date:'2026-04-06', answers:[
+      { id:'a9a', text:'Accusations of theft and hiding things are among the most painful experiences for family caregivers, but they are extremely common in dementia — especially mid-stage. Her brain can no longer track where things go, so it creates a story: someone must have taken it. She is not lying or being manipulative; her brain genuinely believes this. Do not argue or defend yourself. Try: "Let\'s look for it together." Keep duplicates of frequently "lost" items (reading glasses, keys). After finding it, move on without pointing out that you were right.',
+        author:'Dr. Fatimah (Psychogeriatrics)', expert:true, likes:36, dislikes:0, userVote:null },
+      { id:'a9b', text:'I found it helps to say "I\'m sorry that\'s missing — let me help you find it" rather than "I didn\'t take it." The second one invites an argument. The first one makes you a helper.',
+        author:'James (Caregiver)', expert:false, likes:18, dislikes:0, userVote:null },
+    ]},
+  { id:'q10', text:'What is "validation therapy" and should I be using it with my mum who has dementia?',
+    author:'Sandra', category:'Communication', date:'2026-04-05', answers:[
+      { id:'a10a', text:'Validation therapy, developed by Naomi Feil, means entering into the emotional reality of the person with dementia rather than correcting them. Instead of saying "That\'s not true, Mum" — you acknowledge the feeling: "You seem worried — tell me more." The goal is not factual accuracy but emotional comfort. Research supports it for reducing agitation and improving wellbeing. It\'s based on a key principle called "Emotional Truth": the feeling behind what someone says is always real, even if the content is not.',
+        author:'Gerontologist Dr. Adeyemi', expert:true, likes:29, dislikes:0, userVote:null },
+    ]},
+  { id:'q11', text:'What activities are actually meaningful for someone in moderate dementia? I feel like he\'s just sitting there all day.',
+    author:'Lin (Daughter)', category:'Daily Care', date:'2026-04-04', answers:[
+      { id:'a11a', text:'Meaningful engagement — sometimes called "Contented Involvement" — doesn\'t have to be complicated. The goal is activities that feel purposeful and match current abilities. Try: sorting objects (keys, buttons, coins), folding laundry, watering plants, listening to music from their youth, looking through photo albums, simple baking tasks, or painting. The key is matching the activity to the person\'s current ability level — not too easy (boring) and not too hard (frustrating). Even 15 minutes of engagement per activity is valuable.',
+        author:'Activity Coordinator Beth', expert:true, likes:22, dislikes:0, userVote:null },
+      { id:'a11b', text:'My dad was a carpenter. We got him a tray with nuts, bolts and washers to sort. He does it for an hour. It matches who he was.',
+        author:'Michael', expert:false, likes:16, dislikes:0, userVote:null },
+    ]},
+  { id:'q12', text:'How do I talk to other family members who don\'t understand how serious my mum\'s dementia is? They think I\'m exaggerating.',
+    author:'Rachel (Primary Caregiver)', category:'Emotions', date:'2026-04-03', answers:[
+      { id:'a12a', text:'Family disagreement about dementia severity is extremely common. Families who live far away often see the person at their best — dressed, alert, charming. They miss the 3 AM confusion and the hour it took to prepare breakfast. Strategies: invite sceptical family members to stay for a full weekend as the primary caregiver. Share written logs or care notes. Ask the doctor to speak to the family together. Use the Alzheimer\'s Association\'s family meeting resources. Name what you need: not validation, but practical help.',
+        author:'Social Worker Ngozi', expert:true, likes:27, dislikes:0, userVote:null },
+    ]},
+];
+
+function initQAData() {
+  if (!state.questions) {
+    state.questions = JSON.parse(JSON.stringify(SEED_QA));
+  }
+}
+
+function renderQA() {
+  initQAData();
+  const search = (document.getElementById('qa-search')?.value||'').toLowerCase();
+  const cat = state.qaCategory || 'All';
+
+  // Category pills
+  const pillsEl = document.getElementById('qa-category-pills');
+  if (pillsEl) {
+    pillsEl.innerHTML = QA_CATEGORIES.map(c => `
+      <button onclick="setQACategory('${c}')"
+        class="px-3 py-1 rounded-full text-xs font-semibold border transition-all ${c===cat?'bg-indigo-600 text-white border-indigo-600':'bg-white text-gray-600 border-gray-300 hover:border-indigo-400'}">
+        ${c}
+      </button>`).join('');
+  }
+
+  let qs = [...state.questions].reverse();
+  if (cat !== 'All') qs = qs.filter(q => q.category === cat);
+  if (search) qs = qs.filter(q => q.text.toLowerCase().includes(search) || (q.author||'').toLowerCase().includes(search));
+
+  const listEl = document.getElementById('qa-list');
+  const emptyEl = document.getElementById('qa-empty');
+  if (!listEl) return;
+
+  if (qs.length === 0) {
+    listEl.innerHTML = ''; emptyEl.classList.remove('hidden'); return;
+  }
+  emptyEl.classList.add('hidden');
+
+  listEl.innerHTML = qs.map(q => {
+    const ansCount = (q.answers||[]).length;
+    const hasExpert = (q.answers||[]).some(a => a.expert);
+    const catColor = {'Behaviour':'bg-purple-100 text-purple-700','Daily Care':'bg-blue-100 text-blue-700',
+      'Nutrition':'bg-green-100 text-green-700','Sleep':'bg-indigo-100 text-indigo-700',
+      'Safety':'bg-red-100 text-red-700','Communication':'bg-yellow-100 text-yellow-700',
+      'Emotions':'bg-pink-100 text-pink-700','Resources':'bg-teal-100 text-teal-700'}[q.category]||'bg-gray-100 text-gray-600';
+    return `
+    <div class="qa-card bg-white rounded-2xl shadow p-5 cursor-pointer transition-shadow" onclick="openQADetail('${q.id}')">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm flex-shrink-0">
+          ${initials(q.author||'?')}
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold text-gray-800 text-base leading-snug">${esc(q.text)}</p>
+          <div class="flex flex-wrap gap-2 mt-2 text-xs items-center">
+            <span class="text-gray-400">${esc(q.author||'Anonymous')} · ${q.date||''}</span>
+            <span class="px-2 py-0.5 rounded-full ${catColor}">${q.category||''}</span>
+            ${hasExpert ? '<span class="expert-badge text-white px-2 py-0.5 rounded-full font-bold">🏅 Expert Answer</span>' : ''}
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100 text-sm text-gray-500">
+        <span><i class="fas fa-comment text-indigo-400 mr-1"></i>${ansCount} answer${ansCount!==1?'s':''}</span>
+        <span class="ml-auto text-indigo-500 font-semibold">View &amp; Answer →</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setQACategory(cat) {
+  state.qaCategory = cat;
+  renderQA();
+}
+
+function openAskQuestion() {
+  document.getElementById('q-text').value = '';
+  document.getElementById('q-author').value = '';
+  state.editingQCategory = 'Daily Care';
+
+  const picker = document.getElementById('q-category-picker');
+  picker.innerHTML = QA_CATEGORIES.filter(c=>c!=='All').map(c => `
+    <button onclick="selectQCategory('${c}')" id="qcat-${c.replace(/\s/g,'_')}"
+      class="py-1.5 rounded-lg text-xs font-semibold border transition-all ${c==='Daily Care'?'bg-indigo-600 text-white border-indigo-600':'bg-gray-50 text-gray-600 border-gray-200 hover:border-indigo-300'}">
+      ${c}
+    </button>`).join('');
+  openModal('modal-question');
+}
+
+function selectQCategory(cat) {
+  state.editingQCategory = cat;
+  QA_CATEGORIES.filter(c=>c!=='All').forEach(c => {
+    const btn = document.getElementById('qcat-'+c.replace(/\s/g,'_'));
+    if (btn) btn.className = btn.className.replace(/bg-indigo-600 text-white border-indigo-600|bg-gray-50 text-gray-600 border-gray-200/g,'') +
+      (c===cat?' bg-indigo-600 text-white border-indigo-600':' bg-gray-50 text-gray-600 border-gray-200');
+  });
+}
+
+function saveQuestion() {
+  const text = document.getElementById('q-text').value.trim();
+  if (!text) { shake('q-text'); return; }
+  initQAData();
+  state.questions.push({
+    id: uid(), text,
+    author: document.getElementById('q-author').value.trim() || 'Anonymous',
+    category: state.editingQCategory || 'Daily Care',
+    date: new Date().toISOString().slice(0,10),
+    answers: []
+  });
+  saveState();
+  closeModal('modal-question');
+  renderQA();
+  toast('Question posted ✓');
+}
+
+function openQADetail(qid) {
+  state.currentQid = qid;
+  renderQADetail();
+  document.getElementById('ans-text').value = '';
+  document.getElementById('ans-author').value = '';
+  document.getElementById('ans-expert').checked = false;
+  openModal('modal-qa-detail');
+}
+
+function renderQADetail() {
+  const q = state.questions.find(x => x.id === state.currentQid);
+  if (!q) return;
+
+  document.getElementById('qa-detail-question').innerHTML = `
+    <div class="bg-indigo-50 rounded-2xl p-4">
+      <p class="font-bold text-gray-800 text-base leading-snug">${esc(q.text)}</p>
+      <div class="text-sm text-gray-400 mt-2">${esc(q.author||'Anonymous')} · ${q.date||''} · <span class="text-indigo-600 font-semibold">${q.category||''}</span></div>
+    </div>`;
+
+  const answers = q.answers || [];
+  document.getElementById('qa-answer-count').textContent = answers.length + ' answer' + (answers.length!==1?'s':'');
+
+  const noAns = document.getElementById('qa-no-answers');
+  const ansEl = document.getElementById('qa-detail-answers');
+
+  if (answers.length === 0) {
+    ansEl.innerHTML = ''; noAns.classList.remove('hidden'); return;
+  }
+  noAns.classList.add('hidden');
+
+  const sorted = [...answers].sort((a,b) => (b.expert?1:0)-(a.expert?1:0) || (b.likes||0)-(a.likes||0));
+  ansEl.innerHTML = sorted.map(a => `
+    <div class="bg-white border-2 ${a.expert?'border-amber-300':'border-gray-100'} rounded-2xl p-4">
+      ${a.expert?`<div class="flex items-center gap-2 mb-2"><span class="expert-badge text-white text-xs px-2 py-0.5 rounded-full font-bold">🏅 Expert / Recommended</span></div>`:''}
+      <p class="text-gray-800 text-sm leading-relaxed">${esc(a.text)}</p>
+      <div class="flex items-center gap-3 mt-3 text-sm flex-wrap">
+        <span class="text-gray-400 text-xs">${esc(a.author||'Anonymous')}</span>
+        <div class="flex items-center gap-3 ml-auto">
+          <button onclick="voteAnswer('${q.id}','${a.id}','like')" class="flex items-center gap-1 ${a.userVote==='like'?'like-active text-green-600':'text-gray-400 hover:text-green-500'}">
+            <i class="fas fa-thumbs-up"></i> <span>${a.likes||0}</span>
+          </button>
+          <button onclick="voteAnswer('${q.id}','${a.id}','dislike')" class="flex items-center gap-1 ${a.userVote==='dislike'?'dislike-active text-red-500':'text-gray-400 hover:text-red-400'}">
+            <i class="fas fa-thumbs-down"></i> <span>${a.dislikes||0}</span>
+          </button>
+          <button onclick="toggleExpert('${q.id}','${a.id}')" title="Mark/unmark as expert answer"
+            class="text-xs px-2 py-1 rounded-lg ${a.expert?'bg-amber-100 text-amber-700':'bg-gray-100 text-gray-500 hover:bg-amber-50 hover:text-amber-600'}">
+            🏅 ${a.expert?'Expert':'Mark Expert'}
+          </button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function saveAnswer() {
+  const text = document.getElementById('ans-text').value.trim();
+  if (!text) { shake('ans-text'); return; }
+  const q = state.questions.find(x => x.id === state.currentQid);
+  if (!q) return;
+  if (!q.answers) q.answers = [];
+  q.answers.push({
+    id: uid(), text,
+    author: document.getElementById('ans-author').value.trim() || 'Anonymous',
+    expert: document.getElementById('ans-expert').checked,
+    likes: 0, dislikes: 0, userVote: null
+  });
+  saveState();
+  document.getElementById('ans-text').value = '';
+  document.getElementById('ans-author').value = '';
+  document.getElementById('ans-expert').checked = false;
+  renderQADetail();
+  renderQA();
+  toast('Answer posted ✓');
+}
+
+function voteAnswer(qid, aid, vote) {
+  const q = state.questions.find(x => x.id === qid);
+  if (!q) return;
+  const a = q.answers.find(x => x.id === aid);
+  if (!a) return;
+  if (a.userVote === vote) {
+    // undo vote
+    if (vote==='like') a.likes = Math.max(0,(a.likes||0)-1);
+    else a.dislikes = Math.max(0,(a.dislikes||0)-1);
+    a.userVote = null;
+  } else {
+    if (a.userVote === 'like')    a.likes    = Math.max(0,(a.likes||0)-1);
+    if (a.userVote === 'dislike') a.dislikes = Math.max(0,(a.dislikes||0)-1);
+    if (vote==='like') a.likes = (a.likes||0)+1;
+    else a.dislikes = (a.dislikes||0)+1;
+    a.userVote = vote;
+  }
+  saveState();
+  renderQADetail();
+}
+
+function toggleExpert(qid, aid) {
+  const q = state.questions.find(x => x.id === qid);
+  if (!q) return;
+  const a = q.answers.find(x => x.id === aid);
+  if (a) { a.expert = !a.expert; saveState(); renderQADetail(); toast(a.expert?'Marked as Expert ✓':'Expert badge removed'); }
+}
+
+// ============================================================
+//  CHATBOT
+// ============================================================
+const KB = [
+  { tags:['hello','hi','hey','good morning','good evening'],
+    reply:'Hello! 👋 I\'m your Caregiver Assistant. I\'m here to help with dementia care and caregiving questions. What would you like to know?' },
+  { tags:['what is dementia','define dementia','dementia mean'],
+    reply:'**Dementia** is an umbrella term for a group of symptoms affecting memory, thinking, and social abilities severely enough to interfere with daily life. It\'s not a single disease — Alzheimer\'s is the most common type (60-80% of cases), followed by vascular dementia, Lewy body dementia, and frontotemporal dementia.\n\n⚠️ Important: Dementia is NOT a normal part of aging.' },
+  { tags:['alzheimer','alzhiemer','alzheimers'],
+    reply:'**Alzheimer\'s Disease** is the most common form of dementia. Key facts:\n\n• Caused by amyloid plaques and tau tangles in the brain\n• Earliest symptom: difficulty remembering recent events\n• Progresses through mild → moderate → severe stages\n• No cure yet, but medications (donepezil, memantine) can slow progression\n• Genetics play a role (APOE-e4 gene increases risk)' },
+  { tags:['wander','wandering','lost','leave home','escape','go outside'],
+    reply:'**Managing Wandering:**\n\n✅ Install door alarms or simple locks placed high up\n✅ Use sensor floor mats near the bed at night\n✅ Ensure ID bracelet or GPS tracker is worn\n✅ Increase daytime physical activity to reduce nighttime restlessness\n✅ Keep exits camouflaged (curtain over the door)\n✅ Notify neighbors and local shop owners\n✅ Register with local MedicAlert or Safe Return programs' },
+  { tags:['aggression','aggressive','angry','hitting','violent','agitated','agitation'],
+    reply:'**Handling Aggression & Agitation:**\n\n• Stay calm — your tone affects their mood\n• Don\'t argue or correct — it escalates\n• Look for the trigger: pain, hunger, overstimulation, fear?\n• Use a soft, reassuring voice and slow movements\n• Offer a distraction: music, a walk, a snack\n• Remove yourself briefly if needed to de-escalate\n• Document patterns to identify triggers over time\n\n⚠️ Sudden aggression may signal a UTI or other medical issue — consult a doctor.' },
+  { tags:['eat','eating','food','nutrition','refuse to eat','not eating','appetite'],
+    reply:'**Nutrition & Eating Challenges:**\n\n• Offer finger foods — easier to manage independently\n• Small, frequent meals are better than large ones\n• Use colourful plates (white plate on white tablecloth is hard to see)\n• Reduce distractions during meals (TV off)\n• Sit at eye level and eat together — social cues help\n• Check dentures fit properly\n• Favourite foods from earlier life often still appeal\n• Smoothies and fortified drinks help if chewing is difficult' },
+  { tags:['sleep','sleeping','night','awake','sundown','sundowning'],
+    reply:'**Sleep & Sundowning Tips:**\n\n• Keep a consistent wake-up and bedtime routine\n• Maximise daylight exposure in the morning\n• Limit naps after 3 PM\n• Reduce caffeine after noon\n• Evening meals should be light\n• Dimmed lighting in the evening helps signal "night"\n• Sundowning (agitation in late afternoon) is common — plan quiet, low-stimulation activities around 3-5 PM' },
+  { tags:['bath','bathing','shower','hygiene','washing','refuse bath'],
+    reply:'**Bathing & Hygiene:**\n\n• Never say "time for your bath" — say "let\'s freshen up"\n• Offer choices: "Morning or after lunch?"\n• Warm the bathroom first — cold triggers resistance\n• Try a sponge bath or washcloth if full shower is refused\n• Play favourite music during the routine\n• Lay out clothes in order to reduce confusion\n• Always preserve dignity — cover with towels, explain each step\n• Same time every day builds a routine they accept' },
+  { tags:['communication','talk','speak','conversation','understand','language'],
+    reply:'**Communication Tips:**\n\n• Use simple, short sentences — one idea at a time\n• Speak slowly and clearly; make eye contact\n• Use their name at the start: "James, would you like some tea?"\n• Allow extra time for responses (up to 30 seconds)\n• Use gestures and demonstrations alongside words\n• Never say "Don\'t you remember?" — it causes shame\n• If they\'re stuck on a word, help gently without finishing all sentences\n• Non-verbal communication (smiling, holding hands) becomes more important over time' },
+  { tags:['medication','medicine','tablet','drug','pill','refusing medication'],
+    reply:'**Medication Management:**\n\n• Use a pill organiser or blister pack\n• Pair medications with a daily routine (meals, morning coffee)\n• Crush tablets and mix with food only if approved by the doctor\n• If refused, don\'t force — wait 10 minutes and try again calmly\n• Check for side effects causing refusal (nausea, dizziness)\n• Pharmacists can provide liquid versions of many medications\n• Keep an up-to-date medication list for all appointments' },
+  { tags:['burnout','exhausted','tired','stressed','overwhelmed','caregiver burnout','mental health','depression'],
+    reply:'**Caregiver Burnout — You Are Not Alone:**\n\nBurnout is one of the most common caregiver experiences. Signs include:\n• Constant exhaustion, even after sleep\n• Feeling resentful or hopeless\n• Neglecting your own health\n• Social withdrawal\n\n**What helps:**\n✅ Respite care (even a few hours/week)\n✅ Caregiver support groups (in-person or online)\n✅ Ask family members to share tasks\n✅ Set boundaries — you cannot do everything\n✅ Seek counselling — it\'s a sign of strength, not weakness\n\n💛 Taking care of yourself IS part of taking care of them.' },
+  { tags:['stage','progression','early','middle','late','advanced','moderate','mild'],
+    reply:'**Stages of Dementia:**\n\n**Mild (Early):** Forgetting recent events, misplacing things, mild personality changes. Still mostly independent.\n\n**Moderate (Middle):** Needs help with daily activities, confusion about time/place, personality changes, wandering risk.\n\n**Severe (Late):** Needs full-time care, loss of speech, mobility issues, swallowing difficulties. Focus shifts to comfort and dignity.\n\nEach person progresses differently — some stages can last years.' },
+  { tags:['memory','forget','forgetting','remember','recall'],
+    reply:'**Memory Loss in Dementia:**\n\n• **Short-term memory** goes first — recent conversations, appointments\n• **Long-term memory** (childhood, old friends) often stays longer\n• **Procedural memory** (how to walk, eat) is usually last to go\n\n**Practical tips:**\n• Label cupboards and drawers with pictures\n• Photo albums with names help trigger memories\n• Familiar music from their youth is powerful\n• Don\'t test or quiz — it causes anxiety\n• Routine is the best memory aid' },
+  { tags:['hallucination','seeing things','hearing things','not real','paranoia','delusion'],
+    reply:'**Hallucinations & Delusions:**\n\n• Don\'t argue or try to convince them it\'s not real — it\'s real to them\n• Stay calm: "I can see that\'s worrying you"\n• Gently redirect to another activity or room\n• Check if poor lighting or shadows are causing misperceptions\n• "People stealing things" is a very common delusion — calmly help search\n• If hallucinations are distressing or causing danger, contact the doctor — some medications help\n• Lewy Body dementia has especially vivid visual hallucinations' },
+  { tags:['driving','car','licence','keys','drive'],
+    reply:'**Driving & Dementia:**\n\nDriving is often one of the most emotionally difficult conversations.\n\n• Have the GP make the recommendation — easier coming from a doctor\n• Offer alternatives: family, rideshare apps, community transport\n• Hide the car keys gradually rather than abruptly\n• Some families disable the car temporarily\n• Focus on the safety of them AND others\n• Many regions require doctors to report dementia diagnoses to the licensing authority' },
+  { tags:['legal','power of attorney','advance directive','will','planning','financial'],
+    reply:'**Legal & Financial Planning:**\n\nDo this as early as possible while the person still has capacity:\n\n✅ **Power of Attorney** — legal authority to make financial/health decisions\n✅ **Advance Healthcare Directive** — documents their wishes for future care\n✅ **Will** — should be reviewed and updated\n✅ **Benefits & entitlements** — check what government support is available\n✅ **Care planning** — discuss preferences for future living arrangements\n\n👩‍⚖️ Consult an elder law attorney or social worker for guidance.' },
+  { tags:['support group','community','help','resource','service','where','find help'],
+    reply:'**Finding Support & Resources:**\n\n🌐 **Alzheimer\'s Association** — alz.org (US)\n🌐 **Alzheimer\'s Society** — alzheimers.org.uk (UK)\n🌐 **Dementia Australia** — dementia.org.au\n🌐 **Caregiver Action Network** — caregiveraction.org\n\n**Also ask your doctor about:**\n• Local adult day programs\n• Respite care services\n• Memory care clinics\n• Social work referrals\n• Meals on Wheels\n• Home health aide programs' },
+  { tags:['incontinence','toilet','bladder','bathroom','accident','hygiene pad'],
+    reply:'**Managing Incontinence:**\n\n• Scheduled toilet visits every 2 hours reduces accidents\n• Clear path + good lighting to the bathroom\n• Use simple clothing with elastic waists — easy to remove\n• Keep a calm, non-embarrassing reaction to accidents\n• Use waterproof mattress covers and chair pads\n• Adequate fluid intake (not reducing fluids worsens UTIs)\n• Pads and protective underwear provide dignity\n• Track fluid intake and toilet patterns to find the best schedule' },
+  { tags:['repetitive','same question','repeats','asks over and over','repeat question','asks again'],
+    reply:'**Handling Repetitive Questions:**\n\nRepetitive questioning is one of the most common dementia behaviours. It\'s driven by anxiety and memory loss — not stubbornness.\n\n**Why it happens:**\n• Short-term memory loss means each question feels new to them\n• The underlying feeling (anxiety, fear, uncertainty) is what they\'re really expressing\n\n**What helps:**\n✅ Answer the emotion, not just the words — "You\'re safe, we\'re together"\n✅ Use a whiteboard or sticky notes with key information (date, plans)\n✅ Redirect to a calming activity after answering\n✅ Try not to say "I just told you" — it causes shame without helping\n✅ A short, consistent answer each time reduces your frustration\n\n💛 Your patience matters more than perfect answers.' },
+  { tags:['shadow','following','follows me','won\'t leave','clingy','attached','won\'t let me'],
+    reply:'**Managing Shadowing Behaviour:**\n\nShadowing — when a person with dementia follows their caregiver everywhere — is common in moderate-stage dementia.\n\n**Why it happens:**\n• You are their anchor and source of safety\n• Separation triggers fear and disorientation\n\n**What helps:**\n✅ Give a meaningful task before stepping away ("Can you fold these towels?")\n✅ Leave a familiar object of yours as a comfort item\n✅ Use radio or familiar TV programmes to provide company\n✅ Practise brief separations and gradually extend them\n✅ Ensure physical needs are met first (not hungry, not in pain)\n✅ Consider whether increased activity during the day reduces anxiety\n\n⚠️ Shadowing often worsens when they are anxious or fatigued.' },
+  { tags:['sundown','sundowning','afternoon','evening agitation','late afternoon','restless evening'],
+    reply:'**Sundowning — Late Afternoon Agitation:**\n\nSundowning refers to increased confusion, agitation, or restlessness in late afternoon and evening.\n\n**Common triggers:**\n• Fatigue building up through the day\n• Changing light levels confusing their internal clock\n• Overstimulation earlier in the day\n\n**Strategies:**\n✅ Maximise morning natural light exposure\n✅ Keep afternoons calm — avoid loud TV, busy environments\n✅ Schedule stimulating activities for late morning, not after 2 PM\n✅ Offer a light snack around 3–4 PM (low blood sugar worsens it)\n✅ Use soft music or familiar songs in the evening\n✅ Maintain a very consistent daily routine\n✅ Check Vitamin D levels with your doctor\n\n⚠️ Sudden worsening of sundowning may signal a UTI or medication issue.' },
+  { tags:['combative','hit','hitting','resist care','fight','refuses dressing','personal care refusal','aggressive care'],
+    reply:'**Combativeness During Personal Care:**\n\nAggression during bathing, dressing, or toileting is very common — it comes from fear, confusion, or loss of dignity, not malice.\n\n**Before you start:**\n• Time care for when they are most alert and calm\n• Ensure the environment is warm and private\n\n**During care:**\n✅ Explain every step before you do it: "I\'m going to help with your shirt now"\n✅ Give choices: "Left arm first or right arm?"\n✅ Preserve independence — let them do what they can\n✅ Use a calm, low voice; avoid sudden movements\n✅ If they become very upset, pause and return in 10 minutes\n✅ Try a same-gender caregiver if resistance is consistently high\n\n⚠️ Never rush or force — it escalates aggression and erodes trust.' },
+  { tags:['steal','theft','accuse','accusing','hiding things','hiding stuff','paranoid','suspicious'],
+    reply:'**When They Accuse You of Stealing or Hiding Things:**\n\nAccusations of theft are painful but very common in mid-stage dementia. The brain can no longer track where items go — so it creates a story that someone must have taken them.\n\n**Key principle:** They are not lying. Their brain genuinely believes it.\n\n**What to do:**\n✅ Do NOT argue or defend yourself — it escalates\n✅ Say "Let\'s look for it together" — position yourself as a helper\n✅ Search together, then move on without pointing out you were right\n✅ Keep duplicate "frequently lost" items (glasses, keys, wallet)\n✅ Create a designated spot for important items with a label\n\n💛 The accusation is about fear, not about you. Your relationship is more important than being right.' },
+  { tags:['validation','emotional truth','validation therapy','enter reality','their reality','feil'],
+    reply:'**Validation Therapy & Emotional Truth:**\n\nValidation therapy (developed by Naomi Feil) means meeting the person in their emotional reality rather than correcting factual errors.\n\n**Core principle — Emotional Truth:**\nThe FEELING behind what someone says is always real, even if the content isn\'t.\n\n**In practice:**\n✅ Instead of "That\'s not true" → "You seem worried — tell me more"\n✅ Instead of correcting → acknowledge the emotion first\n✅ Ask feeling-focused questions: "Were you happy there?" "Do you miss him?"\n✅ Use touch, eye contact, and a calm tone\n✅ Redirect gently once the emotion is acknowledged\n\n**Why it works:** Arguing triggers distress and defensiveness. Validation reduces anxiety and strengthens connection.\n\nResearch shows validation therapy reduces agitation and improves wellbeing.' },
+  { tags:['contented','activities','meaningful','engagement','purposeful','activity ideas','hobby'],
+    reply:'**Contented Involvement — Meaningful Activities:**\n\nThe goal of activities is "Contented Involvement" — not achievement, but engagement that feels purposeful and matches current abilities.\n\n**Match activity to ability level:**\n• Too hard → frustration and failure\n• Too easy → boredom\n• Just right → calm engagement\n\n**Ideas by stage:**\n\n🟢 **Early stage:** Gardening, puzzles, reading, cooking\n🟡 **Middle stage:** Sorting objects, folding laundry, music, simple crafts, looking through photo albums\n🔴 **Late stage:** Hand massage, familiar music, gentle touch, familiar scents\n\n**Key tips:**\n✅ Match activities to who they were (carpenter → sorting nuts and bolts)\n✅ 15–20 minutes of good engagement is enough\n✅ Music from their youth is almost universally effective\n✅ Outdoor time, even brief, improves mood' },
+  { tags:['self care','caregiver self','four feelings','my feelings','caregiver feelings','emotional health'],
+    reply:'**Caregiver Self-Care & Emotional Wellbeing:**\n\nThe Savvy Caregiver Model identifies four categories of emotional experience caregivers commonly face:\n\n💙 **Sorrow/Grief** — Mourning the person they were and the relationship you had\n😤 **Anger/Resentment** — Frustration at the situation, the disease, and sometimes the person\n😰 **Fear/Anxiety** — Worry about the future, about making mistakes, about your own health\n💚 **Love/Connection** — Moments of genuine closeness and meaning that still exist\n\n**All of these are normal.** You do not have to feel only love to be a good caregiver.\n\n**What helps:**\n✅ Name your feelings rather than suppressing them\n✅ Find at least one person you can be honest with\n✅ Schedule brief respite (even 1–2 hours) regularly\n✅ Attend a caregiver support group\n✅ Talk to a counsellor — it is a sign of strength' },
+  { tags:['decision','oovl','deciding','choice','make decision','options','what to choose'],
+    reply:'**Making Difficult Caregiving Decisions:**\n\nThe OOVL framework (from the Savvy Caregiver Program) helps structure hard decisions:\n\n**O — Options:** What are all the realistic choices available?\n**O — Outcomes:** What is the likely result of each option?\n**V — Values:** What matters most to the person with dementia and to you?\n**L — Limits:** What are your practical constraints (time, money, support)?\n\n**Tips for difficult decisions:**\n✅ Gather information before deciding — talk to the doctor, social worker\n✅ If the person can still participate, involve them\n✅ Involve trusted family members but designate one decision-maker\n✅ There is rarely a perfect choice — aim for the best available one\n✅ Revisit decisions as the situation changes\n\n⚠️ Delay makes some decisions harder — act while you have time to plan.' },
+  { tags:['eating problem','eating difficulty','swallowing','chewing','food refusal','won\'t eat','weight loss'],
+    reply:'**Eating & Swallowing Difficulties:**\n\nChanges in eating are common throughout dementia progression.\n\n**Early-middle stage:**\n• May forget to eat or not recognise food on the plate\n• High-contrast plates (dark plate, light food) help recognition\n• Finger foods reduce the need for cutlery\n• Small frequent meals work better than three large ones\n• Eat together — social eating stimulates appetite\n\n**Later stage:**\n• Swallowing difficulties (dysphagia) become common\n• Signs: coughing after swallowing, wet/gurgling voice, refusing food\n• Refer to a Speech-Language Therapist for a swallowing assessment\n• Thickened fluids and pureed foods may be recommended\n\n⚠️ Significant weight loss or choking episodes = contact your doctor promptly.' },
+  { tags:['family conflict','family disagreement','family meeting','siblings','family help','family not helping','family denial'],
+    reply:'**Navigating Family Conflict in Caregiving:**\n\nFamily disagreement about dementia care is extremely common — especially between the primary caregiver and family members who visit less often.\n\n**Why it happens:**\n• Distant family members see the person at their best\n• They miss the daily reality — the 3 AM confusion, the hours of personal care\n• Grief and guilt can show up as denial or criticism\n\n**Strategies:**\n✅ Invite sceptical family members to stay for a full weekend as primary caregiver\n✅ Keep written logs of daily care needs to share\n✅ Ask the doctor or social worker to speak to the family together\n✅ Use a family meeting to divide responsibilities clearly\n✅ Name what you need: not just understanding, but practical help\n\n💛 The Alzheimer\'s Association has free family meeting facilitation resources.' },
+  { tags:['end of life','palliative','hospice','dying','final stage','last stage','comfort care'],
+    reply:'**End-of-Life Care in Dementia:**\n\nLate-stage dementia is a terminal condition. Shifting focus to comfort and dignity is appropriate and compassionate.\n\n**Signs of late-stage / end-stage:**\n• Minimal verbal communication\n• Difficulty swallowing, weight loss\n• Increased sleep, minimal movement\n• Recurrent infections\n\n**Comfort-focused care:**\n✅ Hospice or palliative care referral — provides expert symptom management\n✅ Oral care remains important even when eating stops\n✅ Familiar music, voices, and gentle touch remain meaningful\n✅ Pain assessment tools designed for non-verbal patients (e.g. PAINAD)\n✅ Family should receive grief support — before and after death\n\n💛 Advance directives made earlier should guide decisions about hospitalisation, CPR, and feeding tubes.' },
+];
+
+const QUICK_QUESTIONS = [
+  'What is dementia?','How to handle wandering?','Tips for bathing resistance',
+  'What is sundowning?','How to deal with aggression?','Caregiver burnout help',
+  'Communication tips','Managing medication refusal',
+  'Repetitive questions','Shadowing behaviour','Validation therapy',
+  'Meaningful activities','Eating difficulties','End of life care'
+];
+
+let chatHistory = [];
+
+function initChat() {
+  if (chatHistory.length === 0) {
+    chatHistory.push({ role:'bot', text:'👋 Hi! I\'m your Caregiver Assistant.\n\nAsk me anything about dementia care, daily caregiving challenges, communication, safety, or caregiver wellbeing. I\'m here to help!' });
+    renderChat();
+  }
+  renderQuickQs();
+}
+
+function renderQuickQs() {
+  const el = document.getElementById('quick-qs');
+  if (!el) return;
+  el.innerHTML = QUICK_QUESTIONS.map(q => `
+    <button onclick="askQuick('${q}')"
+      class="px-3 py-1.5 rounded-full bg-white border border-indigo-200 text-indigo-700 text-xs font-semibold hover:bg-indigo-50 whitespace-nowrap shadow-sm">
+      ${q}
+    </button>`).join('');
+}
+
+function askQuick(q) {
+  document.getElementById('chat-input').value = q;
+  sendChat();
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  chatHistory.push({ role:'user', text });
+  chatHistory.push({ role:'bot', text:'...', thinking:true });
+  renderChat();
+
+  setTimeout(() => {
+    chatHistory.pop();
+    chatHistory.push({ role:'bot', text: getBotReply(text) });
+    renderChat();
+    const box = document.getElementById('chatbox');
+    if (box) box.scrollTop = box.scrollHeight;
+  }, 600);
+}
+
+function getBotReply(input) {
+  const lower = input.toLowerCase();
+  let best = null, bestScore = 0;
+  for (const entry of KB) {
+    const score = entry.tags.reduce((s, tag) => s + (lower.includes(tag) ? 1 : 0), 0);
+    if (score > bestScore) { bestScore = score; best = entry; }
+  }
+  if (best && bestScore > 0) return best.reply;
+  return 'That\'s a great question. I don\'t have a specific answer for that right now, but here are some suggestions:\n\n• Talk to your doctor or a dementia care specialist\n• Visit **alz.org** or **alzheimers.org.uk** for detailed guidance\n• Post your question in the **Q&A** section — other caregivers may have experience with this\n• Call the Alzheimer\'s Association helpline: **1-800-272-3900** (available 24/7)\n\nIs there anything else I can help with?';
+}
+
+function renderChat() {
+  const box = document.getElementById('chatbox');
+  if (!box) return;
+  box.innerHTML = chatHistory.map(m => {
+    if (m.role === 'user') {
+      return `<div class="flex justify-end"><div class="chat-bubble-user px-4 py-3 max-w-xs text-sm">${esc(m.text)}</div></div>`;
+    }
+    const html = m.thinking
+      ? `<div class="flex gap-3 items-end"><div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs flex-shrink-0">🤖</div><div class="chat-bubble-bot px-4 py-3 text-sm text-gray-500 italic">Thinking...</div></div>`
+      : `<div class="flex gap-3 items-end"><div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs flex-shrink-0">🤖</div><div class="chat-bubble-bot px-4 py-3 max-w-sm text-sm text-gray-800 whitespace-pre-line">${m.text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div></div>`;
+    return html;
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+// ============================================================
+//  BROADCAST
+// ============================================================
+const MSG_TEMPLATES = [
+  { label:'🏋️ Gym Invite',    text:'Hey! Gym session today at 5:00 PM — who\'s joining? 💪 Reply YES or NO!' },
+  { label:'☕ Meet Up',        text:'Hi! Quick meet-up today — are you free? Let me know!' },
+  { label:'🍽️ Dinner',        text:'Dinner plans tonight — would you like to join us? Reply YES or NO!' },
+  { label:'🩺 Appointment',   text:'Reminder: Medical appointment coming up. Please confirm if you can assist.' },
+  { label:'🆘 Need Help',      text:'Hi, I need some help today. Can you please call me when you get this?' },
+  { label:'💊 Medication',    text:'Reminder: Time to take medication. Please check in with me.' },
+  { label:'🚗 Need a Ride',   text:'Hi! I need a ride today. Are you available? Please reply.' },
+  { label:'🎉 Gathering',     text:'We\'re getting together soon! Hope you can make it. Please confirm.' },
+];
+
+function openBroadcast() {
+  const v = state.villages.find(x => x.id === state.currentVillageId);
+  if (!v) return;
+
+  document.getElementById('broadcast-village-name').textContent = v.name + ' Village';
+  document.getElementById('broadcast-msg').value = '';
+  document.getElementById('broadcast-char-count').textContent = '0 characters';
+
+  // Templates
+  const tmplEl = document.getElementById('broadcast-templates');
+  tmplEl.innerHTML = MSG_TEMPLATES.map((t,i) => `
+    <button onclick="applyTemplate(${i})"
+      class="px-3 py-1.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200 hover:bg-orange-100 text-xs font-semibold whitespace-nowrap">
+      ${t.label}
+    </button>`).join('');
+
+  updateBroadcastLinks();
+  openModal('modal-broadcast');
+}
+
+function applyTemplate(idx) {
+  document.getElementById('broadcast-msg').value = MSG_TEMPLATES[idx].text;
+  updateBroadcastLinks();
+}
+
+function clearBroadcastMsg() {
+  document.getElementById('broadcast-msg').value = '';
+  updateBroadcastLinks();
+}
+
+function updateBroadcastLinks() {
+  const msg = document.getElementById('broadcast-msg').value;
+  document.getElementById('broadcast-char-count').textContent = msg.length + ' characters';
+
+  const contacts = state.contacts.filter(c => c.villageId === state.currentVillageId);
+  const listEl = document.getElementById('broadcast-contact-list');
+  const emptyEl = document.getElementById('broadcast-empty');
+  const countEl = document.getElementById('broadcast-count');
+
+  if (contacts.length === 0) {
+    listEl.innerHTML = '';
+    emptyEl.classList.remove('hidden');
+    countEl.textContent = '';
+    return;
+  }
+  emptyEl.classList.add('hidden');
+  countEl.textContent = contacts.length + ' member' + (contacts.length !== 1 ? 's' : '');
+
+  const encodedMsg = encodeURIComponent(msg);
+  const v = state.villages.find(x => x.id === state.currentVillageId);
+  const theme = VILLAGE_THEMES[(v||{}).themeIdx] || VILLAGE_THEMES[0];
+
+  listEl.innerHTML = contacts.map(c => {
+    const rawPhone = c.phone.replace(/\D/g,'');
+    const smsHref  = msg ? `sms:${c.phone}?body=${encodedMsg}` : `sms:${c.phone}`;
+    const waHref   = `https://wa.me/${rawPhone}${msg ? '?text='+encodedMsg : ''}`;
+    return `
+    <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-3">
+      <div class="avatar ${theme.avatar} w-10 h-10 text-sm flex-shrink-0">${initials(c.name)}</div>
+      <div class="flex-1 min-w-0">
+        <div class="font-semibold text-gray-800 text-sm truncate">${esc(c.name)}</div>
+        <div class="text-gray-500 text-xs">${esc(c.phone)}</div>
+      </div>
+      <div class="flex gap-2 flex-shrink-0">
+        <a href="${smsHref}" class="flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">
+          <i class="fas fa-sms"></i> SMS
+        </a>
+        <a href="${waHref}" target="_blank" class="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">
+          <i class="fab fa-whatsapp"></i> WA
+        </a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function copyAllNumbers() {
+  const contacts = state.contacts.filter(c => c.villageId === state.currentVillageId);
+  if (contacts.length === 0) { toast('No contacts to copy'); return; }
+  const numbers = contacts.map(c => `${c.name}: ${c.phone}`).join('\n');
+  navigator.clipboard.writeText(numbers).then(() => toast('📋 All numbers copied!')).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = numbers; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    toast('📋 All numbers copied!');
+  });
+}
+
+// ============================================================
+//  SCHEDULE & REMINDERS (DAY TO DAY)
+// ============================================================
+
+function toggleRoleMode() {
+  state.roleMode = state.roleMode === 'caregiver' ? 'patient' : 'caregiver';
+  document.getElementById('role-mode-btn').innerHTML = state.roleMode === 'caregiver' 
+    ? '<i class="fas fa-user-md"></i> <span class="hidden sm:inline">Caregiver Mode</span>' 
+    : '<i class="fas fa-user"></i> <span class="hidden sm:inline">Patient Mode</span>';
+  
+  if(state.roleMode === 'patient') {
+     document.getElementById('role-mode-btn').classList.replace('bg-indigo-700/60', 'bg-emerald-600/60');
+     document.getElementById('role-mode-btn').classList.replace('border-indigo-400/30', 'border-emerald-400/30');
+  } else {
+     document.getElementById('role-mode-btn').classList.replace('bg-emerald-600/60', 'bg-indigo-700/60');
+     document.getElementById('role-mode-btn').classList.replace('border-emerald-400/30', 'border-indigo-400/30');
+  }
+    
+  toast('Switched to ' + (state.roleMode=== 'caregiver' ? 'Caregiver Mode' : 'Dementia Patient Mode'));
+  if(state.activeTab === 'schedule' || document.getElementById('view-schedule').classList.contains('hidden') === false) {
+    renderSchedule();
+  }
+}
+
+function renderSchedule() {
+  const listEl = document.getElementById('schedule-list');
+  const emptyEl = document.getElementById('schedule-empty');
+  
+  if (!state.events) state.events = [];
+  
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('current-day').textContent = new Date().toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'});
+  
+  let todaysEvents = state.events.filter(e => !e.date || e.date === today);
+  todaysEvents.sort((a,b) => (a.time||'23:59').localeCompare(b.time||'23:59'));
+
+  if (todaysEvents.length === 0) {
+    listEl.innerHTML = ''; emptyEl.classList.remove('hidden'); return;
+  }
+  emptyEl.classList.add('hidden');
+
+  listEl.innerHTML = todaysEvents.map(e => {
+    let contact = null;
+    if (e.contactId) { contact = state.contacts.find(c => c.id === e.contactId); }
+    let statusBadge = '';
+    let bgColor = 'bg-white';
+    let borderColor = 'border-gray-100';
+    
+    // Caregiver sees the status of alarms easily tracked
+    if (e.type !== 'note') {
+       if (e.status === 'snoozed') { statusBadge = `<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-yellow-400">Snoozed</span>`; bgColor = 'bg-yellow-50'; }
+       else if (e.status === 'completed') { statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-green-400">Done</span>`; bgColor = 'bg-green-50 opacity-80'; borderColor='border-green-200'; }
+       else if (e.status === 'missed') { statusBadge = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-red-400">Missed</span>`; bgColor = 'bg-red-50'; }
+       else { statusBadge = `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-blue-300">Pending</span>`; borderColor='border-indigo-100 shadow-lg'; }
+    } else {
+       statusBadge = `<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Note</span>`;
+    }
+
+    const typeIcons = { 'note':'📝', 'med':'💊', 'visit':'🏠', 'appt':'🩺' };
+    
+    return `
+    <div class="relative pl-6 pt-1 pb-1">
+      <div class="absolute left-[11px] top-4 bottom-[-1rem] w-0.5 bg-indigo-100 last:hidden"></div>
+      <div class="absolute left-0 top-3 w-6 h-6 rounded-full bg-indigo-50 border-2 ${e.status==='completed'?'border-green-400 bg-green-100':'border-indigo-400'} flex items-center justify-center text-[11px] z-10 shadow-sm">
+         ${e.status==='completed'?'✓':(typeIcons[e.type]||'📝')}
+      </div>
+      <div class="ml-3 ${bgColor} border-2 ${borderColor} rounded-2xl shadow-sm p-4 flex gap-3 transition-all hover:-translate-y-0.5 hover:shadow-md h-full">
+         <div class="flex-1 min-w-0">
+           <div class="flex items-center gap-2 mb-1.5">
+             <span class="font-extrabold text-indigo-900 text-lg sm:text-xl">${e.time ? formatTime(e.time) : 'Anytime'}</span>
+             ${statusBadge}
+           </div>
+           <div class="font-bold text-gray-800 text-base leading-tight ${e.status==='completed'?'line-through opacity-70':''}">${esc(e.title)}</div>
+           ${contact ? `<div class="mt-2.5 flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-extrabold ring-1 ring-indigo-200">${initials(contact.name)}</div><span class="text-xs text-indigo-600 font-bold tracking-wide uppercase">${esc(contact.name)}</span></div>` : ''}
+         </div>
+         <div class="flex flex-col gap-2 flex-shrink-0 justify-center ml-2 border-l border-gray-100 pl-3">
+            ${(state.roleMode === 'caregiver' && e.status !== 'completed') ? `<button onclick="openEditEvent('${e.id}')" class="text-gray-400 hover:text-indigo-500 w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm transition-all hover:bg-indigo-50"><i class="fas fa-pencil text-xs"></i></button>` : ''}
+            ${(state.roleMode === 'caregiver' && e.status !== 'completed') ? `<button onclick="confirmDeleteEvent('${e.id}')" class="text-gray-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm transition-all hover:bg-red-50"><i class="fas fa-trash text-xs"></i></button>` : ''}
+            ${(state.roleMode === 'patient' && e.status !== 'completed' && e.type !== 'note') ? `<button onclick="triggerAlarmMock('${e.id}')" class="text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-xl text-xs font-bold shadow-md pulse-btn flex flex-col items-center leading-tight"><span>Demo</span><span>Ring!</span></button>` : ''}
+         </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function formatTime(t) {
+  if (!t) return '';
+  const [h,m] = t.split(':');
+  let hi = parseInt(h);
+  const ampm = hi >= 12 ? 'PM' : 'AM';
+  hi = hi % 12 || 12;
+  return `${hi}:${m} ${ampm}`;
+}
+
+function openAddEvent() {
+  if (state.roleMode !== 'caregiver') {
+    toast("Please switch to Caregiver Mode to add alarms."); return;
+  }
+  state.editingEventId = null;
+  document.getElementById('modal-schedule-title').textContent = 'Add Note / Alarm';
+  document.getElementById('s-title').value = '';
+  document.getElementById('s-type').value = 'note';
+  // set current time slightly ahead for demo
+  let d = new Date(); d.setMinutes(d.getMinutes()+2);
+  document.getElementById('s-time').value = d.toTimeString().slice(0,5);
+  document.getElementById('s-date').value = d.toISOString().split('T')[0];
+  
+  const sel = document.getElementById('s-contact');
+  // Load contacts
+  const allContactsStr = state.contacts.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  sel.innerHTML = '<option value="">— Unassigned —</option>' + allContactsStr;
+
+  openModal('modal-schedule');
+}
+
+function openEditEvent(id) {
+  const e = state.events.find(x => x.id === id);
+  if (!e) return;
+  state.editingEventId = id;
+  document.getElementById('modal-schedule-title').textContent = 'Edit Event';
+  document.getElementById('s-title').value = e.title;
+  document.getElementById('s-type').value = e.type||'note';
+  document.getElementById('s-time').value = e.time||'';
+  document.getElementById('s-date').value = e.date||'';
+  
+  const sel = document.getElementById('s-contact');
+  sel.innerHTML = '<option value="">— Unassigned —</option>' + Object.values(state.contacts).map(c => `<option value="${c.id}" ${c.id === e.contactId ? 'selected':''}>${esc(c.name)}</option>`).join('');
+
+  openModal('modal-schedule');
+}
+
+function saveSchedule() {
+  const title = document.getElementById('s-title').value.trim();
+  if(!title) { shake('s-title'); return; }
+  
+  if (!state.events) state.events = [];
+  
+  const data = {
+    title,
+    type: document.getElementById('s-type').value,
+    time: document.getElementById('s-time').value,
+    date: document.getElementById('s-date').value,
+    contactId: document.getElementById('s-contact').value,
+    status: 'pending' // pending, snoozed, completed, missed
+  };
+  
+  if (state.editingEventId) {
+    const idx = state.events.findIndex(x => x.id === state.editingEventId);
+    if(idx > -1) state.events[idx] = {...state.events[idx], ...data};
+    toast("Updated schedule.");
+  } else {
+    state.events.push({id: uid(), ...data});
+    toast("Added to schedule.");
+  }
+  
+  saveState();
+  closeModal('modal-schedule');
+  renderSchedule();
+}
+
+function confirmDeleteEvent(id) {
+  showConfirm("Delete Event?", "This will be removed from tracking.", () => {
+    state.events = state.events.filter(e => e.id !== id);
+    saveState();
+    renderSchedule();
+    toast('Event deleted');
+  });
+}
+
+// ALARM SIMULATION
+let activeAlarmId = null;
+
+function triggerAlarmMock(id) {
+  const e = state.events.find(x => x.id === id);
+  if(!e) return;
+  activeAlarmId = id;
+  
+  const typeIcons = { 'med':'💊 Medication Time', 'visit':'🏠 Visit Arriving', 'appt':'🩺 Upcoming Appt' };
+  document.getElementById('alarm-icon').textContent = typeIcons[e.type]?.slice(0,2) || '🔔';
+  document.getElementById('alarm-title').textContent = (typeIcons[e.type] || '🔔 Alarm') + "\n\n" + e.title;
+  
+  openModal('modal-alarm');
+}
+
+function stopAlarm() {
+  if (activeAlarmId) {
+    const e = state.events.find(x => x.id === activeAlarmId);
+    if (e) {
+      e.status = 'completed';
+      saveState();
+      toast("Great job! Item completed.", true);
+    }
+    activeAlarmId = null;
+  }
+  closeModal('modal-alarm');
+  if(state.activeTab === 'schedule' || document.getElementById('view-schedule').classList.contains('hidden') === false) {
+    renderSchedule();
+  }
+}
+
+function snoozeAlarm() {
+  if (activeAlarmId) {
+    const e = state.events.find(x => x.id === activeAlarmId);
+    if (e) {
+      e.status = 'snoozed';
+      saveState();
+      toast("Snoozed! We'll remind you again.");
+    }
+    activeAlarmId = null;
+  }
+  closeModal('modal-alarm');
+  if(state.activeTab === 'schedule' || document.getElementById('view-schedule').classList.contains('hidden') === false) {
+    renderSchedule();
+  }
+}
+
+// Clock and Auto-Alarm Checker
+setInterval(() => {
+   const now = new Date();
+   const clockEl = document.getElementById('current-time');
+   if(clockEl) {
+     clockEl.textContent = now.toTimeString().slice(0,5);
+   }
+   
+   if(state.events && state.roleMode === 'patient' && !activeAlarmId) {
+      const todayDate = now.toISOString().split('T')[0];
+      const currentTime = now.toTimeString().slice(0,5);
+      
+      const dueEvent = state.events.find(e => 
+         e.type !== 'note' && 
+         (e.status === 'pending' || e.status === 'snoozed') && 
+         (e.date === todayDate || !e.date) && 
+         e.time === currentTime
+      );
+      if(dueEvent && now.getSeconds() < 2) {
+         triggerAlarmMock(dueEvent.id);
+      }
+   }
+}, 1000);
+
+// ============================================================
+//  INIT
+// ============================================================
+loadState();
+initQAData();
+navTo('dashboard');
+</script>
+</body>
+</html>
