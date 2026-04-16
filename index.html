@@ -160,26 +160,80 @@
       <p class="text-gray-600 text-sm leading-relaxed mb-6 font-medium bg-gray-50 p-4 rounded-2xl border border-gray-100 italic">
         "Alzheimer's is the most common form of dementia. It causes problems with memory, thinking and behavior."
       </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
-          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> About Alzheimer's and Dementia
-        </a>
-        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
-          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Know the 10 Warning Signs
-        </a>
-        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
-          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Navigating Diagnosis
-        </a>
-        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
-          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Understanding the Stages
-        </a>
-        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
-          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Support for Caregivers
-        </a>
-        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
-          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Living With a Diagnosis
-        </a>
+      <div class="space-y-3" id="alz-accordion">
+        
+        <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all group">
+          <button onclick="toggleAccordion('alz-about')" class="w-full flex items-center justify-between p-4 text-left hover:bg-purple-50 transition-colors">
+            <span class="font-bold text-gray-800 flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-purple-500"><i class="fas fa-info-circle"></i></span> About Alzheimer's &amp; Dementia</span>
+            <i id="icon-alz-about" class="fas fa-chevron-down text-gray-400 group-hover:text-purple-600 transition-transform"></i>
+          </button>
+          <div id="content-alz-about" class="hidden px-4 pb-4 pl-[4.5rem] pr-6 text-sm text-gray-600 leading-relaxed">
+             Alzheimer's is a specific brain disease that progressively destroys memory and thinking skills. It is the most common cause of dementia, accounting for 60-80% of cases. Over time, symptoms grow severe enough to interfere with daily tasks.
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all group">
+          <button onclick="toggleAccordion('alz-signs')" class="w-full flex items-center justify-between p-4 text-left hover:bg-purple-50 transition-colors">
+            <span class="font-bold text-gray-800 flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-purple-500"><i class="fas fa-exclamation-triangle"></i></span> Know the 10 Warning Signs</span>
+            <i id="icon-alz-signs" class="fas fa-chevron-down text-gray-400 group-hover:text-purple-600 transition-transform"></i>
+          </button>
+          <div id="content-alz-signs" class="hidden px-4 pb-4 pl-[4.5rem] pr-6 text-sm text-gray-600 leading-relaxed">
+             <ul class="list-disc pl-4 space-y-1">
+               <li>Memory loss that disrupts daily life.</li>
+               <li>Challenges in planning or solving problems.</li>
+               <li>Difficulty completing familiar tasks.</li>
+               <li>Confusion with time or place.</li>
+               <li>Trouble understanding visual images.</li>
+               <li>New problems with words in speaking or writing.</li>
+               <li>Misplacing things and losing the ability to retrace steps.</li>
+               <li>Decreased or poor judgment.</li>
+               <li>Withdrawal from work or social activities.</li>
+               <li>Changes in mood and personality.</li>
+             </ul>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all group">
+          <button onclick="toggleAccordion('alz-diag')" class="w-full flex items-center justify-between p-4 text-left hover:bg-purple-50 transition-colors">
+            <span class="font-bold text-gray-800 flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-purple-500"><i class="fas fa-stethoscope"></i></span> Navigating Diagnosis</span>
+            <i id="icon-alz-diag" class="fas fa-chevron-down text-gray-400 group-hover:text-purple-600 transition-transform"></i>
+          </button>
+          <div id="content-alz-diag" class="hidden px-4 pb-4 pl-[4.5rem] pr-6 text-sm text-gray-600 leading-relaxed">
+             Getting an accurate diagnosis involves a combination of medical history, cognitive exams, physical checks, and sometimes brain imaging. Seeking early diagnosis is vital—getting answers early provides access to specific treatments, clinical trials, and maximum time to plan for the future financially and legally.
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all group">
+          <button onclick="toggleAccordion('alz-stages')" class="w-full flex items-center justify-between p-4 text-left hover:bg-purple-50 transition-colors">
+            <span class="font-bold text-gray-800 flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-purple-500"><i class="fas fa-layer-group"></i></span> Understanding the Stages</span>
+            <i id="icon-alz-stages" class="fas fa-chevron-down text-gray-400 group-hover:text-purple-600 transition-transform"></i>
+          </button>
+          <div id="content-alz-stages" class="hidden px-4 pb-4 pl-[4.5rem] pr-6 text-sm text-gray-600 leading-relaxed">
+             Alzheimer's disease typically progresses in three general stages: Early-stage (mild), Middle-stage (moderate), and Late-stage (severe). In the early stage, individuals can often still function independently but notice memory lapses. By the late stage, extensive care is required as people lose the ability to respond to their environment.
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all group">
+          <button onclick="toggleAccordion('alz-support')" class="w-full flex items-center justify-between p-4 text-left hover:bg-purple-50 transition-colors">
+            <span class="font-bold text-gray-800 flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-purple-500"><i class="fas fa-hands-helping"></i></span> Support for Caregivers</span>
+            <i id="icon-alz-support" class="fas fa-chevron-down text-gray-400 group-hover:text-purple-600 transition-transform"></i>
+          </button>
+          <div id="content-alz-support" class="hidden px-4 pb-4 pl-[4.5rem] pr-6 text-sm text-gray-600 leading-relaxed">
+             Caregiving is incredibly demanding both emotionally and physically. It is absolutely crucial to assemble a Village of support. Build your care team early, tap into local adult day centers or respite care, and never hesitate to ask for help from friends and neighbors to avoid severe caregiver burnout.
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all group">
+          <button onclick="toggleAccordion('alz-live')" class="w-full flex items-center justify-between p-4 text-left hover:bg-purple-50 transition-colors">
+            <span class="font-bold text-gray-800 flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-purple-500"><i class="fas fa-heartbeat"></i></span> Living With a Diagnosis</span>
+            <i id="icon-alz-live" class="fas fa-chevron-down text-gray-400 group-hover:text-purple-600 transition-transform"></i>
+          </button>
+          <div id="content-alz-live" class="hidden px-4 pb-4 pl-[4.5rem] pr-6 text-sm text-gray-600 leading-relaxed">
+             Following a diagnosis, living well involves prioritizing physical health, staying spiritually and socially active, and exploring current treatment options. Focus equally on maintaining a high quality of life through hobbies, routine schedules, and managing stress levels actively.
+          </div>
+        </div>
       </div>
+      <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold text-center mt-6">Content proudly synthesized from references provided by the Alzheimer's Association (alz.org).</div>
     </div>
   </div>
 
@@ -2363,6 +2417,22 @@ setInterval(() => {
       }
    }
 }, 1000);
+
+// ============================================================
+//  UI TOGGLES
+// ============================================================
+function toggleAccordion(id) {
+   const content = document.getElementById('content-' + id);
+   const icon = document.getElementById('icon-' + id);
+   
+   if(content.classList.contains('hidden')) {
+      content.classList.remove('hidden');
+      icon.classList.add('rotate-180');
+   } else {
+      content.classList.add('hidden');
+      icon.classList.remove('rotate-180');
+   }
+}
 
 // ============================================================
 //  INIT
