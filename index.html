@@ -63,60 +63,46 @@
     .priority-low  { border-left: 5px solid #22c55e; }
   </style>
 </head>
-<body class="min-h-screen">
+<body class="bg-gray-100/50 text-gray-800 font-sans antialiased h-[100dvh] overflow-hidden flex flex-col selection:bg-indigo-200">
 
 <!-- ===== HEADER ===== -->
-<header id="main-header" class="bg-[#171332] text-white shadow-xl sticky top-0 z-40 relative overflow-hidden hidden">
-  <div class="absolute inset-0 bg-gradient-to-br from-indigo-800 to-[#1e1b4b] opacity-90"></div>
-  <div class="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500 rounded-full mix-blend-screen filter blur-[40px] opacity-40"></div>
-  <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500 rounded-full mix-blend-screen filter blur-[40px] opacity-40"></div>
-  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between relative z-10">
+<header id="main-header" class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-200 z-40 hidden shadow-sm">
+  <div class="max-w-3xl mx-auto px-4 h-[72px] flex items-center justify-between transition-all">
     <div class="flex items-center gap-4 cursor-pointer hover:opacity-90 transition-opacity" onclick="goHome()">
-      <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
-        <span class="text-3xl filter drop-shadow-md">☂️</span>
+      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg">
+        <span class="text-xl">☂️</span>
       </div>
       <div>
-        <div class="text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-sm">My <span class="text-indigo-300">Village</span></div>
-        <div class="text-[10px] text-indigo-200 uppercase tracking-widest font-bold mt-0.5">Your Support Network</div>
+        <div class="text-lg font-extrabold leading-tight tracking-tight text-gray-900">My Village</div>
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <!-- Role Toggle -->
-      <button onclick="toggleRoleMode()" id="role-mode-btn" class="bg-indigo-700/60 hover:bg-indigo-600 border border-indigo-400/30 text-indigo-100 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
-        <i class="fas fa-user-md"></i> <span class="hidden sm:inline">Caregiver Mode</span>
+      <button onclick="toggleRoleMode()" id="role-mode-btn" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
+        <i class="fas fa-user-md"></i> <span class="hidden sm:inline">Caregiver</span>
       </button>
-      <button onclick="showEmergency()" class="pulse-btn bg-gradient-to-b from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-2 text-sm shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-red-400">
+      <button onclick="showEmergency()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs shadow-sm">
         <i class="fas fa-phone-alt"></i> SOS
       </button>
     </div>
   </div>
   <!-- Breadcrumb -->
-  <div id="breadcrumb" class="hidden bg-black/20 backdrop-blur-sm border-t border-white/10 px-4 py-2 text-sm flex items-center gap-2 max-w-5xl mx-auto relative z-10">
-    <button onclick="goHome()" class="text-indigo-300 hover:text-white font-medium transition-colors"><i class="fas fa-home"></i> Home</button>
-    <span class="text-indigo-500">/</span>
-    <span id="breadcrumb-name" class="text-white font-bold tracking-wide"></span>
+  <div id="breadcrumb" class="hidden bg-gray-50 border-t border-gray-100 px-4 py-1.5 text-xs flex items-center gap-2 max-w-3xl mx-auto">
+    <button onclick="goHome()" class="text-indigo-600 font-medium"><i class="fas fa-home"></i> Home</button>
+    <span class="text-gray-300">/</span>
+    <span id="breadcrumb-name" class="text-gray-600 font-bold"></span>
   </div>
 </header>
 
 <!-- ===== MAIN CONTENT ===== -->
-<main class="max-w-5xl mx-auto px-4 py-6 h-full flex flex-col">
+<main class="max-w-3xl mx-auto w-full flex-1 overflow-y-auto pt-[72px] pb-24 px-4">
 
   <!-- LOGIN VIEW -->
-  <div id="view-login" class="flex-1 relative overflow-hidden -mx-4 -mt-6 rounded-b-[40px] shadow-2xl bg-gradient-to-br from-[#1e1b4b] to-[#312e81] flex items-center justify-center p-6 text-center" style="min-height: 100vh;">
-    <!-- Rain Container -->
+  <div id="view-login" class="fixed inset-0 z-50 bg-gradient-to-br from-[#1e1b4b] to-[#312e81] flex items-center justify-center p-6 text-center">
     <div id="rain-container" class="absolute inset-0 pointer-events-none opacity-60"></div>
-    
     <div class="relative z-10 max-w-sm w-full glass-panel border border-white/20 rounded-[30px] p-8 bg-white/10 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
       <div class="text-[90px] mb-6 text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] transform transition-transform hover:scale-110 leading-none">☂️</div>
       <h1 class="text-[2.75rem] font-extrabold text-white tracking-tight mb-2 leading-none drop-shadow-sm">My Village</h1>
       <p class="text-indigo-200 text-xs font-bold uppercase tracking-[0.3em] mb-10">Care & Connect</p>
-      
-      <div class="bg-indigo-900/60 rounded-2xl p-6 italic text-indigo-50 text-lg leading-relaxed shadow-inner border border-white/10 mb-10 relative">
-        <span class="text-5xl text-indigo-400 opacity-40 absolute -top-4 -left-1 font-serif">"</span>
-        Life isn't about waiting for the storm to pass.<br><br>It's about learning to dance in the rain.
-        <div class="mt-4 text-[13px] font-black text-indigo-300 uppercase tracking-wider not-italic">— Vivian Greene</div>
-      </div>
-      
       <button onclick="performLogin()" class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-lg font-bold shadow-[0_10px_25px_rgba(99,102,241,0.5)] transition-all transform hover:-translate-y-1">
         Log In
       </button>
@@ -481,27 +467,29 @@
 </main>
 
 <!-- ===== BOTTOM NAV ===== -->
-<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 glass-header border-t border-gray-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-30 flex pb-safe items-center pt-2 px-1 hidden">
-  <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group nav-active text-emerald-700">
-    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-emerald-400 to-teal-500"><i class="fas fa-home text-2xl drop-shadow-sm"></i></div>
-    <span>Home</span>
-  </button>
-  <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
-    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-amber-400 to-orange-500"><i class="fas fa-calendar-check text-2xl drop-shadow-sm"></i></div>
-    <span>Schedule</span>
-  </button>
-  <button onclick="navTo('qa')" id="nav-qa" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
-    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-rose-400 to-pink-500"><i class="fas fa-comments text-2xl drop-shadow-sm"></i></div>
-    <span>Q&amp;A</span>
-  </button>
-  <button onclick="navTo('chat')" id="nav-chat" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
-    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-indigo-500 to-purple-600"><i class="fas fa-robot text-2xl drop-shadow-sm"></i></div>
-    <span>AI Chat</span>
-  </button>
-  <button onclick="navTo('resources')" id="nav-resources" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
-    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-cyan-400 to-blue-500"><i class="fas fa-globe text-2xl drop-shadow-sm"></i></div>
-    <span>Resources</span>
-  </button>
+<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+  <div class="max-w-3xl mx-auto w-full flex items-center px-1">
+    <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all nav-active">
+      <i class="fas fa-home text-xl mb-1"></i>
+      <span>Home</span>
+    </button>
+    <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
+      <i class="fas fa-calendar-check text-xl mb-1"></i>
+      <span>Schedule</span>
+    </button>
+    <button onclick="navTo('qa')" id="nav-qa" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
+      <i class="fas fa-comments text-xl mb-1"></i>
+      <span>Q&amp;A</span>
+    </button>
+    <button onclick="navTo('chat')" id="nav-chat" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
+      <i class="fas fa-robot text-xl mb-1"></i>
+      <span>AI Chat</span>
+    </button>
+    <button onclick="navTo('resources')" id="nav-resources" class="flex-1 py-3 flex flex-col items-center text-gray-500 text-[10px] font-bold transition-all">
+      <i class="fas fa-globe-americas text-xl mb-1"></i>
+      <span>Resources</span>
+    </button>
+  </div>
 </nav>
 
 <!-- ===== EMERGENCY OVERLAY ===== -->
@@ -921,7 +909,7 @@
 </div>
 
 <!-- Toast Notification -->
-<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-xl z-50 text-sm font-semibold flex items-center gap-2">
+<div id="toast" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-xl z-50 text-sm font-semibold flex items-center gap-2">
   <span id="toast-msg"></span>
 </div>
 
@@ -1010,19 +998,6 @@ function openVillage(id) {
   ['dashboard','qa','chat'].forEach(n => { const b = document.getElementById('nav-'+n); if(b) b.classList.remove('nav-active'); });
   document.getElementById('nav-dashboard').classList.add('nav-active');
   renderVillage();
-}
-
-function showView(name) {
-  document.getElementById('view-dashboard').classList.add('hidden');
-  document.getElementById('view-village').classList.add('hidden');
-  document.getElementById('view-' + name).classList.remove('hidden');
-  const bc = document.getElementById('breadcrumb');
-  if (name === 'dashboard') { bc.classList.add('hidden'); }
-  else {
-    bc.classList.remove('hidden');
-    const v = state.villages.find(x => x.id === state.currentVillageId);
-    document.getElementById('breadcrumb-name').textContent = v ? v.name : '';
-  }
 }
 
 // ============================================================
@@ -1541,22 +1516,41 @@ function toast(msg) {
 const ALL_VIEWS = ['login','dashboard','village','qa','chat','schedule','resources'];
 
 function navTo(view) {
+  state.activeTab = view;
+  
+  if (view === 'login') {
+    document.getElementById('main-header').classList.add('hidden');
+    document.getElementById('bottom-nav').classList.add('hidden');
+    ALL_VIEWS.forEach(v => {
+      const el = document.getElementById('view-'+v);
+      if (el) el.classList.add('hidden');
+    });
+    document.getElementById('view-login').classList.remove('hidden');
+    initRain();
+    return;
+  }
+
+  // Active Main views
+  document.getElementById('main-header').classList.remove('hidden');
+  document.getElementById('bottom-nav').classList.remove('hidden');
+  document.getElementById('view-login').classList.add('hidden');
+  
   ALL_VIEWS.forEach(v => {
     const el = document.getElementById('view-'+v);
-    if (el) el.classList.add('hidden');
+    if (el && v !== 'login') el.classList.add('hidden');
   });
+  
   const target = document.getElementById('view-'+view);
   if (target) target.classList.remove('hidden');
-
-  const mainHeader = document.getElementById('main-header');
-  const bottomNav = document.getElementById('bottom-nav');
-  if (view === 'login') {
-    if(mainHeader) mainHeader.classList.add('hidden');
-    if(bottomNav) bottomNav.classList.add('hidden');
-    initRain();
-  } else {
-    if(mainHeader) mainHeader.classList.remove('hidden');
-    if(bottomNav) bottomNav.classList.remove('hidden');
+  
+  const bc = document.getElementById('breadcrumb');
+  if (view === 'dashboard' && bc) { bc.classList.add('hidden'); }
+  else if (bc) {
+    bc.classList.remove('hidden');
+    const v = state.villages.find(x => x.id === state.currentVillageId);
+    if(document.getElementById('breadcrumb-name')){
+       document.getElementById('breadcrumb-name').textContent = v ? v.name : '';
+    }
   }
 
   // nav highlight
