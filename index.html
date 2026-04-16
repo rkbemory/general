@@ -3,14 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Caregiver Village</title>
+  <title>My Village</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Outfit', sans-serif; background: #f0f4ff; padding-bottom: 80px; }
-    .nav-active { color: #6366f1 !important; transform: scale(1.1); transition: all 0.2s; }
-    .nav-active i { color: #6366f1 !important; }
+    
+    /* Rain Animation */
+    .rain {
+      position: absolute; width: 2px; height: 100px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.8));
+      animation: raindrop linear infinite;
+    }
+    @keyframes raindrop {
+      0% { transform: translateY(-200px); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(150vh); opacity: 0; }
+    }
+    
+    /* Lucrative Nav Icons */
+    .nav-btn-icon {
+      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+      border-radius: 16px; color: white !important; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.4);
+    }
+    .nav-active .nav-btn-icon {
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.5);
+      transform: translateY(-10px) scale(1.15);
+    }
+    .nav-active { font-weight: 800 !important; }
+    .nav-active i { color: white !important; }
+    
     .chat-bubble-bot  { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border-radius:18px 18px 18px 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .chat-bubble-user { background: linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border-radius:18px 18px 4px 18px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2); }
     .expert-badge { background: linear-gradient(135deg,#f59e0b,#d97706); }
@@ -42,17 +66,17 @@
 <body class="min-h-screen">
 
 <!-- ===== HEADER ===== -->
-<header class="bg-[#171332] text-white shadow-xl sticky top-0 z-40 relative overflow-hidden">
+<header id="main-header" class="bg-[#171332] text-white shadow-xl sticky top-0 z-40 relative overflow-hidden hidden">
   <div class="absolute inset-0 bg-gradient-to-br from-indigo-800 to-[#1e1b4b] opacity-90"></div>
   <div class="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500 rounded-full mix-blend-screen filter blur-[40px] opacity-40"></div>
   <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500 rounded-full mix-blend-screen filter blur-[40px] opacity-40"></div>
   <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between relative z-10">
     <div class="flex items-center gap-4 cursor-pointer hover:opacity-90 transition-opacity" onclick="goHome()">
       <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.5l5 4.5v9h-2v-6H9v6H7v-9l5-4.5z'/%3E%3Cpath d='M12 11c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z'/%3E%3C/svg%3E" class="w-8 h-8 drop-shadow-md" alt="Logo"/>
+        <span class="text-3xl filter drop-shadow-md">☂️</span>
       </div>
       <div>
-        <div class="text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-sm">Caregiver <span class="text-indigo-300">Village</span></div>
+        <div class="text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-sm">My <span class="text-indigo-300">Village</span></div>
         <div class="text-[10px] text-indigo-200 uppercase tracking-widest font-bold mt-0.5">Your Support Network</div>
       </div>
     </div>
@@ -75,17 +99,39 @@
 </header>
 
 <!-- ===== MAIN CONTENT ===== -->
-<main class="max-w-5xl mx-auto px-4 py-6">
+<main class="max-w-5xl mx-auto px-4 py-6 h-full flex flex-col">
+
+  <!-- LOGIN VIEW -->
+  <div id="view-login" class="flex-1 relative overflow-hidden -mx-4 -mt-6 rounded-b-[40px] shadow-2xl bg-gradient-to-br from-[#1e1b4b] to-[#312e81] flex items-center justify-center p-6 text-center" style="min-height: 100vh;">
+    <!-- Rain Container -->
+    <div id="rain-container" class="absolute inset-0 pointer-events-none opacity-60"></div>
+    
+    <div class="relative z-10 max-w-sm w-full glass-panel border border-white/20 rounded-[30px] p-8 bg-white/10 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+      <div class="text-[90px] mb-6 text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] transform transition-transform hover:scale-110 leading-none">☂️</div>
+      <h1 class="text-[2.75rem] font-extrabold text-white tracking-tight mb-2 leading-none drop-shadow-sm">My Village</h1>
+      <p class="text-indigo-200 text-xs font-bold uppercase tracking-[0.3em] mb-10">Care & Connect</p>
+      
+      <div class="bg-indigo-900/60 rounded-2xl p-6 italic text-indigo-50 text-lg leading-relaxed shadow-inner border border-white/10 mb-10 relative">
+        <span class="text-5xl text-indigo-400 opacity-40 absolute -top-4 -left-1 font-serif">"</span>
+        Life isn't about waiting for the storm to pass.<br><br>It's about learning to dance in the rain.
+        <div class="mt-4 text-[13px] font-black text-indigo-300 uppercase tracking-wider not-italic">— Vivian Greene</div>
+      </div>
+      
+      <button onclick="performLogin()" class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-lg font-bold shadow-[0_10px_25px_rgba(99,102,241,0.5)] transition-all transform hover:-translate-y-1">
+        Log In
+      </button>
+    </div>
+  </div>
 
   <!-- DASHBOARD VIEW -->
   <div id="view-dashboard">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800">My Villages</h2>
-        <p class="text-gray-500 text-sm mt-1">Tap a village to see contacts &amp; tasks</p>
+        <h2 class="text-3xl font-extrabold text-gray-800 drop-shadow-sm">My Houses</h2>
+        <p class="text-gray-500 text-sm mt-1">Tap a house to view your team</p>
       </div>
-      <button onclick="openAddVillage()" class="btn-big bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl flex items-center gap-2 shadow">
-        <i class="fas fa-plus"></i> New Village
+      <button onclick="openAddVillage()" class="btn-big bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-2xl flex items-center gap-2 shadow-[0_8px_20px_rgba(79,70,229,0.3)] transition-transform hover:-translate-y-1">
+        <i class="fas fa-plus"></i> Add
       </button>
     </div>
 
@@ -97,7 +143,43 @@
 
     <div id="empty-state" class="hidden text-center py-16">
       <div class="text-6xl mb-4">🏘️</div>
-      <p class="text-gray-500 text-lg">No villages yet. Create your first one!</p>
+      <p class="text-gray-500 text-lg">No houses yet. Create your first one!</p>
+    </div>
+
+    <!-- ALZHEIMER'S EDUCATIONAL HUB -->
+    <div class="mt-10 bg-white border border-gray-200 rounded-[30px] p-6 shadow-sm">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-2xl shadow-inner">
+          <i class="fas fa-brain"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-extrabold text-gray-800">Understanding Alzheimer's &amp; Dementia</h3>
+          <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Educational Hub</p>
+        </div>
+      </div>
+      <p class="text-gray-600 text-sm leading-relaxed mb-6 font-medium bg-gray-50 p-4 rounded-2xl border border-gray-100 italic">
+        "Alzheimer's is the most common form of dementia. It causes problems with memory, thinking and behavior."
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
+          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> About Alzheimer's and Dementia
+        </a>
+        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
+          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Know the 10 Warning Signs
+        </a>
+        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
+          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Navigating Diagnosis
+        </a>
+        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
+          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Understanding the Stages
+        </a>
+        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
+          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Support for Caregivers
+        </a>
+        <a href="https://www.alz.org/alzheimers-dementia" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition-colors border border-transparent hover:border-purple-100 text-gray-700 hover:text-purple-700 font-semibold text-sm group">
+          <i class="fas fa-arrow-right text-purple-300 group-hover:text-purple-500 transition-colors"></i> Living With a Diagnosis
+        </a>
+      </div>
     </div>
   </div>
 
@@ -225,9 +307,14 @@
         <h2 class="text-2xl font-extrabold text-gray-800">📅 Schedule & Tracking</h2>
         <p class="text-gray-500 text-sm mt-1">Manage notes, medications, and daily reminders</p>
       </div>
-      <button onclick="openAddEvent()" class="btn-big bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow">
-        <i class="fas fa-plus"></i> Add
-      </button>
+      <div class="flex gap-2">
+         <button onclick="openAddNote()" class="btn-big bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded-xl flex items-center gap-1 shadow">
+           <i class="fas fa-pen"></i> Note
+         </button>
+         <button onclick="openAddEvent()" class="btn-big bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl flex items-center gap-1 shadow">
+           <i class="fas fa-plus"></i> Sched
+         </button>
+      </div>
     </div>
     
     <div class="bg-white rounded-2xl shadow-sm border border-indigo-100 p-4 mb-4 flex gap-2">
@@ -250,21 +337,105 @@
     </div>
   </div>
 
+<!-- ===== RESOURCES VIEW ===== -->
+<div id="view-resources" class="hidden pb-10">
+  <div class="mb-5">
+    <h2 class="text-3xl font-extrabold text-gray-800 drop-shadow-sm">🌐 Resources</h2>
+    <p class="text-gray-500 text-sm mt-1">Trusted medical networks and local information</p>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+     <a href="https://www.alz.org/" target="_blank" class="block bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="flex items-center gap-4">
+           <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner"><i class="fas fa-brain"></i></div>
+           <div class="flex-1">
+             <h3 class="text-lg font-bold text-gray-800 group-hover:text-purple-600 transition-colors leading-tight">Alzheimer's Association</h3>
+             <p class="text-[11px] text-gray-500 font-semibold mt-1">alz.org</p>
+           </div>
+           <i class="fas fa-external-link-alt text-gray-300 group-hover:text-purple-400"></i>
+        </div>
+     </a>
+     
+     <a href="https://www.cdc.gov/aging/dementia/index.html" target="_blank" class="block bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="flex items-center gap-4">
+           <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner"><i class="fas fa-shield-virus"></i></div>
+           <div class="flex-1">
+             <h3 class="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors leading-tight">CDC Dementia Initiative</h3>
+             <p class="text-[11px] text-gray-500 font-semibold mt-1">cdc.gov/aging/dementia</p>
+           </div>
+           <i class="fas fa-external-link-alt text-gray-300 group-hover:text-blue-400"></i>
+        </div>
+     </a>
+     
+     <a href="https://www.dfamerica.org/" target="_blank" class="block bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="flex items-center gap-4">
+           <div class="w-14 h-14 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner"><i class="fas fa-hands-helping"></i></div>
+           <div class="flex-1">
+             <h3 class="text-lg font-bold text-gray-800 group-hover:text-teal-600 transition-colors leading-tight">Dementia Friendly America</h3>
+             <p class="text-[11px] text-gray-500 font-semibold mt-1">dfamerica.org</p>
+           </div>
+           <i class="fas fa-external-link-alt text-gray-300 group-hover:text-teal-400"></i>
+        </div>
+     </a>
+     
+     <a href="https://www.caregiver.org/" target="_blank" class="block bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="flex items-center gap-4">
+           <div class="w-14 h-14 bg-gradient-to-br from-rose-400 to-red-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner"><i class="fas fa-heart"></i></div>
+           <div class="flex-1">
+             <h3 class="text-lg font-bold text-gray-800 group-hover:text-rose-600 transition-colors leading-tight">Family Caregiver Alliance</h3>
+             <p class="text-[11px] text-gray-500 font-semibold mt-1">caregiver.org</p>
+           </div>
+           <i class="fas fa-external-link-alt text-gray-300 group-hover:text-rose-400"></i>
+        </div>
+     </a>
+
+     <a href="https://www.facebook.com/groups/caregiversconnect/" target="_blank" class="block bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="flex items-center gap-4">
+           <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner"><i class="fab fa-facebook-f"></i></div>
+           <div class="flex-1">
+             <h3 class="text-lg font-bold text-gray-800 group-hover:text-indigo-600 transition-colors leading-tight">Facebook Support Network</h3>
+             <p class="text-[11px] text-gray-500 font-semibold mt-1">Connect with global caregivers</p>
+           </div>
+           <i class="fas fa-external-link-alt text-gray-300 group-hover:text-indigo-400"></i>
+        </div>
+     </a>
+     
+     <a href="https://www.youtube.com/results?search_query=dementia+caregiver+training" target="_blank" class="block bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+        <div class="flex items-center gap-4">
+           <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-700 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner"><i class="fab fa-youtube"></i></div>
+           <div class="flex-1">
+             <h3 class="text-lg font-bold text-gray-800 group-hover:text-red-600 transition-colors leading-tight">Caregiver Video Training</h3>
+             <p class="text-[11px] text-gray-500 font-semibold mt-1">YouTube Educational Seminars</p>
+           </div>
+           <i class="fas fa-external-link-alt text-gray-300 group-hover:text-red-400"></i>
+        </div>
+     </a>
+  </div>
+</div>
+
 </main>
 
 <!-- ===== BOTTOM NAV ===== -->
-<nav class="fixed bottom-0 left-0 right-0 glass-header border-t border-gray-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-30 flex pb-safe">
-  <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold nav-active transition-all hover:text-indigo-400">
-    <i class="fas fa-home text-2xl mb-1"></i> Villages
+<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 glass-header border-t border-gray-200 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-30 flex pb-safe items-center pt-2 px-1 hidden">
+  <button onclick="navTo('dashboard')" id="nav-dashboard" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group nav-active text-emerald-700">
+    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-emerald-400 to-teal-500"><i class="fas fa-home text-2xl drop-shadow-sm"></i></div>
+    <span>Home</span>
   </button>
-  <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold transition-all hover:text-indigo-400">
-    <i class="fas fa-calendar-check text-2xl mb-1"></i> Schedule
+  <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
+    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-amber-400 to-orange-500"><i class="fas fa-calendar-check text-2xl drop-shadow-sm"></i></div>
+    <span>Schedule</span>
   </button>
-  <button onclick="navTo('qa')" id="nav-qa" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold transition-all hover:text-indigo-400">
-    <i class="fas fa-comments text-2xl mb-1"></i> Q&amp;A
+  <button onclick="navTo('qa')" id="nav-qa" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
+    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-rose-400 to-pink-500"><i class="fas fa-comments text-2xl drop-shadow-sm"></i></div>
+    <span>Q&amp;A</span>
   </button>
-  <button onclick="navTo('chat')" id="nav-chat" class="flex-1 py-3 flex flex-col items-center text-gray-400 text-xs font-bold transition-all hover:text-indigo-400">
-    <i class="fas fa-robot text-2xl mb-1"></i> AI Chat
+  <button onclick="navTo('chat')" id="nav-chat" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
+    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-indigo-500 to-purple-600"><i class="fas fa-robot text-2xl drop-shadow-sm"></i></div>
+    <span>AI Chat</span>
+  </button>
+  <button onclick="navTo('resources')" id="nav-resources" class="flex-1 pb-3 flex flex-col items-center text-gray-500 text-[10px] sm:text-[11px] font-bold transition-all group">
+    <div class="nav-btn-icon mb-1 bg-gradient-to-br from-cyan-400 to-blue-500"><i class="fas fa-globe text-2xl drop-shadow-sm"></i></div>
+    <span>Resources</span>
   </button>
 </nav>
 
@@ -441,21 +612,21 @@
 
 <!-- ===== SCHEDULE MODAL ===== -->
 <div id="modal-schedule" class="hidden fixed inset-0 modal-overlay bg-black/60 z-50 flex items-center justify-center p-4">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
-    <h2 id="modal-schedule-title" class="text-xl font-bold text-gray-800 mb-5">Add Note / Alarm</h2>
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative max-h-[90vh] overflow-y-auto">
+    <h2 id="modal-schedule-title" class="text-xl font-bold text-gray-800 mb-5">Add Schedule</h2>
     <div class="space-y-4">
       <div>
         <label class="block text-gray-700 font-semibold mb-1">Title *</label>
-        <input id="s-title" type="text" placeholder="e.g. Doctor's Appointment, Afternoon Meds" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+        <input id="s-title" type="text" placeholder="e.g. Afternoon Meds, BP Check" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
            <label class="block text-gray-700 font-semibold mb-1">Type</label>
            <select id="s-type" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none bg-white">
-             <option value="note">📝 Note</option>
-             <option value="med">💊 Medication</option>
-             <option value="visit">🏠 Visit / Duty</option>
-             <option value="appt">🩺 Appt</option>
+             <option value="med">💊 Medicine</option>
+             <option value="appt">🩺 Appointment</option>
+             <option value="routine">🩸 Routine Check</option>
+             <option value="other">📋 Others</option>
            </select>
         </div>
         <div>
@@ -463,12 +634,44 @@
            <input id="s-time" type="time" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
         </div>
       </div>
-      <div>
-        <label class="block text-gray-700 font-semibold mb-1">Date</label>
-        <input id="s-date" type="date" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
+      
+      <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+         <label class="block text-gray-700 font-bold mb-2">Schedule Dates (Frequency)</label>
+         <div class="flex gap-4 mb-3">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="freqToggle" value="everyday" checked onchange="toggleFreq(this.value)" class="w-4 h-4 text-indigo-600"/> Continuous (Everyday)
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="freqToggle" value="range" onchange="toggleFreq(this.value)" class="w-4 h-4 text-indigo-600"/> Set Date Range
+            </label>
+         </div>
+         <div id="freq-date-container" class="hidden">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                 <label class="block text-gray-600 text-xs font-bold mb-1">From Date</label>
+                 <input id="s-start-date" type="date" class="w-full border-2 border-gray-200 rounded-xl px-2 py-3 focus:border-indigo-400 outline-none"/>
+              </div>
+              <div>
+                 <label class="block text-gray-600 text-xs font-bold mb-1">To Date (Optional)</label>
+                 <input id="s-end-date" type="date" class="w-full border-2 border-gray-200 rounded-xl px-2 py-3 focus:border-indigo-400 outline-none"/>
+              </div>
+            </div>
+         </div>
       </div>
+
+      <div class="flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+        <div>
+          <div class="font-bold text-indigo-900">Enable Alarm</div>
+          <div class="text-xs text-indigo-600">Triggers loud ringer for patient</div>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="s-alarm" class="sr-only peer" checked>
+          <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+        </label>
+      </div>
+
       <div>
-        <label class="block text-gray-700 font-semibold mb-1">Assigned Person (Optional)</label>
+        <label class="block text-gray-700 font-semibold mb-1">Assigned Support (Optional)</label>
         <select id="s-contact" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none bg-white">
           <option value="">— Unassigned —</option>
         </select>
@@ -476,7 +679,34 @@
     </div>
     <div class="flex gap-3 mt-6">
       <button onclick="closeModal('modal-schedule')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors">Cancel</button>
-      <button onclick="saveSchedule()" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-md">Save Event</button>
+      <button onclick="saveSchedule()" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-md">Save Sched</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NOTE MODAL ===== -->
+<div id="modal-note" class="hidden fixed inset-0 modal-overlay bg-black/60 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+    <h2 id="modal-note-title" class="text-xl font-bold text-gray-800 mb-5 text-sky-600"><i class="fas fa-pen"></i> Take Note</h2>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-semibold mb-1">Observation / Note *</label>
+        <textarea id="n-title" rows="3" placeholder="e.g. Patient refused lunch, observed swelling..." class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-sky-400 outline-none resize-none"></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+           <label class="block text-gray-700 font-semibold mb-1">Time</label>
+           <input id="n-time" type="time" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-sky-400 outline-none"/>
+        </div>
+        <div>
+           <label class="block text-gray-700 font-semibold mb-1">Date</label>
+           <input id="n-date" type="date" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-sky-400 outline-none"/>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal('modal-note')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors">Cancel</button>
+      <button onclick="saveNote()" class="flex-1 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold transition-all shadow-md">Save Note</button>
     </div>
   </div>
 </div>
@@ -635,18 +865,13 @@
 //  STATE
 // ============================================================
 const VILLAGE_THEMES = [
-  { icon:'👨‍👩‍👧‍👦', label:'Family',  bg:'bg-rose-500',   grad:'from-rose-500 to-pink-500',   avatar:'bg-rose-400'   },
-  { icon:'🤝',       label:'Friends', bg:'bg-amber-500',  grad:'from-amber-500 to-yellow-400', avatar:'bg-amber-400'  },
-  { icon:'🏥',       label:'Professionals', bg:'bg-blue-500',   grad:'from-blue-500 to-cyan-500',    avatar:'bg-blue-400'   },
-  { icon:'🏘️',       label:'Neighbors',bg:'bg-teal-500',  grad:'from-teal-500 to-cyan-400',   avatar:'bg-teal-400'   },
-  { icon:'⛪',       label:'Groups & Orgs',  bg:'bg-purple-500', grad:'from-purple-500 to-violet-500',avatar:'bg-purple-400' },
-  { icon:'💼',       label:'Colleagues', bg:'bg-indigo-600', grad:'from-indigo-600 to-blue-700', avatar:'bg-indigo-500' },
-  { icon:'⚖️',       label:'Legal', bg:'bg-slate-700', grad:'from-slate-600 to-slate-800', avatar:'bg-slate-500' },
-  { icon:'💰',       label:'Financial', bg:'bg-emerald-600', grad:'from-emerald-500 to-emerald-700', avatar:'bg-emerald-500' },
-  { icon:'🛒',       label:'Store/Errands', bg:'bg-orange-500', grad:'from-orange-500 to-amber-500', avatar:'bg-orange-400' },
-  { icon:'🚨',       label:'Emergency',bg:'bg-red-600',   grad:'from-red-600 to-orange-500',   avatar:'bg-red-400'    },
-  { icon:'💊',       label:'Pharmacy',bg:'bg-orange-600', grad:'from-orange-600 to-red-500', avatar:'bg-orange-500' },
-  { icon:'🧑‍⚕️',     label:'Nurse',  bg:'bg-cyan-500',   grad:'from-cyan-500 to-teal-400',    avatar:'bg-cyan-400'   },
+  { icon:'👑', label:'Primary Caregiver', bg:'bg-indigo-600', grad:'from-indigo-600 to-purple-600', avatar:'bg-indigo-400' },
+  { icon:'👨‍👩‍👧‍👦', label:'Family', bg:'bg-rose-500', grad:'from-rose-500 to-pink-500', avatar:'bg-rose-400' },
+  { icon:'🤝', label:'Friends', bg:'bg-amber-500', grad:'from-amber-400 to-orange-500', avatar:'bg-amber-400' },
+  { icon:'🏘️', label:'Neighbors', bg:'bg-teal-500', grad:'from-teal-400 to-cyan-500', avatar:'bg-teal-400' },
+  { icon:'💼', label:'Colleagues', bg:'bg-sky-600', grad:'from-sky-500 to-blue-600', avatar:'bg-sky-500' },
+  { icon:'⚖️', label:'Legal & Financial Support', bg:'bg-slate-700', grad:'from-slate-600 to-slate-800', avatar:'bg-slate-500' },
+  { icon:'🏥', label:'Medical Team', bg:'bg-blue-500', grad:'from-blue-500 to-cyan-500', avatar:'bg-blue-400' },
 ];
 
 let state = {
@@ -663,7 +888,7 @@ let state = {
 };
 
 function loadState() {
-  const saved = localStorage.getItem('cgv_state');
+  const saved = localStorage.getItem('cgv_state_v4');
   if (saved) {
     const parsed = JSON.parse(saved);
     state.villages  = parsed.villages  || [];
@@ -676,18 +901,20 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem('cgv_state', JSON.stringify({
+  localStorage.setItem('cgv_state_v4', JSON.stringify({
     villages: state.villages, contacts: state.contacts, tasks: state.tasks, events: state.events, questions: state.questions
   }));
 }
 
 function seedDefaults() {
   const defaults = [
-    { id: uid(), name:'Family',    themeIdx:0, desc:'Immediate family & close relatives' },
-    { id: uid(), name:'Friends & Neighbors',   themeIdx:1, desc:'Social connections & local community'    },
-    { id: uid(), name:'Groups & Organizations',   themeIdx:4, desc:'Faith communities, clubs, agencies'    },
-    { id: uid(), name:'Professionals',   themeIdx:2, desc:'Medical, Legal, Financial' },
-    { id: uid(), name:'Emergency', themeIdx:9, desc:'Call in an emergency'     },
+    { id: uid(), name:'Primary Caregiver',     themeIdx:0, desc:'Central decision maker' },
+    { id: uid(), name:'Family',                themeIdx:1, desc:'Immediate & extended family' },
+    { id: uid(), name:'Friends',               themeIdx:2, desc:'Supportive friends circle' },
+    { id: uid(), name:'Neighbors',             themeIdx:3, desc:'Local community proximity support' },
+    { id: uid(), name:'Colleagues',            themeIdx:4, desc:'Work network' },
+    { id: uid(), name:'Legal & Financial',     themeIdx:5, desc:'Lawyers, bankers, planners' },
+    { id: uid(), name:'Medical Team',          themeIdx:6, desc:'Professional paid care staff and doctors' },
   ];
   state.villages = defaults;
   saveState();
@@ -1244,9 +1471,9 @@ function toast(msg) {
 }
 
 // ============================================================
-//  NAVIGATION
+//  NAVIGATION & APP LOGIC
 // ============================================================
-const ALL_VIEWS = ['dashboard','village','qa','chat','schedule'];
+const ALL_VIEWS = ['login','dashboard','village','qa','chat','schedule','resources'];
 
 function navTo(view) {
   ALL_VIEWS.forEach(v => {
@@ -1256,24 +1483,27 @@ function navTo(view) {
   const target = document.getElementById('view-'+view);
   if (target) target.classList.remove('hidden');
 
-  // breadcrumb
-  const bc = document.getElementById('breadcrumb');
-  if (view === 'dashboard' || view === 'village') {
-    if (view === 'dashboard') bc.classList.add('hidden');
+  const mainHeader = document.getElementById('main-header');
+  const bottomNav = document.getElementById('bottom-nav');
+  if (view === 'login') {
+    if(mainHeader) mainHeader.classList.add('hidden');
+    if(bottomNav) bottomNav.classList.add('hidden');
+    initRain();
   } else {
-    bc.classList.add('hidden');
+    if(mainHeader) mainHeader.classList.remove('hidden');
+    if(bottomNav) bottomNav.classList.remove('hidden');
   }
 
   // nav highlight
-  ['dashboard','qa','chat','schedule'].forEach(n => {
+  ['dashboard','qa','chat','schedule','resources'].forEach(n => {
     const btn = document.getElementById('nav-'+n);
     if (btn) {
       if (n === view) {
-        btn.classList.add('nav-active', 'text-indigo-600');
-        btn.classList.remove('text-gray-400');
+        btn.classList.add('nav-active', 'text-gray-900');
+        btn.classList.remove('text-gray-500');
       } else {
-        btn.classList.remove('nav-active', 'text-indigo-600');
-        btn.classList.add('text-gray-400');
+        btn.classList.remove('nav-active', 'text-gray-900');
+        btn.classList.add('text-gray-500');
       }
     }
   });
@@ -1282,6 +1512,24 @@ function navTo(view) {
   if (view === 'chat') { initChat(); }
   if (view === 'dashboard') { renderDashboard(); }
   if (view === 'schedule') { renderSchedule(); }
+}
+
+function performLogin() {
+  navTo('dashboard');
+}
+
+function initRain() {
+  const container = document.getElementById('rain-container');
+  if(!container || container.children.length > 0) return;
+  for (let i = 0; i < 40; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'rain';
+    drop.style.left = Math.random() * 100 + '%';
+    drop.style.animationDuration = (Math.random() * 0.5 + 0.6) + 's';
+    drop.style.animationDelay = Math.random() * 2 + 's';
+    drop.style.opacity = Math.random() * 0.5 + 0.3;
+    container.appendChild(drop);
+  }
 }
 
 // ============================================================
@@ -1859,7 +2107,17 @@ function renderSchedule() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('current-day').textContent = new Date().toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric'});
   
-  let todaysEvents = state.events.filter(e => !e.date || e.date === today);
+  let todaysEvents = state.events.filter(e => {
+    if (e.type === 'note') return e.date === today;
+    if (e.everyday) return true;
+    if (e.startDate) {
+      if (e.startDate > today) return false;
+      if (e.endDate && e.endDate < today) return false;
+      return true;
+    }
+    // Fallback for events with just 'date'
+    return !e.date || e.date === today;
+  });
   todaysEvents.sort((a,b) => (a.time||'23:59').localeCompare(b.time||'23:59'));
 
   if (todaysEvents.length === 0) {
@@ -1873,38 +2131,40 @@ function renderSchedule() {
     let statusBadge = '';
     let bgColor = 'bg-white';
     let borderColor = 'border-gray-100';
+    let isAlarm = e.alarmEnabled !== false && e.type !== 'note';
     
     // Caregiver sees the status of alarms easily tracked
-    if (e.type !== 'note') {
+    if (isAlarm) {
        if (e.status === 'snoozed') { statusBadge = `<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-yellow-400">Snoozed</span>`; bgColor = 'bg-yellow-50'; }
        else if (e.status === 'completed') { statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-green-400">Done</span>`; bgColor = 'bg-green-50 opacity-80'; borderColor='border-green-200'; }
        else if (e.status === 'missed') { statusBadge = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-red-400">Missed</span>`; bgColor = 'bg-red-50'; }
-       else { statusBadge = `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-blue-300">Pending</span>`; borderColor='border-indigo-100 shadow-lg'; }
+       else { statusBadge = `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase ring-1 ring-blue-300">Tracking</span>`; borderColor='border-indigo-100 shadow-lg'; }
     } else {
-       statusBadge = `<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Note</span>`;
+       if(e.type === 'note') statusBadge = `<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Note Log</span>`;
+       else statusBadge = `<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Silent Sched</span>`;
     }
 
-    const typeIcons = { 'note':'📝', 'med':'💊', 'visit':'🏠', 'appt':'🩺' };
+    const typeIcons = { 'note':'📝', 'med':'💊', 'routine':'🩸', 'appt':'🩺', 'other':'📋' };
+    const repeatIcon = e.everyday ? ' <i class="fas fa-redo text-xs text-indigo-400 ml-1" title="Repeats Everyday"></i>' : '';
     
     return `
     <div class="relative pl-6 pt-1 pb-1">
       <div class="absolute left-[11px] top-4 bottom-[-1rem] w-0.5 bg-indigo-100 last:hidden"></div>
       <div class="absolute left-0 top-3 w-6 h-6 rounded-full bg-indigo-50 border-2 ${e.status==='completed'?'border-green-400 bg-green-100':'border-indigo-400'} flex items-center justify-center text-[11px] z-10 shadow-sm">
-         ${e.status==='completed'?'✓':(typeIcons[e.type]||'📝')}
+         ${e.status==='completed'?'✓':(typeIcons[e.type]||'📋')}
       </div>
       <div class="ml-3 ${bgColor} border-2 ${borderColor} rounded-2xl shadow-sm p-4 flex gap-3 transition-all hover:-translate-y-0.5 hover:shadow-md h-full">
          <div class="flex-1 min-w-0">
            <div class="flex items-center gap-2 mb-1.5">
              <span class="font-extrabold text-indigo-900 text-lg sm:text-xl">${e.time ? formatTime(e.time) : 'Anytime'}</span>
-             ${statusBadge}
+             ${statusBadge} ${repeatIcon}
            </div>
            <div class="font-bold text-gray-800 text-base leading-tight ${e.status==='completed'?'line-through opacity-70':''}">${esc(e.title)}</div>
            ${contact ? `<div class="mt-2.5 flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-extrabold ring-1 ring-indigo-200">${initials(contact.name)}</div><span class="text-xs text-indigo-600 font-bold tracking-wide uppercase">${esc(contact.name)}</span></div>` : ''}
          </div>
          <div class="flex flex-col gap-2 flex-shrink-0 justify-center ml-2 border-l border-gray-100 pl-3">
-            ${(state.roleMode === 'caregiver' && e.status !== 'completed') ? `<button onclick="openEditEvent('${e.id}')" class="text-gray-400 hover:text-indigo-500 w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm transition-all hover:bg-indigo-50"><i class="fas fa-pencil text-xs"></i></button>` : ''}
             ${(state.roleMode === 'caregiver' && e.status !== 'completed') ? `<button onclick="confirmDeleteEvent('${e.id}')" class="text-gray-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm transition-all hover:bg-red-50"><i class="fas fa-trash text-xs"></i></button>` : ''}
-            ${(state.roleMode === 'patient' && e.status !== 'completed' && e.type !== 'note') ? `<button onclick="triggerAlarmMock('${e.id}')" class="text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-xl text-xs font-bold shadow-md pulse-btn flex flex-col items-center leading-tight"><span>Demo</span><span>Ring!</span></button>` : ''}
+            ${(state.roleMode === 'patient' && e.status !== 'completed' && isAlarm) ? `<button onclick="triggerAlarmMock('${e.id}')" class="text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-xl text-xs font-bold shadow-md pulse-btn flex flex-col items-center leading-tight"><span>Demo</span><span>Ring!</span></button>` : ''}
          </div>
       </div>
     </div>`;
@@ -1920,18 +2180,27 @@ function formatTime(t) {
   return `${hi}:${m} ${ampm}`;
 }
 
+function toggleFreq(val) {
+   const dc = document.getElementById('freq-date-container');
+   if(val === 'date') dc.classList.remove('hidden');
+   else dc.classList.add('hidden');
+}
+
 function openAddEvent() {
   if (state.roleMode !== 'caregiver') {
-    toast("Please switch to Caregiver Mode to add alarms."); return;
+    toast("Please switch to Caregiver Mode to schedule alarms."); return;
   }
   state.editingEventId = null;
-  document.getElementById('modal-schedule-title').textContent = 'Add Note / Alarm';
+  document.getElementById('modal-schedule-title').textContent = 'Add Schedule';
   document.getElementById('s-title').value = '';
-  document.getElementById('s-type').value = 'note';
+  document.getElementById('s-type').value = 'med';
   // set current time slightly ahead for demo
   let d = new Date(); d.setMinutes(d.getMinutes()+2);
   document.getElementById('s-time').value = d.toTimeString().slice(0,5);
   document.getElementById('s-date').value = d.toISOString().split('T')[0];
+  document.getElementById('s-alarm').checked = true;
+  document.querySelector('input[name="freqToggle"][value="everyday"]').checked = true;
+  toggleFreq('everyday');
   
   const sel = document.getElementById('s-contact');
   // Load contacts
@@ -1941,20 +2210,35 @@ function openAddEvent() {
   openModal('modal-schedule');
 }
 
-function openEditEvent(id) {
-  const e = state.events.find(x => x.id === id);
-  if (!e) return;
-  state.editingEventId = id;
-  document.getElementById('modal-schedule-title').textContent = 'Edit Event';
-  document.getElementById('s-title').value = e.title;
-  document.getElementById('s-type').value = e.type||'note';
-  document.getElementById('s-time').value = e.time||'';
-  document.getElementById('s-date').value = e.date||'';
-  
-  const sel = document.getElementById('s-contact');
-  sel.innerHTML = '<option value="">— Unassigned —</option>' + Object.values(state.contacts).map(c => `<option value="${c.id}" ${c.id === e.contactId ? 'selected':''}>${esc(c.name)}</option>`).join('');
+function openAddNote() {
+  if (state.roleMode !== 'caregiver') {
+    toast("Please switch to Caregiver Mode to add notes."); return;
+  }
+  state.editingEventId = null;
+  document.getElementById('n-title').value = '';
+  let d = new Date();
+  document.getElementById('n-time').value = d.toTimeString().slice(0,5);
+  document.getElementById('n-date').value = d.toISOString().split('T')[0];
+  openModal('modal-note');
+}
 
-  openModal('modal-schedule');
+function saveNote() {
+  const title = document.getElementById('n-title').value.trim();
+  if(!title) { shake('n-title'); return; }
+  if (!state.events) state.events = [];
+  
+  const data = {
+    title, type: 'note', everyday: false, alarmEnabled: false,
+    time: document.getElementById('n-time').value,
+    date: document.getElementById('n-date').value,
+    status: 'completed' // notes are inherently just logs
+  };
+  
+  state.events.push({id: uid(), ...data});
+  toast("Note logged securely.");
+  saveState();
+  closeModal('modal-note');
+  renderSchedule();
 }
 
 function saveSchedule() {
@@ -1963,23 +2247,22 @@ function saveSchedule() {
   
   if (!state.events) state.events = [];
   
+  const isEveryday = document.querySelector('input[name="freqToggle"]:checked').value === 'everyday';
+  
   const data = {
     title,
     type: document.getElementById('s-type').value,
     time: document.getElementById('s-time').value,
-    date: document.getElementById('s-date').value,
+    startDate: document.getElementById('s-start-date').value,
+    endDate: isEveryday ? null : document.getElementById('s-end-date').value,
+    everyday: isEveryday,
+    alarmEnabled: document.getElementById('s-alarm').checked,
     contactId: document.getElementById('s-contact').value,
     status: 'pending' // pending, snoozed, completed, missed
   };
   
-  if (state.editingEventId) {
-    const idx = state.events.findIndex(x => x.id === state.editingEventId);
-    if(idx > -1) state.events[idx] = {...state.events[idx], ...data};
-    toast("Updated schedule.");
-  } else {
-    state.events.push({id: uid(), ...data});
-    toast("Added to schedule.");
-  }
+  state.events.push({id: uid(), ...data});
+  toast("Added to schedule.");
   
   saveState();
   closeModal('modal-schedule');
@@ -1987,11 +2270,11 @@ function saveSchedule() {
 }
 
 function confirmDeleteEvent(id) {
-  showConfirm("Delete Event?", "This will be removed from tracking.", () => {
+  showConfirm("Delete Item?", "This will be permanently removed.", () => {
     state.events = state.events.filter(e => e.id !== id);
     saveState();
     renderSchedule();
-    toast('Event deleted');
+    toast('Item deleted');
   });
 }
 
@@ -2003,9 +2286,9 @@ function triggerAlarmMock(id) {
   if(!e) return;
   activeAlarmId = id;
   
-  const typeIcons = { 'med':'💊 Medication Time', 'visit':'🏠 Visit Arriving', 'appt':'🩺 Upcoming Appt' };
+  const typeIcons = { 'med':'💊 Medication Time', 'routine':'🩸 Routine Check', 'appt':'🩺 Upcoming Appt', 'other': '🔔 Reminder' };
   document.getElementById('alarm-icon').textContent = typeIcons[e.type]?.slice(0,2) || '🔔';
-  document.getElementById('alarm-title').textContent = (typeIcons[e.type] || '🔔 Alarm') + "\n\n" + e.title;
+  document.getElementById('alarm-title').textContent = (typeIcons[e.type] || '🔔 Reminder') + "\n\n" + e.title;
   
   openModal('modal-alarm');
 }
@@ -2054,12 +2337,16 @@ setInterval(() => {
       const todayDate = now.toISOString().split('T')[0];
       const currentTime = now.toTimeString().slice(0,5);
       
-      const dueEvent = state.events.find(e => 
-         e.type !== 'note' && 
-         (e.status === 'pending' || e.status === 'snoozed') && 
-         (e.date === todayDate || !e.date) && 
-         e.time === currentTime
-      );
+      const dueEvent = state.events.find(e => {
+         if (e.alarmEnabled === false || e.type === 'note') return false;
+         if (e.status !== 'pending' && e.status !== 'snoozed') return false;
+         if (e.time !== currentTime) return false;
+         if (e.everyday) return true;
+         if (e.startDate) {
+            return e.startDate <= todayDate && (!e.endDate || e.endDate >= todayDate);
+         }
+         return (!e.date || e.date === todayDate);
+      });
       if(dueEvent && now.getSeconds() < 2) {
          triggerAlarmMock(dueEvent.id);
       }
@@ -2071,7 +2358,7 @@ setInterval(() => {
 // ============================================================
 loadState();
 initQAData();
-navTo('dashboard');
+navTo('login');
 </script>
 </body>
 </html>
