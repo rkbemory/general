@@ -150,8 +150,15 @@
       <p class="text-gray-500 text-lg">No support groups yet. Create your first one!</p>
     </div>
 
-    <!-- ALZHEIMER'S EDUCATIONAL HUB -->
-    <div class="mt-10 bg-white border border-gray-200 rounded-[30px] p-6 shadow-sm">
+  </div>
+
+  <!-- ===== EDUCATION VIEW ===== -->
+  <div id="view-education" class="hidden pb-safe">
+    <div class="mb-5">
+      <h2 class="text-3xl font-extrabold text-gray-800 drop-shadow-sm">🧠 Education Hub</h2>
+      <p class="text-gray-500 text-sm mt-1">Understanding Alzheimer's &amp; Dementia</p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-[30px] p-6 shadow-sm">
       <div class="flex items-center gap-3 mb-4">
         <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-2xl shadow-inner">
           <i class="fas fa-brain"></i>
@@ -491,6 +498,10 @@
       <i class="fas fa-home text-[22px] mb-1.5 text-indigo-500 drop-shadow-sm"></i>
       <span class="uppercase tracking-wider">Home</span>
     </button>
+    <button onclick="navTo('education')" id="nav-education" class="flex-1 py-2.5 flex flex-col items-center text-gray-500 text-[10px] font-extrabold transition-all hover:-translate-y-1">
+      <i class="fas fa-book-medical text-[22px] mb-1.5 text-teal-500 drop-shadow-sm"></i>
+      <span class="uppercase tracking-wider">Edu</span>
+    </button>
     <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 py-2.5 flex flex-col items-center text-gray-500 text-[10px] font-extrabold transition-all hover:-translate-y-1">
       <i class="fas fa-calendar-check text-[22px] mb-1.5 text-emerald-500 drop-shadow-sm"></i>
       <span class="uppercase tracking-wider">Schedule</span>
@@ -539,10 +550,10 @@
 <!-- Add/Edit Village Modal -->
 <div id="modal-village" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-    <h2 id="modal-village-title" class="text-xl font-bold text-gray-800 mb-5">Create New Village</h2>
+    <h2 id="modal-village-title" class="text-xl font-bold text-gray-800 mb-5">Create New Group</h2>
     <div class="space-y-4">
       <div>
-        <label class="block text-gray-700 font-semibold mb-1">Village Name *</label>
+        <label class="block text-gray-700 font-semibold mb-1">Group Name *</label>
         <input id="v-name" type="text" placeholder="e.g. Blood Donors, Church Friends" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none"/>
       </div>
       <div>
@@ -558,7 +569,7 @@
     </div>
     <div class="flex gap-3 mt-6">
       <button onclick="closeModal('modal-village')" class="flex-1 py-3 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold hover:bg-gray-50">Cancel</button>
-      <button onclick="saveVillage()" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Save Village</button>
+      <button onclick="saveVillage()" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Save Group</button>
     </div>
   </div>
 </div>
@@ -1045,7 +1056,7 @@ function renderDashboard() {
   stats.innerHTML = `
     <div class="bg-white rounded-xl p-4 shadow text-center">
       <div class="text-2xl font-bold text-indigo-600">${state.villages.length}</div>
-      <div class="text-gray-500 text-sm">Villages</div>
+      <div class="text-gray-500 text-sm">Groups</div>
     </div>
     <div class="bg-white rounded-xl p-4 shadow text-center">
       <div class="text-2xl font-bold text-green-600">${totalContacts}</div>
@@ -1390,7 +1401,7 @@ function confirmDeleteTask(id) {
 function openAddVillage() {
   state.editingVillageId = null;
   state.selectedThemeIdx = 0;
-  document.getElementById('modal-village-title').textContent = 'Create New Village';
+  document.getElementById('modal-village-title').textContent = 'Create New Group';
   document.getElementById('v-name').value = '';
   document.getElementById('v-desc').value = '';
   renderIconPicker(0);
@@ -1402,7 +1413,7 @@ function openEditVillage(id) {
   if (!v) return;
   state.editingVillageId = id;
   state.selectedThemeIdx = v.themeIdx||0;
-  document.getElementById('modal-village-title').textContent = 'Edit Village';
+  document.getElementById('modal-village-title').textContent = 'Edit Group';
   document.getElementById('v-name').value = v.name;
   document.getElementById('v-desc').value = v.desc||'';
   renderIconPicker(v.themeIdx||0);
@@ -1543,7 +1554,7 @@ function toast(msg) {
 // ============================================================
 //  NAVIGATION & APP LOGIC
 // ============================================================
-const ALL_VIEWS = ['login','dashboard','village','qa','chat','schedule','resources'];
+const ALL_VIEWS = ['login','dashboard','village','qa','chat','schedule','education','resources'];
 
 function navTo(view) {
   state.activeTab = view;
@@ -1584,7 +1595,7 @@ function navTo(view) {
   }
 
   // nav highlight
-  ['dashboard','qa','chat','schedule','resources'].forEach(n => {
+  ['dashboard','qa','chat','schedule','education','resources'].forEach(n => {
     const btn = document.getElementById('nav-'+n);
     if (btn) {
       if (n === view) {
