@@ -1032,6 +1032,13 @@ function loadState() {
     state.tasks     = parsed.tasks     || [];
     state.events    = parsed.events    || [];
     state.questions = parsed.questions !== undefined ? parsed.questions : null;
+    
+    // Purge the obsolete 7th default group from local memory permanently
+    state.villages = state.villages.filter(v => 
+      v.name !== 'Formal Caregiver' && 
+      v.name !== 'Medical Team' && 
+      v.desc !== 'Professional paid care staff'
+    );
   }
   if (state.villages.length === 0) seedDefaults();
 }
