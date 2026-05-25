@@ -134,6 +134,9 @@
       <button onclick="showEmergency()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-2 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs shadow-sm" title="Emergency">
         <i class="fas fa-phone-alt"></i><span class="ml-0.5">SOS</span>
       </button>
+      <button onclick="enterPatientMode()" class="text-gray-400 hover:text-gray-600 text-xs font-semibold p-1.5 rounded transition-colors flex items-center gap-1" title="Switch to Patient Portal">
+        <i class="fas fa-user"></i><span class="hidden sm:inline">Patient</span>
+      </button>
     </div>
   </div>
   <!-- Breadcrumb -->
@@ -341,22 +344,7 @@
         <button onclick="toggleMoreFeelings()" id="feelings-toggle-btn" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold whitespace-nowrap" title="Show more">More</button>
       </div>
 
-      <!-- Quick 5-second mood scan (merged from old "How are YOU?" card) -->
-      <div class="mt-4 bg-white/70 backdrop-blur-sm border border-amber-100 rounded-2xl p-3">
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <span class="text-xs font-bold text-gray-700 flex items-center gap-1.5"><i class="fas fa-heart text-amber-500"></i> Overall today</span>
-          <div class="flex gap-1.5">
-            <button onclick="logMood(5)" class="text-xl hover:scale-125 transition-transform" title="Excellent">😊</button>
-            <button onclick="logMood(4)" class="text-xl hover:scale-125 transition-transform" title="Good">😐</button>
-            <button onclick="logMood(3)" class="text-xl hover:scale-125 transition-transform" title="Tired">😔</button>
-            <button onclick="logMood(2)" class="text-xl hover:scale-125 transition-transform" title="Anxious">😰</button>
-            <button onclick="logMood(1)" class="text-xl hover:scale-125 transition-transform" title="Frustrated">😤</button>
-          </div>
-        </div>
-        <div id="mood-insight-container" class="hidden mt-2 text-xs text-amber-900 italic font-medium leading-snug">
-        </div>
-      </div>
-
+      <!-- (Inline mood scan moved to a once-per-session popup that appears on dashboard entry.) -->
       <div id="feelings-list" class="mt-4 space-y-2"></div>
       <div id="feelings-confirm" class="hidden mt-4 bg-indigo-100 border border-indigo-200 rounded-2xl p-3 text-sm text-indigo-900 italic leading-snug text-center">
         Thank you for being honest with yourself. You are not the only one.
@@ -1476,27 +1464,8 @@
       <!-- Meds Checklist -->
       <div id="patient-meds" class="w-full space-y-3"></div>
       
-      <!-- Patient Mood Check-In -->
-      <div class="bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-100 rounded-[30px] p-6 shadow-lg w-full flex flex-col justify-between">
-        <div>
-          <h3 class="text-xl font-extrabold text-teal-900 flex items-center justify-center gap-2 mb-1">
-            <i class="fas fa-heart text-teal-600"></i> How are you feeling today?
-          </h3>
-          <p class="text-sm text-teal-700 font-bold text-center mb-4">Tap an emoji to let us know!</p>
-          
-          <div class="flex justify-between px-2 mb-2">
-            <button onclick="logPatientMood(5, 'Excellent')" class="text-4xl hover:scale-125 transition-transform filter hover:drop-shadow-md active:scale-90" title="Excellent">😊</button>
-            <button onclick="logPatientMood(4, 'Good')" class="text-4xl hover:scale-125 transition-transform filter hover:drop-shadow-md active:scale-90" title="Good">😐</button>
-            <button onclick="logPatientMood(3, 'Tired')" class="text-4xl hover:scale-125 transition-transform filter hover:drop-shadow-md active:scale-90" title="Tired">😔</button>
-            <button onclick="logPatientMood(2, 'Anxious')" class="text-4xl hover:scale-125 transition-transform filter hover:drop-shadow-md active:scale-90" title="Anxious">😰</button>
-            <button onclick="logPatientMood(1, 'Frustrated')" class="text-4xl hover:scale-125 transition-transform filter hover:drop-shadow-md active:scale-90" title="Frustrated">😤</button>
-          </div>
-        </div>
-        <div id="patient-mood-insight-container" class="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-teal-100 text-sm text-teal-900 italic font-bold text-center leading-normal shadow-sm hidden">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-      
+      <!-- (Inline mood section moved to a once-per-session popup that appears on entry to Patient Portal.) -->
+
       <!-- Raise a Need button -->
       <button onclick="openPatientNeed()" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-3xl p-6 text-center shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-4" style="min-height:90px;">
         <i class="fas fa-hands-helping text-3xl"></i>
@@ -1517,13 +1486,9 @@
           <div class="text-lg font-bold text-amber-800">Listen to music</div>
         </button>
       </div>
-      
-      <!-- SOS Button -->
-      <button onclick="showEmergency()" class="w-full bg-red-500 hover:bg-red-600 text-white rounded-3xl p-6 text-center shadow-xl transition-all active:scale-95" style="min-height:80px;">
-        <div class="text-3xl font-extrabold"><i class="fas fa-phone-alt mr-3"></i> HELP &mdash; SOS</div>
-      </button>
+      <!-- (Duplicate body-level SOS removed — the SOS button in the header is always visible) -->
     </div>
-    
+
     <!-- Sub-view: Schedule -->
     <div id="patient-view-schedule" class="hidden w-full max-w-md mx-auto flex flex-col gap-6">
       <div class="flex items-center justify-between mb-2">
@@ -2245,6 +2210,33 @@
         <i class="far fa-copy"></i> Copy Code
       </button>
     </div>
+  </div>
+</div>
+
+<!-- Mood Check-In Popup — once per session, both portals -->
+<div id="modal-mood-checkin" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-[1150] flex items-center justify-center p-4">
+  <div class="bg-white rounded-[35px] shadow-2xl w-full max-w-md p-6 my-4 border-2 border-amber-200 relative">
+    <button onclick="dismissMoodCheckin()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl font-black p-1 leading-none" title="Skip">&times;</button>
+    <div class="text-center mb-3">
+      <div class="text-4xl mb-2">💛</div>
+      <h2 id="mood-checkin-title" class="text-xl font-extrabold text-gray-800 mb-1">How are you feeling today?</h2>
+      <p id="mood-checkin-subtitle" class="text-sm text-gray-600 italic">Tap an emoji &mdash; takes 2 seconds.</p>
+    </div>
+    <div class="flex justify-between px-2 my-5">
+      <button onclick="logMoodFromPopup(5)" class="text-5xl hover:scale-125 active:scale-90 transition-transform" title="Excellent">😊</button>
+      <button onclick="logMoodFromPopup(4)" class="text-5xl hover:scale-125 active:scale-90 transition-transform" title="Good">😐</button>
+      <button onclick="logMoodFromPopup(3)" class="text-5xl hover:scale-125 active:scale-90 transition-transform" title="Tired">😔</button>
+      <button onclick="logMoodFromPopup(2)" class="text-5xl hover:scale-125 active:scale-90 transition-transform" title="Anxious">😰</button>
+      <button onclick="logMoodFromPopup(1)" class="text-5xl hover:scale-125 active:scale-90 transition-transform" title="Frustrated">😤</button>
+    </div>
+    <div class="flex justify-center gap-2 text-[10px] text-gray-400 uppercase tracking-wider font-bold px-2">
+      <span class="flex-1 text-center">Excellent</span>
+      <span class="flex-1 text-center">Good</span>
+      <span class="flex-1 text-center">Tired</span>
+      <span class="flex-1 text-center">Anxious</span>
+      <span class="flex-1 text-center">Frustrated</span>
+    </div>
+    <button onclick="dismissMoodCheckin()" class="w-full text-xs text-gray-500 hover:text-gray-700 mt-5 underline py-1">Skip for now</button>
   </div>
 </div>
 
@@ -3106,6 +3098,47 @@ function rightNowAction() {
   }
 }
 
+// ----- Mood check-in popup (once per session per portal entry) -----
+// Session flag is in-memory only — resets on page reload, which is effectively
+// "next login" since the app re-runs init() on every fresh load.
+let _moodPromptedThisSession = false;
+let _moodPromptRole = null;  // 'caregiver' | 'patient'
+
+function maybeShowMoodCheckin(role) {
+  if (_moodPromptedThisSession) return;
+  _moodPromptedThisSession = true;
+  _moodPromptRole = role;
+  const titleEl = document.getElementById('mood-checkin-title');
+  const subEl = document.getElementById('mood-checkin-subtitle');
+  if (titleEl && subEl) {
+    if (role === 'patient') {
+      const name = (state.patientName || '').trim();
+      titleEl.textContent = name ? `Hi ${name}, how are you feeling today?` : 'How are you feeling today?';
+      subEl.textContent = 'Tap a face — that\'s all we need.';
+    } else {
+      const name = (state.caregiverName || '').trim();
+      titleEl.textContent = name ? `${name}, how are YOU feeling today?` : 'How are YOU feeling today?';
+      subEl.textContent = 'A two-second check-in for yourself.';
+    }
+  }
+  // Short delay so the dashboard/patient view renders first, then the popup appears on top
+  setTimeout(() => openModal('modal-mood-checkin'), 600);
+}
+
+function logMoodFromPopup(score) {
+  if (_moodPromptRole === 'patient') {
+    const labels = { 5: 'Excellent', 4: 'Good', 3: 'Tired', 2: 'Anxious', 1: 'Frustrated' };
+    if (typeof logPatientMood === 'function') logPatientMood(score, labels[score] || 'Logged');
+  } else {
+    if (typeof logMood === 'function') logMood(score);
+  }
+  closeModal('modal-mood-checkin');
+}
+
+function dismissMoodCheckin() {
+  closeModal('modal-mood-checkin');
+}
+
 function getGreeting() {
   const h = new Date().getHours();
   let period;
@@ -3312,6 +3345,9 @@ function renderDashboard() {
 
   // "You're not alone" feed
   if (typeof renderFeelingsFeed === 'function') renderFeelingsFeed();
+
+  // Once per session, prompt the caregiver for a quick mood check
+  if (typeof maybeShowMoodCheckin === 'function') maybeShowMoodCheckin('caregiver');
 
   // Priorities
   const priEl = document.getElementById('dashboard-priorities-list');
@@ -5738,6 +5774,8 @@ function enterPatientMode() {
   if (typeof _lastNotifiedRemindersCount !== 'undefined') _lastNotifiedRemindersCount = -1;
   checkPatientNotifications();
   if (typeof detectNewPatientReminders === 'function') detectNewPatientReminders();
+  // Once per session, prompt the patient for a quick mood check
+  if (typeof maybeShowMoodCheckin === 'function') maybeShowMoodCheckin('patient');
 }
 
 function exitPatientMode() {
