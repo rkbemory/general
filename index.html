@@ -1566,8 +1566,8 @@
       <!-- Help Hub Sub-Tabs -->
       <div class="flex bg-teal-100/40 p-1.5 rounded-2xl max-w-sm w-full mx-auto mb-2 border border-teal-200/50">
         <button onclick="setPatientHelpTab('tips')" id="pat-help-tab-tips" class="flex-1 py-2.5 text-center rounded-xl text-base font-black text-teal-900 bg-white shadow-sm transition-all active:scale-95">Tips</button>
-        <button onclick="setPatientHelpTab('qa')" id="pat-help-tab-qa" class="flex-1 py-2.5 text-center rounded-xl text-base font-black text-gray-500 hover:text-teal-900 transition-all active:scale-95">Q&A</button>
-        <button onclick="setPatientHelpTab('resources')" id="pat-help-tab-resources" class="flex-1 py-2.5 text-center rounded-xl text-base font-black text-gray-500 hover:text-teal-900 transition-all active:scale-95">Resources</button>
+        <button onclick="setPatientHelpTab('activities')" id="pat-help-tab-activities" class="flex-1 py-2.5 text-center rounded-xl text-base font-black text-gray-500 hover:text-teal-900 transition-all active:scale-95">🎶 Activities</button>
+        <button onclick="setPatientHelpTab('smiles')" id="pat-help-tab-smiles" class="flex-1 py-2.5 text-center rounded-xl text-base font-black text-gray-500 hover:text-teal-900 transition-all active:scale-95">😊 Smiles</button>
       </div>
 
       <!-- Panel: Tips -->
@@ -1633,16 +1633,17 @@
         </div>
       </div>
 
-      <!-- Panel: Q&A -->
-      <div id="panel-pat-help-qa" class="hidden space-y-4">
-        <div id="patient-help-qa" class="space-y-4">
+      <!-- Panel: Activities (music, calm, movement, nature) -->
+      <div id="panel-pat-help-activities" class="hidden space-y-5">
+        <p class="text-sm text-gray-600 text-center italic px-4">Tap any button to open. Each opens a new window with videos you can watch as long as you like.</p>
+        <div id="patient-help-activities" class="space-y-5">
           <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- Panel: Resources -->
-      <div id="panel-pat-help-resources" class="hidden space-y-4">
-        <div id="patient-help-resources" class="space-y-4">
+      <!-- Panel: Smiles (jokes, memory prompts) -->
+      <div id="panel-pat-help-smiles" class="hidden space-y-5">
+        <div id="patient-help-smiles" class="space-y-5">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -8071,7 +8072,7 @@ function confirmPatientEvent(id) {
 }
 
 function setPatientHelpTab(tab) {
-  const tabs = ['tips', 'qa', 'resources'];
+  const tabs = ['tips', 'activities', 'smiles'];
   tabs.forEach(t => {
     const btn = document.getElementById('pat-help-tab-' + t);
     const panel = document.getElementById('panel-pat-help-' + t);
@@ -8088,87 +8089,210 @@ function setPatientHelpTab(tab) {
   });
 }
 
+// ============================================================
+//  PATIENT ACTIVITIES — curated music, calm, movement, memory content
+//  Each link opens in a new tab. Most use YouTube search/playlist URLs so
+//  individual videos coming or going doesn't break the link.
+// ============================================================
+const PATIENT_ACTIVITY_CATEGORIES = [
+  {
+    heading: '🎵 Music to enjoy',
+    blurb: 'Familiar songs are one of the most powerful ways to feel calm and connected.',
+    color: 'from-rose-400 to-pink-500',
+    items: [
+      { label: 'Frank Sinatra classics',       url: 'https://www.youtube.com/results?search_query=frank+sinatra+greatest+hits' },
+      { label: '1950s &amp; 1960s oldies',     url: 'https://www.youtube.com/results?search_query=oldies+50s+60s+greatest+hits' },
+      { label: 'Big Band &amp; swing',         url: 'https://www.youtube.com/results?search_query=big+band+swing+1940s+playlist' },
+      { label: 'Classic hymns &amp; gospel',   url: 'https://www.youtube.com/results?search_query=classic+hymns+gospel+singalong' },
+      { label: 'Classical relaxation',         url: 'https://www.youtube.com/results?search_query=classical+music+for+relaxation' },
+      { label: 'Country classics',             url: 'https://www.youtube.com/results?search_query=country+classics+playlist+oldies' }
+    ]
+  },
+  {
+    heading: '🌳 Calm &amp; relax',
+    blurb: 'Gentle sounds and slow visuals can help quiet a busy mind.',
+    color: 'from-emerald-400 to-teal-500',
+    items: [
+      { label: 'Forest sounds (1 hour)',         url: 'https://www.youtube.com/results?search_query=forest+sounds+1+hour+relaxation' },
+      { label: 'Ocean waves',                    url: 'https://www.youtube.com/results?search_query=ocean+waves+relaxation+1+hour' },
+      { label: 'Birds singing in the morning',   url: 'https://www.youtube.com/results?search_query=morning+bird+sounds+relaxing' },
+      { label: 'Gentle rain &amp; thunder',      url: 'https://www.youtube.com/results?search_query=gentle+rain+thunder+sleep' },
+      { label: 'Guided slow breathing (5 min)',  url: 'https://www.youtube.com/results?search_query=guided+slow+breathing+5+minutes+seniors' },
+      { label: 'Aquarium fish (calming visuals)',url: 'https://www.youtube.com/results?search_query=aquarium+fish+relaxing+1+hour' }
+    ]
+  },
+  {
+    heading: '🤸 Gentle movement',
+    blurb: 'Short, seated exercises you can do safely at home.',
+    color: 'from-amber-400 to-orange-500',
+    items: [
+      { label: 'Chair yoga for seniors (10 min)', url: 'https://www.youtube.com/results?search_query=chair+yoga+for+seniors+10+minute' },
+      { label: 'Gentle seated stretches',         url: 'https://www.youtube.com/results?search_query=gentle+seated+stretches+seniors' },
+      { label: 'Hand &amp; finger exercises',     url: 'https://www.youtube.com/results?search_query=hand+finger+exercises+seniors+arthritis' },
+      { label: 'Standing balance practice',       url: 'https://www.youtube.com/results?search_query=standing+balance+exercises+seniors+5+minute' }
+    ]
+  },
+  {
+    heading: '🎬 Memories &amp; nostalgia',
+    blurb: 'Familiar voices and images from earlier decades.',
+    color: 'from-purple-400 to-indigo-500',
+    items: [
+      { label: 'Classic black-and-white movie scenes', url: 'https://www.youtube.com/results?search_query=classic+movie+scenes+black+and+white' },
+      { label: 'Old TV show theme songs',              url: 'https://www.youtube.com/results?search_query=classic+tv+show+theme+songs+compilation' },
+      { label: 'Vintage commercials',                  url: 'https://www.youtube.com/results?search_query=vintage+1950s+1960s+commercials' },
+      { label: 'Historic news moments',                url: 'https://www.youtube.com/results?search_query=historic+news+moments+20th+century' }
+    ]
+  }
+];
+
+// ============================================================
+//  PATIENT SMILES — clean jokes and conversation starters
+// ============================================================
+const PATIENT_JOKES = [
+  "Why don't scientists trust atoms? Because they make up everything!",
+  "I told my wife she was drawing her eyebrows too high. She looked surprised.",
+  "Why did the scarecrow win an award? He was outstanding in his field.",
+  "What do you call a fish wearing a crown? Your royal haddock.",
+  "I'm reading a book about anti-gravity. It's impossible to put down.",
+  "Why don't oysters share their pearls? Because they're shellfish.",
+  "I used to be a banker, but I lost interest.",
+  "What did one wall say to the other wall? I'll meet you at the corner.",
+  "Why did the bicycle fall over? Because it was two-tired.",
+  "Why don't eggs tell jokes? They'd crack each other up.",
+  "I'm on a seafood diet. I see food and I eat it.",
+  "What do you call cheese that isn't yours? Nacho cheese.",
+  "What did the grape do when it got stepped on? Nothing — it just let out a little wine.",
+  "Why did the math book look so sad? Because it had too many problems.",
+  "What kind of music do mummies listen to? Wrap music.",
+  "Why did the cookie go to the doctor? Because it was feeling crummy.",
+  "I'd tell you a construction joke, but I'm still working on it.",
+  "What did the ocean say to the shore? Nothing — it just waved.",
+  "What's a sleeping bull called? A bulldozer.",
+  "Did you hear about the kidnapping at the playground? They woke up.",
+  "I asked my dog what's two minus two. He said nothing.",
+  "What do you call a pig that does karate? A pork chop.",
+  "Why did the bee get married? Because he found his honey.",
+  "Why don't seagulls fly over the bay? Because then they'd be bagels.",
+  "I tried to catch some fog earlier. I mist.",
+  "Why did the golfer bring two pairs of pants? In case he got a hole in one.",
+  "What did one hat say to the other? You stay here, I'll go on a head.",
+  "What's brown and sticky? A stick.",
+  "How does the moon cut his hair? Eclipse it.",
+  "Why was the broom late? It over-swept."
+];
+
+const PATIENT_MEMORY_PROMPTS = [
+  "Tell me about your favorite childhood meal. Who used to cook it?",
+  "What was the very first job you ever had? Did you like it?",
+  "Tell me about the day you got married. What do you remember best?",
+  "What was your school like when you were ten?",
+  "Tell me about your favorite teacher.",
+  "What was your first car? Where did you go in it?",
+  "Tell me about a holiday that always made you happy.",
+  "What music did you love when you were young? Want to hear some?",
+  "Tell me about your best friend growing up. What were they like?",
+  "What was the prettiest place you ever traveled to?",
+  "Tell me about your parents. What was your mother good at?",
+  "What kind of games did you play as a child?",
+  "What did your hometown smell like in the summer?",
+  "Tell me about a family pet you remember.",
+  "What's the proudest day of your life?",
+  "Tell me about something funny that happened to you when you were young.",
+  "What was your favorite outfit when you were a teenager?",
+  "Tell me about your favorite season. Why?",
+  "What kind of work did your father do?",
+  "Tell me about something you taught yourself how to do.",
+  "What's the best meal you ever ate? Where was it?",
+  "Tell me about a song that always makes you smile.",
+  "Who in your family made you laugh the most?",
+  "Tell me about your favorite chair at home. Why that one?",
+  "What did you want to be when you grew up?"
+];
+
+let _currentJokeIdx = -1;
+let _currentPromptIdx = -1;
+
+function nextJoke() {
+  let idx = Math.floor(Math.random() * PATIENT_JOKES.length);
+  // avoid showing the same joke twice in a row
+  if (idx === _currentJokeIdx && PATIENT_JOKES.length > 1) idx = (idx + 1) % PATIENT_JOKES.length;
+  _currentJokeIdx = idx;
+  const el = document.getElementById('patient-joke-text');
+  if (el) el.textContent = PATIENT_JOKES[idx];
+}
+
+function nextMemoryPrompt() {
+  let idx = Math.floor(Math.random() * PATIENT_MEMORY_PROMPTS.length);
+  if (idx === _currentPromptIdx && PATIENT_MEMORY_PROMPTS.length > 1) idx = (idx + 1) % PATIENT_MEMORY_PROMPTS.length;
+  _currentPromptIdx = idx;
+  const el = document.getElementById('patient-prompt-text');
+  if (el) el.textContent = PATIENT_MEMORY_PROMPTS[idx];
+}
+
 function renderPatientHelpHub() {
-  // Render Q&A in patient view
-  const qaContainer = document.getElementById('patient-help-qa');
-  if (qaContainer) {
-    if (!state.questions) initQAData();
-    if (state.questions.length === 0) {
-      qaContainer.innerHTML = `
-        <div class="bg-white rounded-3xl p-6 text-center text-gray-500 font-bold border border-teal-100 text-lg">
-          🌸 No questions added yet.
+  // ----- Activities tab -----
+  const actContainer = document.getElementById('patient-help-activities');
+  if (actContainer) {
+    actContainer.innerHTML = PATIENT_ACTIVITY_CATEGORIES.map(cat => `
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-teal-100">
+        <div class="mb-3">
+          <h3 class="text-xl font-extrabold text-teal-900">${cat.heading}</h3>
+          <p class="text-sm text-gray-600 mt-1 italic">${cat.blurb}</p>
         </div>
-      `;
-    } else {
-      qaContainer.innerHTML = state.questions.map((q, idx) => {
-        const bestAnswer = q.answers && q.answers.length > 0 ? q.answers[0].text : "No answers yet from your village.";
-        return `
-          <div class="bg-white rounded-2xl p-5 shadow-sm border border-teal-200">
-            <button onclick="toggleAccordion('pat-qa-${idx}')" class="w-full flex items-center justify-between text-left font-black text-lg text-teal-900">
-              <span>❓ ${esc(q.text)}</span>
-              <i id="icon-pat-qa-${idx}" class="fas fa-chevron-down text-teal-500 transition-transform"></i>
-            </button>
-            <div id="content-pat-qa-${idx}" class="hidden mt-3 text-base text-gray-600 leading-relaxed border-t border-teal-50 pt-3">
-              <strong class="text-teal-700 font-bold text-sm uppercase block mb-1">Answer:</strong>
-              <div>${esc(bestAnswer)}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
+        <div class="grid grid-cols-1 gap-2">
+          ${cat.items.map(it => `
+            <a href="${it.url}" target="_blank" rel="noopener" class="block w-full bg-gradient-to-r ${cat.color} hover:brightness-95 text-white font-bold py-4 px-4 rounded-2xl text-base shadow-sm flex items-center justify-between gap-3 active:scale-[0.98] transition-all">
+              <span class="flex items-center gap-3"><i class="fas fa-play-circle text-xl opacity-90"></i> ${it.label}</span>
+              <i class="fas fa-external-link-alt text-sm opacity-80"></i>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
   }
 
-  // Render Resources in patient view
-  const resContainer = document.getElementById('patient-help-resources');
-  if (resContainer) {
-    let html = `
-      <div class="space-y-4">
-        <a href="https://savvycaregiver.com/" target="_blank" class="block bg-white border border-teal-200 rounded-3xl p-5 shadow-md hover:bg-teal-50 transition-all flex items-center gap-4">
-          <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600 text-2xl"><i class="fas fa-book-reader"></i></div>
-          <div class="flex-1">
-            <div class="font-extrabold text-gray-800 text-lg">Savvy Caregiver Locator</div>
-            <div class="text-sm text-gray-500">Find training classes near you</div>
-          </div>
-          <i class="fas fa-external-link-alt text-teal-400 text-lg"></i>
-        </a>
-        <a href="https://www.caregiver.org/connecting-caregivers" target="_blank" class="block bg-white border border-teal-200 rounded-3xl p-5 shadow-md hover:bg-teal-50 transition-all flex items-center gap-4">
-          <div class="w-12 h-12 bg-teal-100 rounded-2xl flex items-center justify-center text-teal-600 text-2xl"><i class="fas fa-hands-helping"></i></div>
-          <div class="flex-1">
-            <div class="font-extrabold text-gray-800 text-lg">GUIDE Caregiver Support</div>
-            <div class="text-sm text-gray-500">Family Caregiver Alliance resources</div>
-          </div>
-          <i class="fas fa-external-link-alt text-teal-400 text-lg"></i>
-        </a>
-        <a href="https://eldercare.acl.gov/" target="_blank" class="block bg-white border border-teal-200 rounded-3xl p-5 shadow-md hover:bg-teal-50 transition-all flex items-center gap-4">
-          <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 text-2xl"><i class="fas fa-map-marker-alt"></i></div>
-          <div class="flex-1">
-            <div class="font-extrabold text-gray-800 text-lg">Eldercare Locator</div>
-            <div class="text-sm text-gray-500">Find your Area Agency on Aging</div>
-          </div>
-          <i class="fas fa-external-link-alt text-teal-400 text-lg"></i>
-        </a>
+  // ----- Smiles tab -----
+  const smilesContainer = document.getElementById('patient-help-smiles');
+  if (smilesContainer) {
+    // Pick a starter joke and prompt for the first render
+    if (_currentJokeIdx === -1) _currentJokeIdx = Math.floor(Math.random() * PATIENT_JOKES.length);
+    if (_currentPromptIdx === -1) _currentPromptIdx = Math.floor(Math.random() * PATIENT_MEMORY_PROMPTS.length);
+
+    smilesContainer.innerHTML = `
+      <!-- Joke of the day -->
+      <div class="bg-white rounded-3xl p-6 shadow-sm border-2 border-amber-200">
+        <div class="text-center mb-3">
+          <div class="text-4xl mb-1">😄</div>
+          <h3 class="text-xl font-extrabold text-amber-900">A little smile</h3>
+        </div>
+        <div class="bg-amber-50 rounded-2xl p-5 mb-4 border border-amber-100">
+          <p id="patient-joke-text" class="text-lg text-gray-800 leading-relaxed text-center italic font-serif">${esc(PATIENT_JOKES[_currentJokeIdx])}</p>
+        </div>
+        <button onclick="nextJoke()" class="w-full btn-big bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-bold py-3 flex items-center justify-center gap-2 shadow text-base">
+          <i class="fas fa-redo"></i> Another joke
+        </button>
+      </div>
+
+      <!-- Tell me about... memory prompt -->
+      <div class="bg-white rounded-3xl p-6 shadow-sm border-2 border-purple-200">
+        <div class="text-center mb-3">
+          <div class="text-4xl mb-1">💭</div>
+          <h3 class="text-xl font-extrabold text-purple-900">A memory to share</h3>
+          <p class="text-sm text-gray-600 italic mt-1">Read this aloud with a friend, family member, or your AI companion.</p>
+        </div>
+        <div class="bg-purple-50 rounded-2xl p-5 mb-4 border border-purple-100">
+          <p id="patient-prompt-text" class="text-lg text-gray-800 leading-relaxed text-center font-serif">${esc(PATIENT_MEMORY_PROMPTS[_currentPromptIdx])}</p>
+        </div>
+        <button onclick="nextMemoryPrompt()" class="w-full btn-big bg-purple-500 hover:bg-purple-600 text-white rounded-2xl font-bold py-3 flex items-center justify-center gap-2 shadow text-base">
+          <i class="fas fa-redo"></i> Another memory
+        </button>
+      </div>
+
+      <!-- Gentle reminder -->
+      <div class="bg-teal-50 rounded-2xl p-4 text-center text-sm text-teal-900 italic border border-teal-100">
+        Sharing a smile or a memory with someone &mdash; even for one minute &mdash; lifts your spirits and theirs. 💙
+      </div>
     `;
-
-    if (state.customResources && state.customResources.length > 0) {
-      html += state.customResources.map(r => {
-        const linkHref = r.url ? (r.url.startsWith('http') ? r.url : 'tel:' + r.url.replace(/\D/g,'')) : '#';
-        const isPhone = r.url && !r.url.startsWith('http');
-        return `
-          <a href="${linkHref}" ${r.url ? 'target="_blank"' : ''} class="block bg-white border border-teal-200 rounded-3xl p-5 shadow-md hover:bg-teal-50 transition-all flex items-center gap-4">
-            <div class="w-12 h-12 bg-teal-500 text-white rounded-2xl flex items-center justify-center text-2xl"><i class="fas ${isPhone ? 'fa-phone-alt' : 'fa-globe'}"></i></div>
-            <div class="flex-1 min-w-0">
-              <div class="font-extrabold text-gray-800 text-lg truncate">${esc(r.title)}</div>
-              ${r.note ? `<div class="text-sm text-gray-500 truncate">${esc(r.note)}</div>` : ''}
-              ${r.url ? `<div class="text-xs text-teal-600 font-bold mt-0.5 truncate">${esc(r.url)}</div>` : ''}
-            </div>
-            <i class="fas ${isPhone ? 'fa-phone' : 'fa-external-link-alt'} text-teal-400 text-lg"></i>
-          </a>
-        `;
-      }).join('');
-    }
-
-    html += `</div>`;
-    resContainer.innerHTML = html;
   }
 }
 
