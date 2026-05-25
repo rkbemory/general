@@ -1,0 +1,38 @@
+# Local development artifacts — never push to the public repo
+*.bak
+*.bak.*
+*.tmp
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Development scripts (keep local only)
+*.ps1
+
+# Personal notes, project docs not meant for the public repo
+*.docx
+*.pdf
+
+# Working folders
+New folder/
+scratch/
+.scratch/
+
+# Editor / IDE configs
+.vscode/
+.idea/
+
+# OS / sync junk
+desktop.ini
+.AppleDouble
+.LSOverride
+
+# Environment / secret files (just in case)
+.env
+.env.local
+*.key
+*.pem
+
+# Backup of the index.html created before each refactor
+index.html.bak
