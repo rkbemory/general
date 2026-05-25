@@ -1384,37 +1384,43 @@
 <!-- ===== PATIENT MODE VIEW ===== -->
 <div id="view-patient" class="hidden fixed inset-0 z-[1000] bg-gradient-to-b from-blue-50 to-teal-50 flex flex-col pointer-events-auto">
 
-  <!-- Branded strip — small but recognisable logo + name, tiny exit corner -->
-  <div class="bg-white/80 backdrop-blur-md border-b border-teal-100 px-4 py-2 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-2 min-w-0">
-      <div class="w-9 h-9 rounded-[10px] bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 flex items-center justify-center shadow-sm flex-shrink-0">
-        <i class="fas fa-sun text-white text-base"></i>
+  <!-- Header — same look as the caregiver portal -->
+  <header class="bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm flex-shrink-0">
+    <div class="max-w-3xl mx-auto px-3 sm:px-4 h-[64px] sm:h-[72px] flex items-center justify-between gap-2">
+      <!-- Logo + name (left) -->
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0 overflow-hidden">
+        <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-[12px] sm:rounded-[14px] bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 flex items-center justify-center shadow-[0_6px_15px_rgba(13,148,136,0.4)] flex-shrink-0">
+          <i class="fas fa-sun text-white text-[16px] sm:text-[22px] drop-shadow-md"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="text-[15px] sm:text-[22px] font-extrabold leading-tight tracking-tight text-teal-900 drop-shadow-sm truncate">Caregiver Village</div>
+          <div class="hidden sm:block text-[9.5px] text-teal-500 uppercase tracking-[0.2em] font-black mt-1 opacity-90 truncate">Your village is here for you</div>
+        </div>
       </div>
-      <div class="min-w-0">
-        <div class="text-base font-extrabold text-teal-900 leading-tight truncate">Caregiver Village</div>
-        <div class="text-[9px] text-teal-500 uppercase tracking-[0.2em] font-black truncate">Your village is here</div>
+
+      <!-- Action buttons (right) — Reminders, Connect, SOS, Exit -->
+      <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <button onclick="onPatientBellClick()" id="patient-notif-bell-btn" class="relative bg-white hover:bg-teal-50 border border-teal-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="See reminders from your caregiver">
+          <i id="patient-notif-bell" class="fas fa-bell text-teal-500"></i>
+          <span class="hidden sm:inline text-teal-800">Reminders</span>
+          <span id="patient-notif-bell-badge" class="hidden absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-black rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow">0</span>
+        </button>
+        <button onclick="showPatientPairModal()" id="patient-pair-btn" class="bg-white hover:bg-indigo-50 border border-indigo-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="Connect to your caregiver">
+          <i class="fas fa-link text-indigo-500"></i>
+          <span id="patient-pair-btn-text" class="hidden sm:inline text-indigo-800">Connect</span>
+        </button>
+        <button onclick="showEmergency()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-2 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs shadow-sm" title="Emergency">
+          <i class="fas fa-phone-alt"></i><span>SOS</span>
+        </button>
+        <button onclick="exitPatientMode()" class="text-gray-400 hover:text-gray-600 text-xs font-semibold p-1.5 rounded transition-colors" title="Exit to Caregiver Mode">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
       </div>
     </div>
-    <button onclick="exitPatientMode()" class="text-gray-400 hover:text-gray-600 text-[11px] font-bold p-2 rounded-lg transition-colors flex items-center gap-1" title="Exit to Caregiver Mode">
-      <i class="fas fa-sign-out-alt"></i> <span>Exit</span>
-    </button>
-  </div>
-
-  <!-- Action row — Reminders + Connect, equal-width, big tap targets -->
-  <div class="flex items-stretch gap-3 px-4 pt-3 pb-1">
-    <button onclick="onPatientBellClick()" id="patient-notif-bell-btn" class="relative flex-1 bg-white hover:bg-teal-50 border-2 border-teal-200 px-3 py-3 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-sm" title="See reminders from your caregiver">
-      <i id="patient-notif-bell" class="fas fa-bell text-teal-500 text-lg transition-all"></i>
-      <span class="text-sm font-bold text-teal-800">Reminders</span>
-      <span id="patient-notif-bell-badge" class="hidden absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black rounded-full min-w-[22px] h-[22px] flex items-center justify-center px-1 shadow border-2 border-white">0</span>
-    </button>
-    <button onclick="showPatientPairModal()" id="patient-pair-btn" class="flex-1 bg-white hover:bg-indigo-50 border-2 border-indigo-200 px-3 py-3 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-sm" title="Connect to your caregiver">
-      <i class="fas fa-link text-indigo-500 text-lg"></i>
-      <span id="patient-pair-btn-text" class="text-sm font-bold text-indigo-800">Connect</span>
-    </button>
-  </div>
+  </header>
 
   <!-- Content Area -->
-  <div class="flex-1 overflow-y-auto px-4 pb-28 pt-3">
+  <div class="flex-1 overflow-y-auto px-4 pb-28 pt-4">
     <!-- Patient notifications bar -->
     <div id="patient-notifications-bar" class="w-full max-w-md mx-auto mb-4 hidden space-y-2"></div>
     
@@ -1447,7 +1453,26 @@
         <div id="patient-helper-avatar" class="w-20 h-20 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-3xl font-extrabold mx-auto mb-3 border-4 border-teal-200">?</div>
         <div id="patient-helper-text" class="text-xl font-bold text-gray-800">Someone is here to help you today</div>
       </div>
-      
+
+      <!-- Things you might enjoy — quick jump to Help Hub sections -->
+      <div class="w-full">
+        <p class="text-[11px] font-black uppercase tracking-widest text-teal-700 mb-2 text-center">Things you might enjoy</p>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="jumpToPatientActivity('music')" class="bg-gradient-to-br from-rose-400 to-pink-500 hover:brightness-95 text-white rounded-2xl py-4 px-2 shadow-sm active:scale-95 transition-all flex flex-col items-center gap-1">
+            <span class="text-3xl">🎵</span>
+            <span class="text-sm font-extrabold">Music</span>
+          </button>
+          <button onclick="jumpToPatientActivity('calm')" class="bg-gradient-to-br from-emerald-400 to-teal-500 hover:brightness-95 text-white rounded-2xl py-4 px-2 shadow-sm active:scale-95 transition-all flex flex-col items-center gap-1">
+            <span class="text-3xl">🌳</span>
+            <span class="text-sm font-extrabold">Calm</span>
+          </button>
+          <button onclick="jumpToPatientActivity('smiles')" class="bg-gradient-to-br from-amber-400 to-orange-500 hover:brightness-95 text-white rounded-2xl py-4 px-2 shadow-sm active:scale-95 transition-all flex flex-col items-center gap-1">
+            <span class="text-3xl">😊</span>
+            <span class="text-sm font-extrabold">Smiles</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Meds Checklist -->
       <div id="patient-meds" class="w-full space-y-3"></div>
       
@@ -5867,19 +5892,19 @@ async function performPatientPair() {
 }
 
 // Update the patient Pair button label to reflect connected state.
-// Keep flex-1 so it stays equal-width with the Reminders button.
+// Matches the compact header button style alongside the Bell and SOS.
 function updatePatientPairBtn() {
   const btn = document.getElementById('patient-pair-btn');
   const text = document.getElementById('patient-pair-btn-text');
   if (!btn) return;
   if (state.syncCode) {
-    btn.className = 'flex-1 bg-white hover:bg-green-50 border-2 border-green-300 px-3 py-3 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-sm';
-    btn.querySelector('i').className = 'fas fa-link text-green-500 text-lg';
-    if (text) { text.textContent = 'Connected'; text.className = 'text-sm font-bold text-green-700'; }
+    btn.className = 'bg-white hover:bg-green-50 border border-green-300 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5';
+    btn.querySelector('i').className = 'fas fa-link text-green-500';
+    if (text) { text.textContent = 'Connected'; text.className = 'hidden sm:inline text-green-700'; }
   } else {
-    btn.className = 'flex-1 bg-white hover:bg-indigo-50 border-2 border-indigo-200 px-3 py-3 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-sm';
-    btn.querySelector('i').className = 'fas fa-link text-indigo-500 text-lg';
-    if (text) { text.textContent = 'Connect'; text.className = 'text-sm font-bold text-indigo-800'; }
+    btn.className = 'bg-white hover:bg-indigo-50 border border-indigo-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5';
+    btn.querySelector('i').className = 'fas fa-link text-indigo-500';
+    if (text) { text.textContent = 'Connect'; text.className = 'hidden sm:inline text-indigo-800'; }
   }
 }
 
@@ -8109,6 +8134,7 @@ function setPatientHelpTab(tab) {
 // ============================================================
 const PATIENT_ACTIVITY_CATEGORIES = [
   {
+    slug: 'music',
     heading: '🎵 Music to enjoy',
     blurb: 'Familiar songs are one of the most powerful ways to feel calm and connected.',
     color: 'from-rose-400 to-pink-500',
@@ -8122,6 +8148,7 @@ const PATIENT_ACTIVITY_CATEGORIES = [
     ]
   },
   {
+    slug: 'calm',
     heading: '🌳 Calm &amp; relax',
     blurb: 'Gentle sounds and slow visuals can help quiet a busy mind.',
     color: 'from-emerald-400 to-teal-500',
@@ -8135,6 +8162,7 @@ const PATIENT_ACTIVITY_CATEGORIES = [
     ]
   },
   {
+    slug: 'movement',
     heading: '🤸 Gentle movement',
     blurb: 'Short, seated exercises you can do safely at home.',
     color: 'from-amber-400 to-orange-500',
@@ -8146,6 +8174,7 @@ const PATIENT_ACTIVITY_CATEGORIES = [
     ]
   },
   {
+    slug: 'memories',
     heading: '🎬 Memories &amp; nostalgia',
     blurb: 'Familiar voices and images from earlier decades.',
     color: 'from-purple-400 to-indigo-500',
@@ -8222,6 +8251,21 @@ const PATIENT_MEMORY_PROMPTS = [
   "What did you want to be when you grew up?"
 ];
 
+// Quick-jump from the patient home into a specific Help Hub section
+function jumpToPatientActivity(target) {
+  if (typeof navPatientTo === 'function') navPatientTo('help');
+  if (target === 'smiles') {
+    setPatientHelpTab('smiles');
+  } else {
+    setPatientHelpTab('activities');
+    // Wait one tick for the tab to become visible, then scroll to the section
+    setTimeout(() => {
+      const el = document.getElementById('pat-activity-' + target);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
+}
+
 let _currentJokeIdx = -1;
 let _currentPromptIdx = -1;
 
@@ -8247,7 +8291,7 @@ function renderPatientHelpHub() {
   const actContainer = document.getElementById('patient-help-activities');
   if (actContainer) {
     actContainer.innerHTML = PATIENT_ACTIVITY_CATEGORIES.map(cat => `
-      <div class="bg-white rounded-3xl p-5 shadow-sm border border-teal-100">
+      <div id="pat-activity-${cat.slug || ''}" class="bg-white rounded-3xl p-5 shadow-sm border border-teal-100 scroll-mt-20">
         <div class="mb-3">
           <h3 class="text-xl font-extrabold text-teal-900">${cat.heading}</h3>
           <p class="text-sm text-gray-600 mt-1 italic">${cat.blurb}</p>
