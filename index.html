@@ -5260,84 +5260,244 @@ function switchEduTab(tab) {
 // ============================================================
 //  SCRIPTS LIBRARY
 // ============================================================
+// Care scripts — written as real conversational moments, not templates.
+// Each card includes a scene-setter, why the approach works, what NOT to say,
+// the main script, follow-up lines for pushback, and a practical "after" note.
 const SCRIPT_DATA = [
   {
     title: 'Driving Retirement',
     icon: 'fa-car',
     color: 'from-blue-500 to-indigo-600',
-    why: 'Arguing rarely convinces someone to stop driving. Clinical authority ("the doctor says") and creative reframing bypass the emotional confrontation.',
-    script: 'Hi [Name], the doctor mentioned during your last visit that it\'s time to take a break from driving for now — just for safety. We\'ve already set up [Uber / family rides / community transport] so you\'ll still get everywhere you need to go. Let\'s try it for a little while.'
+    scene: 'It\'s the third time this month you\'ve found her with the keys in her hand. The doctor\'s warning from last week is still fresh. You don\'t want to fight, but you don\'t want her on the road either.',
+    why: 'Arguing about competence almost always backfires. Anchoring the request to a clinical authority ("the doctor") and offering an immediate alternative protects her dignity while removing the risk.',
+    dont_say: '"You can\'t drive anymore." or "It\'s not safe — you\'ll hurt someone." Both trigger defensiveness and rarely change the behaviour.',
+    script: 'Hi Mom, remember what Dr. Chen mentioned last visit? She wants you to take a break from driving for a little while, just to be safe. I\'ve already lined up rides — Uber for groceries, and Sarah can take you to your hair appointments. Let\'s try it for a few weeks and see how it goes.',
+    pushback: [
+      '"I know it feels like a big change. The doctor wasn\'t sure either, but she thought it would be safer for now."',
+      '"Let\'s not argue about it today. The doctor was clear. We can revisit it together at the next appointment if you want."'
+    ],
+    after: 'Hide the keys before this conversation. Disable the vehicle if needed (battery disconnect, valet lock, or simply move the car). Have the first alternative ride already scheduled within 48 hours so the new option feels real, not theoretical.'
   },
   {
-    title: 'Anosognosia / Denial',
+    title: 'Denial That Isn\'t Stubbornness',
     icon: 'fa-brain',
     color: 'from-purple-500 to-fuchsia-600',
-    why: 'Denial is often anosognosia — a brain-based inability to recognize the diagnosis, not stubbornness. Arguing facts escalates; validating feelings calms.',
-    script: 'I hear you — and I know this is frustrating. I\'m not asking you to agree with the doctor. I\'m just asking if we can put a few things in place together, just in case, so we\'re both covered. Would that be okay?'
+    scene: 'She\'s calm. She just told you for the fifth time this week that nothing is wrong with her — the doctor is mistaken. You know she\'s not lying. Her brain genuinely cannot see what you see.',
+    why: 'Anosognosia (literally "without knowing") is a brain-based inability to perceive one\'s own deficit. It is not stubbornness, not denial in the psychological sense, not manipulation. Arguing the facts cannot win. Validating the feeling and pivoting to "let\'s prepare just in case" lets her keep her dignity and lets you get the planning done.',
+    dont_say: '"But the doctor SAID..." or "Look at all the things you can\'t do now." You\'ll lose every time.',
+    script: 'I hear you. I\'m not asking you to agree with the doctor. I\'m just asking if we can put a few things in place together — paperwork, some financial stuff — just in case. It\'s the kind of thing every family should do. Would that be okay?',
+    pushback: [
+      '"We don\'t even have to call it anything. Let\'s just call it good organization. I\'d feel better knowing it\'s done."',
+      '"Okay. Let me come back to it next week. I\'m not going to push today."'
+    ],
+    after: 'Take the small wins. Get her signature on the most urgent single document (usually the durable Power of Attorney for finances or health care). Don\'t try to do all the planning in one conversation — repeated calm requests over weeks work better than one long push.'
   },
   {
-    title: 'Introducing a GPS Tracker',
+    title: 'Introducing a GPS Watch',
     icon: 'fa-map-marker-alt',
     color: 'from-emerald-500 to-teal-600',
-    why: 'Framing a tracker as shared safety ("so I don\'t worry") rather than surveillance ("so I can track you") preserves autonomy and dignity.',
-    script: 'Hey [Name], I noticed I\'ve been worrying a lot when we\'re out and about. I got this new smart device for us to use — it lets me see where we both are, so if we ever get separated, we can find each other right away. It would give me a lot of peace of mind if we both had one.'
+    scene: 'He went for a walk last Tuesday and was gone for two hours. He couldn\'t quite say where he\'d been. Today you want to talk about a watch that tracks location, but the word "tracker" makes him bristle.',
+    why: 'Framing the device as MUTUAL safety ("so I don\'t worry") rather than monitoring ("so I can find you") preserves his sense of being a capable partner rather than a patient being watched.',
+    dont_say: '"It\'s so I can find you if you get lost." or "The doctor recommends a tracker for people in your condition."',
+    script: 'Hey Dad, I\'ve been worrying when we\'re not together — silly, I know. I got us both these new smart watches. They show our location to each other so if we get separated at the store or somewhere, we can find each other right away. Want to set yours up with me?',
+    pushback: [
+      '"No pressure. Let me wear mine for a few weeks. If you change your mind, yours is in the drawer."',
+      '"Just for the trip next month, then? I\'ll feel calmer knowing we won\'t lose each other."'
+    ],
+    after: 'Set up the watch yourself first. Show it casually. Don\'t make a ceremony of it. Many families find the watch quietly gets accepted within a week or two if it isn\'t framed as a big deal.'
   },
   {
-    title: 'Sharing the Diagnosis',
+    title: 'Telling Friends the Diagnosis',
     icon: 'fa-comment-medical',
     color: 'from-teal-500 to-cyan-600',
-    why: 'Sharing a diagnosis reduces isolation. Frame it neutrally, emphasize capabilities, and request specific support rather than vague pity.',
-    script: 'We wanted to share that [Name] was recently diagnosed with [Type of Dementia]. They are still doing well, enjoying [Hobby/Activity], and we are focusing on keeping routines stable. It helps them stay engaged if friends visit, so please feel free to drop by or give us a call.'
+    scene: 'It\'s been three weeks since the diagnosis. Two of your closest friends have asked how Mom is doing. You\'ve been avoiding the answer because you don\'t know what to say. You\'re about to write an email to her book club.',
+    why: 'People who don\'t know cannot show up. People who guess often invent worse scenarios. A direct, warm, specific message gives friends the information AND the permission to keep showing up.',
+    dont_say: 'Nothing (silence creates distance) or euphemisms like "she\'s just slowing down a bit" (people fill the gap with worse).',
+    script: 'Hi everyone — I wanted to share that Mom was recently diagnosed with Alzheimer\'s. She\'s still very much herself — still loves your visits, still wants to read with you, still laughs at the same jokes. What helps her most right now is short visits in the morning when she has more energy, and not being quizzed on names or dates. If you want to drop by, please do. If you want to bring a meal one evening, we\'d be so grateful. We don\'t want to disappear from each other\'s lives.',
+    pushback: [
+      'If anyone asks how YOU are: "I\'m doing okay. Some days are harder than others. The most helpful thing is a phone call to me when you\'re free — I miss the normal stuff."',
+      'If someone says "let me know if I can help": "Actually, yes — would you be free for an hour next Tuesday afternoon? I need to run an errand and would love someone here with her."'
+    ],
+    after: 'Send the email. Don\'t draft it for a week. People who care will respond. Some won\'t, and that\'s information too. Save the message — you\'ll send variations of it many times over the coming years.'
   },
   {
-    title: 'Asking a Neighbor for Help',
+    title: 'Asking a Neighbour for Help',
     icon: 'fa-hands-helping',
     color: 'from-amber-500 to-orange-600',
-    why: 'People want to help but don\'t know how. Make requests highly specific, low-commitment, and time-bound.',
-    script: 'Hi [Name], I\'m putting together a small circle of friends who can help out occasionally. Would you be open to picking up a few items from the grocery store for us once a week when you do your own shopping? I\'ll text you a short list beforehand. It would be a huge help.'
+    scene: 'Mrs. Patterson next door has said "let me know if I can help" three times. You haven\'t taken her up on it because you don\'t want to impose. You\'re behind on groceries.',
+    why: 'People genuinely want to help, but vague offers get vague responses. A specific ask gives them an easy yes — small commitment, clear scope, defined end. Once they\'ve helped once, the second ask is much easier.',
+    dont_say: '"Could you help me out sometimes?" or "I might need to ask you for things." Both leave them confused about what you actually need.',
+    script: 'Hi Mrs. Patterson, you\'ve offered to help a few times and I\'m finally taking you up on it. Could you grab a few things from the grocery store when you do your own shop on Saturdays? I\'ll text you a short list the day before — usually four or five items. I\'d Venmo you the cost. Just for a few weeks while I\'m sorting out a routine.',
+    pushback: [
+      'If she hedges: "No worries at all — I appreciate you considering it. Let me know if anything else feels easier."',
+      'If she says yes enthusiastically: "Wonderful. I\'ll text you Friday evening with the list. Thank you — you\'re a lifesaver."'
+    ],
+    after: 'Send a written thank-you the first time. Pay her quickly. Don\'t escalate the ask. One small successful exchange builds the relationship; a too-big ask too early kills it.'
   },
   {
-    title: 'Introducing a Paid Caregiver',
+    title: 'Welcoming a Paid Helper',
     icon: 'fa-user-nurse',
     color: 'from-rose-500 to-pink-600',
-    why: 'Framing a new helper as a "companion" or "assistant for me" bypasses the feeling of lost independence.',
-    script: 'Hi [Name], this is [Helper Name]. They are going to help me with some chores and housekeeping around the house a few times a week, and also keep you company when I need to run errands. Let\'s welcome them.'
+    scene: 'You hired a home health aide to come three mornings a week. She starts tomorrow. Dad doesn\'t want a "babysitter" and doesn\'t think he needs one.',
+    why: 'The word "caregiver" implies he needs caring for. "Companion," "household helper," or "she\'s here to help me" all reframe the role around what\'s actually happening — you, the family caregiver, are getting some support — and let him stay in the role of host rather than patient.',
+    dont_say: '"She\'s your caregiver." or "She\'s here to take care of you."',
+    script: 'Dad, this is Maria. She\'s going to help me out around the house a few mornings a week — laundry, some cooking, things I\'ve been falling behind on. She\'ll also keep you company when I have to run out for an appointment. Maria, this is my dad — he\'s the best cook in the family, so go easy on him.',
+    pushback: [
+      'If he protests after she leaves the first day: "She really helped me catch up today. Let\'s see how next week goes — if it\'s not working, we\'ll change it."',
+      'If he\'s cool to her the second day: "Give her one more morning. Sometimes it takes a couple of visits to find a rhythm."'
+    ],
+    after: 'Don\'t disappear on day one. Sit with both of them for coffee for 15 minutes, then leave for "an errand." Brief Maria privately: don\'t quiz Dad, don\'t infantilize, follow his lead on conversation, ask about his old hobbies. Pay her well and on time — a good helper is worth twice the rate.'
   },
   {
-    title: 'Boundaries with Family',
+    title: 'Boundaries with Long-Distance Family',
     icon: 'fa-shield-alt',
     color: 'from-red-500 to-rose-600',
-    why: 'Hold boundaries clearly and firmly without getting defensive or arguing about past events.',
-    script: 'I understand you see things differently, but right now I am managing [Name]\'s daily care with their medical team. If you would like to help, I have specific tasks like [Task Name] available. Otherwise, I need you to respect the routines we\'ve established for their stability.'
+    scene: 'Your brother lives out of state. He calls weekly to suggest things you should be doing differently. He hasn\'t done any of the day-to-day care. You\'re tired.',
+    why: 'You don\'t need to win the argument. You need to make it clear that day-to-day decisions belong to whoever is doing the day-to-day work — and that helpful contribution looks like specific action, not unsolicited critique.',
+    dont_say: '"You don\'t understand." (escalates) or "You should come help then." (sounds like a guilt trip).',
+    script: 'I hear you, and I know you care about Mom. The truth is I\'m managing her daily routine with her medical team, and the doctors have helped us settle into what works. If you want to help, I have specific things I\'d love a hand with — covering for me one weekend a month so I can rest, or taking over the prescription refills. Either of those would be a real lift. If those aren\'t possible right now, I need you to trust that I\'m doing my best with what\'s in front of me.',
+    pushback: [
+      '"I\'m not asking you to agree with every choice. I\'m asking you to support the person who is here every day."',
+      '"Let\'s not have this fight on the phone. Come visit and stay for a weekend. After that we can talk."'
+    ],
+    after: 'Don\'t relitigate the conversation. State the boundary once, clearly, then move on. Repeat as needed without anger. Boundaries get tested. Holding them protects you.'
+  },
+  {
+    title: '"I Want to Go Home" (when home)',
+    icon: 'fa-home',
+    color: 'from-indigo-500 to-purple-600',
+    scene: 'It\'s 7 PM. She\'s sitting in her own living room of 40 years. She just told you, for the third time, that she wants to go home — to the house she grew up in, three states away, in 1953.',
+    why: '"Home" in dementia rarely means the physical address — it usually means safety, belonging, an emotional sense of where they used to feel whole. Arguing about geography ("you are home") makes them feel more lost. Acknowledging the feeling, then redirecting to something comforting, almost always works.',
+    dont_say: '"You ARE home — this is your house." or "What do you mean? You\'ve lived here for 40 years."',
+    script: 'Tell me about home, Mom. What do you miss most? ... Yeah, I remember you talking about Grandma\'s pie. Should we have some tea? I\'d love to hear more about the kitchen back then.',
+    pushback: [
+      'A few minutes later if she\'s still restless: "Let\'s take a little walk through the house. I want you to show me your favorite spot."',
+      'If music helps her: "How about we put on some Frank Sinatra? You used to play that for me."'
+    ],
+    after: 'Note the time and what triggered it. "I want to go home" often clusters around sundowning hours (4–8 PM). Knowing the pattern lets you preempt it next time with music, dim lighting, or a comforting activity at 3:30.'
+  },
+  {
+    title: 'When He Refuses the Medication',
+    icon: 'fa-pills',
+    color: 'from-cyan-500 to-blue-600',
+    scene: 'The pill bottle is open. The water is poured. He clamps his mouth shut. He thinks the medication is poisoning him.',
+    why: 'Refusal in dementia is rarely about the medication itself — it\'s about loss of control, distrust, confusion, or paranoia (which can be a symptom). Forcing the issue at this moment will entrench it. Stepping back and trying again in 20 minutes, with a different approach, almost always works better.',
+    dont_say: '"You HAVE to take this." or "The doctor SAID so." Both feel like coercion and harden the refusal.',
+    script: 'First try: "Okay. We don\'t have to do it right this second. Let me put it here. I\'m going to make some tea — want some?" — Twenty minutes later, casually: "Oh — I forgot to take my own vitamin. Want to take ours together?"',
+    pushback: [
+      'If he still refuses: "That\'s okay. I\'ll let Dr. Chen know you weren\'t up for it today. She might want to talk to you about it."',
+      'Never argue, never lecture. Walk away calmly. Try once more an hour later.'
+    ],
+    after: 'If refusal becomes a pattern (more than 2–3 times in a week), call the prescriber. There may be a liquid form, a different time of day that works better, or the medication may need to be adjusted. NEVER crush or hide medication in food without first asking the pharmacist — some pills are dangerous when crushed.'
+  },
+  {
+    title: 'The Same Question, Over and Over',
+    icon: 'fa-comment-dots',
+    color: 'from-orange-500 to-amber-600',
+    scene: '"What time is the appointment?" She\'s asked you eight times in the last hour. You\'ve answered eight times. You can feel the irritation rising in your chest.',
+    why: 'Repetitive questioning is one of the most exhausting dementia behaviours — and one of the most misread. The brain is no longer storing your answer. The question isn\'t really about information; it\'s usually about anxiety. Answering the feeling rather than just the question often quiets it.',
+    dont_say: '"I just told you." or "Stop asking me." Both wound without helping.',
+    script: '"It\'s at two o\'clock. We have plenty of time. Want to sit with me for a few minutes?" — After the third time: "It\'s at two — let me write it down here on the fridge so you can check anytime you want."',
+    pushback: [
+      'If asked again anyway: "It\'s at two. You\'re going to do great. I\'ll be right there with you." (Answer the worry, not the question.)',
+      'If your patience is gone: walk to another room for 60 seconds. Take three breaths. Come back. The clock on the wall doesn\'t know how hard this is.'
+    ],
+    after: 'Reduce open-ended waiting time. Anxiety fills the space. If the appointment is at 2, don\'t tell her at 9 AM — tell her at 1:30. A whiteboard with today\'s schedule in a fixed spot helps some, frustrates others. Try once; keep what works.'
+  },
+  {
+    title: 'When She Doesn\'t Recognize You',
+    icon: 'fa-user-friends',
+    color: 'from-pink-500 to-rose-600',
+    scene: 'She\'s looking at you with kind but puzzled eyes. She just asked you who you are. You are her daughter. You\'ve been her daughter for 52 years.',
+    why: 'This is one of the hardest moments in caregiving — and one of the most important not to take personally. The recognition is gone temporarily, not the love. Re-introducing yourself warmly, without trying to "correct" her, keeps her calm and keeps you in the room with her.',
+    dont_say: '"It\'s me — your DAUGHTER!" (causes shame or distress when she still can\'t place you) or "How could you forget?" (devastating to both of you).',
+    script: 'Hi — I\'m Lisa. I\'m so glad to spend the afternoon with you. Mind if I sit? ... I brought your favorite tea. Two sugars, right?',
+    pushback: [
+      'After she settles: "I have some old photos here — want to look through them with me?" (She may recognize you as you were at 6 — and that recognition is real, even if today\'s face is unfamiliar.)',
+      'If she asks again later: "I\'m Lisa. I\'m here to keep you company today. We\'re going to have a nice afternoon."'
+    ],
+    after: 'Go to the bathroom. Cry if you need to. Call someone in your village and say "she didn\'t know me today." This is grief and it deserves witness. The recognition often comes back — moments, hours, or days later. The love was never gone.'
+  },
+  {
+    title: 'Sundowning — In the Moment',
+    icon: 'fa-cloud-moon',
+    color: 'from-orange-600 to-rose-600',
+    scene: 'It\'s 5:45 PM. He\'s pacing. He just snapped at you for moving his cup. The TV is on, the kitchen lights are bright, and dinner needs to be made.',
+    why: 'Sundowning is biological — late-day disorientation tied to circadian rhythm and accumulated cognitive fatigue. It is not personal. Reducing stimulation, lowering your voice, and offering a single small redirect almost always shortens the episode.',
+    dont_say: '"Why are you upset?" (he can\'t answer.) "Calm down." (rarely works in any context.) "What\'s wrong with you tonight?"',
+    script: 'Hey — let\'s sit down for a minute. I\'ll get you some water. (Dim the lights. Turn off the TV. Speak in a slower, softer voice than feels natural.) ... Want to listen to that song you like? The one you used to play in the car.',
+    pushback: [
+      'If he\'s still agitated: "Let\'s just look out the window for a minute. The yard looks pretty tonight."',
+      'If words aren\'t landing: stop talking. Sit beside him. Quiet presence often works when words don\'t.'
+    ],
+    after: 'Note the time. Note what was happening 30 minutes before (TV news? overhead light too bright? too much activity?). Sundowning has triggers. Spotting yours is the difference between a 90-minute episode and a 15-minute one next time. The Sundowning Helper on the dashboard walks you through the full protocol if it escalates.'
   }
 ];
 
 function renderScriptCards() {
   const container = document.getElementById('script-cards');
   if (!container) return;
-  
-  container.innerHTML = SCRIPT_DATA.map((s, idx) => `
+
+  container.innerHTML = SCRIPT_DATA.map((s, idx) => {
+    const pushbackBlock = (s.pushback && s.pushback.length > 0)
+      ? `<div class="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 mt-3 text-[12px] text-indigo-900 leading-relaxed">
+           <p class="text-[10px] font-black uppercase tracking-widest text-indigo-700 mb-2"><i class="fas fa-reply"></i> If they push back</p>
+           <ul class="space-y-1.5 list-disc pl-4">${s.pushback.map(p => `<li>${esc(p)}</li>`).join('')}</ul>
+         </div>`
+      : '';
+    const dontSayBlock = s.dont_say
+      ? `<div class="bg-rose-50/60 border border-rose-100 rounded-2xl p-3 mt-3 text-[12px] text-rose-900 leading-relaxed">
+           <p class="text-[10px] font-black uppercase tracking-widest text-rose-700 mb-1"><i class="fas fa-ban"></i> What NOT to say</p>
+           ${esc(s.dont_say)}
+         </div>`
+      : '';
+    const afterBlock = s.after
+      ? `<div class="bg-teal-50/60 border border-teal-100 rounded-2xl p-3 mt-3 text-[12px] text-teal-900 leading-relaxed">
+           <p class="text-[10px] font-black uppercase tracking-widest text-teal-700 mb-1"><i class="fas fa-arrow-right"></i> After the conversation</p>
+           ${esc(s.after)}
+         </div>`
+      : '';
+    const sceneBlock = s.scene
+      ? `<div class="bg-gray-50 border-l-4 border-gray-300 rounded-r-xl p-3 mb-4 text-[12px] text-gray-700 italic leading-relaxed">
+           <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 not-italic mr-1">The moment:</span>
+           ${esc(s.scene)}
+         </div>`
+      : '';
+
+    return `
     <div class="bg-white border border-gray-200 rounded-[30px] p-6 shadow-sm hover:shadow-md transition-all">
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-10 h-10 bg-gradient-to-br ${s.color} rounded-xl flex items-center justify-center text-white text-lg shadow-inner">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-gradient-to-br ${s.color} rounded-xl flex items-center justify-center text-white text-xl shadow-inner">
           <i class="fas ${s.icon}"></i>
         </div>
         <div>
-          <h4 class="font-extrabold text-gray-800">${esc(s.title)}</h4>
+          <h4 class="font-extrabold text-gray-800 text-base">${esc(s.title)}</h4>
           <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Care Script</p>
         </div>
       </div>
-      <div class="bg-amber-50/50 border border-amber-100/50 rounded-2xl p-4 mb-4 text-xs text-amber-900 leading-relaxed font-medium">
-        <strong>Why it works:</strong> ${esc(s.why)}
+
+      ${sceneBlock}
+
+      <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-3 mb-3 text-[12px] text-amber-900 leading-relaxed">
+        <p class="text-[10px] font-black uppercase tracking-widest text-amber-700 mb-1"><i class="fas fa-lightbulb"></i> Why it works</p>
+        ${esc(s.why)}
       </div>
-      <div class="relative bg-gray-50 border border-gray-100 rounded-2xl p-4 pr-12 text-sm text-gray-700 italic font-serif leading-relaxed">
-        "${esc(s.script)}"
-        <button onclick="copyScriptToClipboard(${idx})" class="absolute right-3 top-3 text-gray-400 hover:text-teal-600 transition-colors" title="Copy to clipboard">
+
+      ${dontSayBlock}
+
+      <div class="relative bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200 rounded-2xl p-4 pr-12 text-[14px] text-gray-800 italic font-serif leading-relaxed mt-3 shadow-sm">
+        <p class="text-[10px] font-black uppercase tracking-widest text-slate-600 mb-2 not-italic">Say this</p>
+        &ldquo;${esc(s.script)}&rdquo;
+        <button onclick="copyScriptToClipboard(${idx})" class="absolute right-3 top-3 text-gray-400 hover:text-teal-600 transition-colors" title="Copy script to clipboard">
           <i class="far fa-copy text-lg"></i>
         </button>
       </div>
+
+      ${pushbackBlock}
+      ${afterBlock}
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function copyScriptToClipboard(idx) {
