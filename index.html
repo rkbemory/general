@@ -1383,12 +1383,16 @@
 
 <!-- ===== PATIENT MODE VIEW ===== -->
 <div id="view-patient" class="hidden fixed inset-0 z-[1000] bg-gradient-to-b from-blue-50 to-teal-50 flex flex-col pointer-events-auto">
-  <!-- Top bar: bell on the left (big and obvious), Exit on the right -->
-  <div class="flex justify-between items-center p-4">
+  <!-- Top bar: bell (left), Pair button (middle), Exit (right) -->
+  <div class="flex justify-between items-center p-4 gap-2">
     <button onclick="onPatientBellClick()" id="patient-notif-bell-btn" class="relative bg-white hover:bg-teal-50 border-2 border-teal-200 px-4 py-3 rounded-2xl transition-all flex items-center gap-2 shadow-sm" title="See reminders from your caregiver">
       <i id="patient-notif-bell" class="fas fa-bell text-teal-500 text-xl transition-all"></i>
       <span class="text-sm font-bold text-teal-800 hidden sm:inline">Reminders</span>
       <span id="patient-notif-bell-badge" class="hidden absolute -top-1 -right-1 bg-rose-600 text-white text-xs font-black rounded-full min-w-[22px] h-[22px] flex items-center justify-center px-1 shadow border-2 border-white">0</span>
+    </button>
+    <button onclick="showPatientPairModal()" id="patient-pair-btn" class="bg-white hover:bg-indigo-50 border-2 border-indigo-200 px-4 py-3 rounded-2xl transition-all flex items-center gap-2 shadow-sm" title="Connect to your caregiver">
+      <i class="fas fa-link text-indigo-500 text-xl"></i>
+      <span id="patient-pair-btn-text" class="text-sm font-bold text-indigo-800 hidden sm:inline">Connect</span>
     </button>
     <button onclick="exitPatientMode()" class="text-gray-400 hover:text-gray-600 text-xs font-semibold p-2 rounded-lg transition-colors" title="Exit to Caregiver Mode">
       <i class="fas fa-sign-out-alt mr-1"></i> Exit
@@ -1402,6 +1406,23 @@
     
     <!-- Sub-view: Home -->
     <div id="patient-view-home" class="w-full max-w-md mx-auto flex flex-col items-center gap-6">
+
+      <!-- Inline name prompt — shown one-time when patient has no name set -->
+      <div id="patient-name-prompt" class="hidden w-full bg-gradient-to-r from-teal-50 to-indigo-50 border-2 border-teal-200 rounded-3xl p-5 shadow-sm">
+        <div class="text-center mb-3">
+          <div class="text-3xl mb-1">👋</div>
+          <p class="text-base font-extrabold text-teal-900">What should we call you?</p>
+          <p class="text-xs text-teal-800 mt-1 leading-snug">So your screen feels personal. First name is fine.</p>
+        </div>
+        <div class="flex gap-2">
+          <input id="patient-name-input" type="text" maxlength="32" placeholder="Your first name" autocomplete="given-name"
+            onkeydown="if(event.key==='Enter')savePatientName()"
+            class="flex-1 border-2 border-teal-200 rounded-xl px-3 py-3 text-base focus:border-teal-500 outline-none"/>
+          <button onclick="savePatientName()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-3 rounded-xl text-base shadow-sm">Save</button>
+        </div>
+        <button onclick="skipPatientNamePrompt()" class="text-xs text-teal-700 hover:text-teal-900 mt-3 underline w-full text-center">Skip for now</button>
+      </div>
+
       <div class="text-center">
         <div id="patient-clock" class="text-6xl sm:text-7xl font-extrabold text-teal-900 tracking-tight leading-none">--:--</div>
         <div id="patient-day" class="text-2xl font-bold text-teal-700 mt-2">--</div>
@@ -2187,6 +2208,31 @@
   </div>
 </div>
 
+<!-- Patient Pairing Modal — patient enters caregiver's code -->
+<div id="modal-patient-pair" class="hidden fixed inset-0 modal-overlay bg-black bg-opacity-50 z-[1100] flex items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white rounded-[30px] shadow-2xl w-full max-w-sm p-6 my-4 border-2 border-indigo-200 relative">
+    <button onclick="closeModal('modal-patient-pair')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-black p-2" title="Close">&times;</button>
+    <div class="text-center">
+      <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-3xl mx-auto mb-4"><i class="fas fa-link"></i></div>
+      <h2 id="patient-pair-title" class="text-xl font-extrabold text-gray-800 mb-2">Connect to Your Caregiver</h2>
+      <p id="patient-pair-subtitle" class="text-sm text-gray-600 font-medium leading-relaxed px-2 mb-5">Type the 6-letter code your caregiver gave you. Once connected, you and your caregiver share the same village in real time.</p>
+
+      <input id="patient-pair-code" type="text" maxlength="6" placeholder="ABC123" autocomplete="off" autocapitalize="characters" spellcheck="false"
+        oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"
+        onkeydown="if(event.key==='Enter')performPatientPair()"
+        class="w-full text-center text-2xl font-black tracking-[0.4em] uppercase border-2 border-indigo-200 rounded-2xl py-4 mb-4 focus:border-indigo-500 outline-none bg-indigo-50/30"/>
+
+      <div id="patient-pair-status" class="hidden text-sm font-bold mb-3 rounded-xl py-2 px-3"></div>
+
+      <button onclick="performPatientPair()" id="patient-pair-submit" class="w-full btn-big bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold py-4 flex items-center justify-center gap-2 shadow text-base">
+        <i class="fas fa-link"></i> Connect
+      </button>
+
+      <button onclick="closeModal('modal-patient-pair')" class="w-full mt-2 text-xs text-gray-500 hover:text-gray-700 py-2">Not now</button>
+    </div>
+  </div>
+</div>
+
 <!-- Patient Raise Need Modal -->
 <div id="modal-patient-need" class="hidden fixed inset-0 modal-overlay bg-black/70 z-[1100] flex items-center justify-center p-4 overflow-y-auto">
   <div class="bg-white rounded-[35px] shadow-2xl w-full max-w-md p-8 my-4 border-4 border-teal-500 relative">
@@ -2626,6 +2672,8 @@ let state = {
   feelingsLog: [],
   caregiverName: '',
   nameAsked: false,
+  patientName: '',
+  patientNameAsked: false,
   notifSettings: {
     soundEnabled: true,
     titleFlashEnabled: true,
@@ -2684,6 +2732,8 @@ function sanitizeState() {
   if (!Array.isArray(state.feelingsLog)) state.feelingsLog = [];
   if (typeof state.caregiverName !== 'string') state.caregiverName = '';
   if (typeof state.nameAsked !== 'boolean') state.nameAsked = false;
+  if (typeof state.patientName !== 'string') state.patientName = '';
+  if (typeof state.patientNameAsked !== 'boolean') state.patientNameAsked = false;
   if (!state.notifSettings || typeof state.notifSettings !== 'object') {
     state.notifSettings = { soundEnabled: true, titleFlashEnabled: true, browserNotifEnabled: false, emailEnabled: false, emailJs: { serviceId:'', templateId:'', publicKey:'', toEmail:'' } };
   }
@@ -2735,6 +2785,8 @@ function loadState() {
     state.feelingsLog = Array.isArray(parsed.feelingsLog) ? parsed.feelingsLog : [];
     state.caregiverName = typeof parsed.caregiverName === 'string' ? parsed.caregiverName : '';
     state.nameAsked = !!parsed.nameAsked;
+    state.patientName = typeof parsed.patientName === 'string' ? parsed.patientName : '';
+    state.patientNameAsked = !!parsed.patientNameAsked;
     if (parsed.notifSettings && typeof parsed.notifSettings === 'object') {
       state.notifSettings = {
         soundEnabled: parsed.notifSettings.soundEnabled !== false,
@@ -2787,6 +2839,8 @@ function saveStateLocal() {
     feelingsLog: state.feelingsLog,
     caregiverName: state.caregiverName,
     nameAsked: state.nameAsked,
+    patientName: state.patientName,
+    patientNameAsked: state.patientNameAsked,
     notifSettings: state.notifSettings,
     lastSeenPendingNeedsCount: state.lastSeenPendingNeedsCount
   }));
@@ -5636,6 +5690,10 @@ function enterPatientMode() {
   renderPatientHelper();
   renderPatientMeds();
   navPatientTo('home');
+  // Show or hide the inline patient name prompt
+  if (typeof maybeShowPatientNamePrompt === 'function') maybeShowPatientNamePrompt();
+  // Reflect pairing state on the Connect button
+  if (typeof updatePatientPairBtn === 'function') updatePatientPairBtn();
   // Reset the in-memory notification baseline so old reminders aren't re-fired
   if (typeof _lastNotifiedRemindersCount !== 'undefined') _lastNotifiedRemindersCount = -1;
   checkPatientNotifications();
@@ -5663,19 +5721,169 @@ function exitPatientMode() {
   navTo('dashboard');
 }
 
+// --- Patient name prompt (mirrors caregiver name flow) ---
+function maybeShowPatientNamePrompt() {
+  const prompt = document.getElementById('patient-name-prompt');
+  if (!prompt) return;
+  const noName = !(state.patientName && state.patientName.trim());
+  const showPrompt = noName && !state.patientNameAsked;
+  prompt.classList.toggle('hidden', !showPrompt);
+}
+
+function savePatientName() {
+  const input = document.getElementById('patient-name-input');
+  const val = input ? input.value.trim() : '';
+  if (!val) { if (input) shake('patient-name-input'); return; }
+  state.patientName = val.slice(0, 32);
+  state.patientNameAsked = true;
+  saveState();
+  const prompt = document.getElementById('patient-name-prompt');
+  if (prompt) prompt.classList.add('hidden');
+  if (typeof renderPatientHelper === 'function') renderPatientHelper();
+  toast('Nice to meet you, ' + state.patientName + ' 💙');
+}
+
+function skipPatientNamePrompt() {
+  state.patientNameAsked = true;
+  saveState();
+  const prompt = document.getElementById('patient-name-prompt');
+  if (prompt) prompt.classList.add('hidden');
+}
+
+// --- Patient pairing (patient enters caregiver's code to share state) ---
+function showPatientPairModal() {
+  const input = document.getElementById('patient-pair-code');
+  const status = document.getElementById('patient-pair-status');
+  const submitBtn = document.getElementById('patient-pair-submit');
+  const title = document.getElementById('patient-pair-title');
+  const subtitle = document.getElementById('patient-pair-subtitle');
+
+  if (status) { status.classList.add('hidden'); status.textContent = ''; }
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-link"></i> Connect'; }
+
+  if (state.syncCode) {
+    // Already paired — show status and let them re-enter a different code if needed
+    if (title) title.textContent = 'You are connected';
+    if (subtitle) subtitle.innerHTML = `Your shared village code is <strong class="text-indigo-700 tracking-widest">${esc(state.syncCode)}</strong>. To switch to a different caregiver, enter a new code below.`;
+    if (input) input.value = '';
+  } else {
+    if (title) title.textContent = 'Connect to Your Caregiver';
+    if (subtitle) subtitle.textContent = 'Type the 6-letter code your caregiver gave you. Once connected, you and your caregiver share the same village in real time.';
+    if (input) input.value = '';
+  }
+  openModal('modal-patient-pair');
+  setTimeout(() => { if (input) input.focus(); }, 100);
+}
+
+async function performPatientPair() {
+  const input = document.getElementById('patient-pair-code');
+  const status = document.getElementById('patient-pair-status');
+  const submitBtn = document.getElementById('patient-pair-submit');
+  if (!input) return;
+  const code = (input.value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  const setStatus = (msg, kind) => {
+    if (!status) return;
+    status.textContent = msg;
+    status.className = 'text-sm font-bold mb-3 rounded-xl py-2 px-3 ' +
+      (kind === 'ok' ? 'bg-green-50 text-green-800 border border-green-200'
+       : kind === 'err' ? 'bg-rose-50 text-rose-800 border border-rose-200'
+       : 'bg-gray-50 text-gray-700 border border-gray-200');
+    status.classList.remove('hidden');
+  };
+
+  if (code.length !== 6) {
+    setStatus('Please enter all 6 letters/numbers from the code.', 'err');
+    shake('patient-pair-code');
+    return;
+  }
+
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting…'; }
+  setStatus('Looking for your caregiver…', 'info');
+
+  try {
+    const res = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${KVDB_BUCKET}/${code}`);
+    if (!res.ok) throw new Error('Could not reach the connection service.');
+    const raw = await res.json();
+    if (!raw) {
+      setStatus('No caregiver found with that code. Double-check the letters and try again.', 'err');
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-link"></i> Try again'; }
+      return;
+    }
+    const remoteState = JSON.parse(decodeURIComponent(escape(atob(raw))));
+    if (!remoteState) throw new Error('That code does not have any village information yet.');
+
+    // Adopt remote state (caregiver's village) and start sharing
+    state.villages = remoteState.villages || [];
+    state.contacts = remoteState.contacts || [];
+    state.tasks = remoteState.tasks || [];
+    state.events = remoteState.events || [];
+    state.questions = remoteState.questions || null;
+    state.legalChecklist = remoteState.legalChecklist || { person: {}, caregiver: {} };
+    state.moodHistory = remoteState.moodHistory || [];
+    state.customResources = remoteState.customResources || [];
+    state.onboardingComplete = remoteState.onboardingComplete || false;
+    state.villageMessages = remoteState.villageMessages || {};
+    state.lastViewedVillageChat = remoteState.lastViewedVillageChat || {};
+    if (remoteState.caregiverName) state.caregiverName = remoteState.caregiverName;
+    // Preserve our local patientName if caregiver hasn't set one
+    if (remoteState.patientName && !state.patientName) state.patientName = remoteState.patientName;
+    state.syncCode = code;
+    state.lastUpdated = remoteState.lastUpdated || Date.now();
+
+    saveStateLocal();
+    setStatus('Connected! Your village is now active.', 'ok');
+    toast('🎉 Connected to your caregiver!');
+
+    // Push our updated state (with any patientName) back so caregiver sees it
+    if (typeof syncPush === 'function') syncPush();
+
+    // Refresh patient UI and close the modal after a brief moment
+    if (typeof renderPatientHelper === 'function') renderPatientHelper();
+    if (typeof renderPatientMeds === 'function') renderPatientMeds();
+    if (typeof checkPatientNotifications === 'function') checkPatientNotifications();
+    if (typeof updatePatientPairBtn === 'function') updatePatientPairBtn();
+    setTimeout(() => { closeModal('modal-patient-pair'); }, 1500);
+  } catch (e) {
+    console.warn('Patient pair failed:', e);
+    setStatus(e.message || 'Something went wrong. Please try again.', 'err');
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-link"></i> Try again'; }
+  }
+}
+
+// Update the patient Pair button label to reflect connected state
+function updatePatientPairBtn() {
+  const btn = document.getElementById('patient-pair-btn');
+  const text = document.getElementById('patient-pair-btn-text');
+  if (!btn) return;
+  if (state.syncCode) {
+    btn.className = 'bg-white hover:bg-green-50 border-2 border-green-300 px-4 py-3 rounded-2xl transition-all flex items-center gap-2 shadow-sm';
+    btn.querySelector('i').className = 'fas fa-link text-green-500 text-xl';
+    if (text) text.textContent = 'Connected';
+    if (text) text.className = 'text-sm font-bold text-green-700 hidden sm:inline';
+  } else {
+    btn.className = 'bg-white hover:bg-indigo-50 border-2 border-indigo-200 px-4 py-3 rounded-2xl transition-all flex items-center gap-2 shadow-sm';
+    btn.querySelector('i').className = 'fas fa-link text-indigo-500 text-xl';
+    if (text) text.textContent = 'Connect';
+    if (text) text.className = 'text-sm font-bold text-indigo-800 hidden sm:inline';
+  }
+}
+
 function renderPatientHelper() {
   const avatarEl = document.getElementById('patient-helper-avatar');
   const textEl = document.getElementById('patient-helper-text');
   if (!avatarEl || !textEl) return;
-  
+
   const primaryHelper = state.contacts.find(c => c.emergencyBackup) || state.contacts[0];
-  
+  const pName = (state.patientName || '').trim();
+  const greeting = pName ? `Hi ${esc(pName)},` : 'Hello,';
+
   if (primaryHelper) {
     avatarEl.textContent = initials(primaryHelper.name);
-    textEl.innerHTML = `<strong>${esc(primaryHelper.name)}</strong> is here to help you today.<br><span class="text-sm text-teal-600 font-bold">${esc(primaryHelper.phone)}</span>`;
+    textEl.innerHTML = `${greeting} <strong>${esc(primaryHelper.name)}</strong> is your main helper today.<br><span class="text-sm text-teal-600 font-bold">${esc(primaryHelper.phone)}</span><br><span class="text-xs text-gray-500 mt-1 inline-block">Your village is active &mdash; tap a button below if you need anything.</span>`;
   } else {
-    avatarEl.textContent = '👵';
-    textEl.innerHTML = `<strong>Your Village</strong> is watching over you today.<br><span class="text-xs text-gray-500">Call anytime if you need help</span>`;
+    avatarEl.textContent = '💙';
+    textEl.innerHTML = `${greeting}<br><strong class="text-teal-700">Your village is active.</strong><br><span class="text-sm text-gray-600 font-medium">Tap a button below if you need help, a meal, or someone to talk to. You are not alone.</span>`;
   }
 }
 
@@ -7389,7 +7597,9 @@ function syncPush() {
     lastUpdated: state.lastUpdated,
     villageMessages: state.villageMessages,
     lastViewedVillageChat: state.lastViewedVillageChat,
-    seenNotifications: state.seenNotifications || []
+    seenNotifications: state.seenNotifications || [],
+    caregiverName: state.caregiverName || '',
+    patientName: state.patientName || ''
   };
   
   try {
@@ -7451,6 +7661,9 @@ function syncPull() {
         state.villageMessages = remoteState.villageMessages || {};
         state.lastViewedVillageChat = remoteState.lastViewedVillageChat || {};
         state.seenNotifications = remoteState.seenNotifications || [];
+        // Keep names in sync across paired devices (don't overwrite local with empty)
+        if (remoteState.caregiverName) state.caregiverName = remoteState.caregiverName;
+        if (remoteState.patientName) state.patientName = remoteState.patientName;
 
         saveStateLocal();
         refreshUI();
