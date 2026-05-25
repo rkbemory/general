@@ -107,29 +107,32 @@
 
 <!-- ===== HEADER ===== -->
 <header id="main-header" class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-b border-gray-200 z-40 hidden shadow-sm">
-  <div class="max-w-3xl mx-auto px-4 h-[72px] flex items-center justify-between transition-all">
-    <div class="flex items-center gap-4 cursor-pointer hover:opacity-90 transition-opacity" onclick="goHome()">
-      <div class="w-11 h-11 rounded-[14px] bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 flex items-center justify-center shadow-[0_6px_15px_rgba(13,148,136,0.4)] transform transition-transform hover:scale-105">
-        <i class="fas fa-sun text-white text-[22px] drop-shadow-md"></i>
+  <div class="max-w-3xl mx-auto px-3 sm:px-4 h-[64px] sm:h-[72px] flex items-center justify-between transition-all gap-2">
+    <!-- Logo block — shrinks first if buttons need space; title truncates rather than wraps -->
+    <div class="flex items-center gap-2 sm:gap-3 cursor-pointer hover:opacity-90 transition-opacity min-w-0 overflow-hidden" onclick="goHome()">
+      <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-[12px] sm:rounded-[14px] bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 flex items-center justify-center shadow-[0_6px_15px_rgba(13,148,136,0.4)] flex-shrink-0">
+        <i class="fas fa-sun text-white text-[16px] sm:text-[22px] drop-shadow-md"></i>
       </div>
-      <div>
-        <div class="text-[22px] font-extrabold leading-none tracking-tight text-teal-900 drop-shadow-sm">Caregiver Village</div>
-        <div class="text-[9.5px] text-teal-500 uppercase tracking-[0.2em] font-black mt-1 opacity-90">Your care support network</div>
+      <div class="min-w-0">
+        <div class="text-[15px] sm:text-[22px] font-extrabold leading-tight tracking-tight text-teal-900 drop-shadow-sm truncate">Caregiver Village</div>
+        <div class="hidden sm:block text-[9.5px] text-teal-500 uppercase tracking-[0.2em] font-black mt-1 opacity-90 truncate">Your care support network</div>
       </div>
     </div>
-    <div class="flex items-center gap-2">
-      <button onclick="openFeedback()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border border-indigo-100" title="Send Feedback">
-        <i class="fas fa-comment-dots"></i> <span class="hidden sm:inline">Feedback</span>
+
+    <!-- Right-side buttons — compact on mobile, full labels on tablet+ -->
+    <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+      <button onclick="openFeedback()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border border-indigo-100" title="Send Feedback">
+        <i class="fas fa-comment-dots"></i><span class="hidden sm:inline ml-0.5">Feedback</span>
       </button>
-      <button onclick="onNotifBellClick()" oncontextmenu="event.preventDefault();openNotifSettings();return false;" id="notif-bell-btn" class="relative bg-white hover:bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2" title="Notifications (right-click for settings)">
+      <button onclick="onNotifBellClick()" oncontextmenu="event.preventDefault();openNotifSettings();return false;" id="notif-bell-btn" class="relative bg-white hover:bg-gray-50 border border-gray-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2" title="Notifications (right-click for settings)">
         <i id="notif-bell" class="fas fa-bell text-gray-500 transition-all"></i>
         <span id="notif-bell-badge" class="hidden absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-black rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow">0</span>
       </button>
-      <button onclick="showPairingModal()" id="role-mode-btn" class="bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
-        <i class="fas fa-link"></i> <span id="sync-btn-text">Sync Code</span>
+      <button onclick="showPairingModal()" id="role-mode-btn" class="bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="Pair caregiver and patient devices">
+        <i class="fas fa-link"></i><span id="sync-btn-text" class="hidden sm:inline ml-0.5">Sync Code</span>
       </button>
-      <button onclick="showEmergency()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-2 text-xs shadow-sm">
-        <i class="fas fa-phone-alt"></i> SOS
+      <button onclick="showEmergency()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-2 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs shadow-sm" title="Emergency">
+        <i class="fas fa-phone-alt"></i><span class="ml-0.5">SOS</span>
       </button>
     </div>
   </div>
@@ -142,7 +145,7 @@
 </header>
 
 <!-- ===== MAIN CONTENT ===== -->
-<main class="max-w-3xl mx-auto w-full flex-1 overflow-y-auto pt-[130px] sm:pt-32 pb-24 px-4">
+<main class="max-w-3xl mx-auto w-full flex-1 overflow-y-auto pt-[108px] sm:pt-[130px] pb-24 px-3 sm:px-4">
 
   <!-- LOGIN VIEW -->
   <div id="view-login" class="fixed inset-0 z-50 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-900 via-purple-900 to-amber-700 flex items-center justify-center p-6 text-center overflow-hidden">
