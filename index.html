@@ -142,7 +142,7 @@
 </header>
 
 <!-- ===== MAIN CONTENT ===== -->
-<main class="max-w-3xl mx-auto w-full flex-1 overflow-y-auto pt-[130px] sm:pt-32 pb-24 px-4" style="padding-top: 130px;">
+<main class="max-w-3xl mx-auto w-full flex-1 overflow-y-auto pt-[130px] sm:pt-32 pb-24 px-4">
 
   <!-- LOGIN VIEW -->
   <div id="view-login" class="fixed inset-0 z-50 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-900 via-purple-900 to-amber-700 flex items-center justify-center p-6 text-center overflow-hidden">
@@ -290,10 +290,10 @@
       </button>
     </div>
 
-    <!-- Caregiver Toolkits — compact 2-up row -->
+    <!-- Caregiver Toolkits — 1-up on small phones, 2-up on tablets and larger -->
     <div class="mb-6">
       <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 px-1">Caregiver Toolkits</p>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
         <!-- Sundowning -->
         <button id="sundowning-card" onclick="openSundowning()" class="h-full text-left rounded-3xl p-4 border-2 border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all active:scale-[0.99] relative overflow-hidden block">
@@ -1400,7 +1400,7 @@
     <!-- Sub-view: Home -->
     <div id="patient-view-home" class="w-full max-w-md mx-auto flex flex-col items-center gap-6">
       <div class="text-center">
-        <div id="patient-clock" class="text-7xl font-extrabold text-teal-900 tracking-tight" style="font-size:4.5rem;">--:--</div>
+        <div id="patient-clock" class="text-6xl sm:text-7xl font-extrabold text-teal-900 tracking-tight leading-none">--:--</div>
         <div id="patient-day" class="text-2xl font-bold text-teal-700 mt-2">--</div>
       </div>
       
