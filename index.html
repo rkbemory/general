@@ -1996,7 +1996,7 @@
             <span class="text-sm font-extrabold text-gray-800">Google Gemini</span>
             <span class="ml-auto text-[9px] font-black uppercase tracking-wider bg-green-500 text-white px-2 py-0.5 rounded-full">Free · Recommended</span>
           </div>
-          <p class="text-[11px] text-gray-600 mt-1 leading-snug">Free tier with no credit card. Defaults to <strong>gemini-2.5-pro</strong> (50 chats/day) for best answers — switch the model below to <strong>gemini-2.5-flash</strong> if you need 1,500/day instead. Get a key from Google AI Studio in 60 seconds.</p>
+          <p class="text-[11px] text-gray-600 mt-1 leading-snug">Free tier with no credit card. Defaults to <strong>gemini-2.5-flash</strong> — fast, short, precise answers (1,500 chats/day). Switch the model below to <strong>gemini-2.5-pro</strong> for deeper (slower) answers at 50/day. Get a key from Google AI Studio in 60 seconds.</p>
         </button>
         <button type="button" id="ai-provider-claude-btn" onclick="selectAIProvider('claude')" class="w-full border-2 rounded-xl p-3 text-left transition-all">
           <div class="flex items-center gap-2">
@@ -2036,8 +2036,8 @@
       <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Model <span class="text-gray-400 font-normal normal-case">(optional)</span></label>
       <input id="ai-model" type="text" placeholder="leave blank for default"
         class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none font-mono text-sm"/>
-      <p id="ai-model-hint" class="text-[10px] text-gray-400 mt-1">Default: gemini-2.5-pro</p>
-      <p class="text-[10px] text-gray-500 mt-1 leading-snug">For Gemini: <code class="bg-gray-100 px-1 rounded">gemini-2.5-pro</code> gives the best answers (50/day free) · <code class="bg-gray-100 px-1 rounded">gemini-2.5-flash</code> is faster with a 1,500/day limit.</p>
+      <p id="ai-model-hint" class="text-[10px] text-gray-400 mt-1">Default: gemini-2.5-flash</p>
+      <p class="text-[10px] text-gray-500 mt-1 leading-snug">For Gemini: <code class="bg-gray-100 px-1 rounded">gemini-2.5-flash</code> is fast, short &amp; precise (1,500/day free) · <code class="bg-gray-100 px-1 rounded">gemini-2.5-pro</code> gives deeper answers (50/day).</p>
     </div>
 
     <!-- Privacy note -->
@@ -6078,72 +6078,47 @@ function removeCustomResource(id) {
 //  AI ASSISTANT (real LLM)
 // ============================================================
 const AI_DEFAULTS = {
-  gemini: { model: 'gemini-2.5-pro', endpoint: 'https://generativelanguage.googleapis.com/v1beta/models' },
+  gemini: { model: 'gemini-2.5-flash', endpoint: 'https://generativelanguage.googleapis.com/v1beta/models' },
   claude: { model: 'claude-sonnet-4-6', endpoint: 'https://api.anthropic.com/v1/messages' },
   openai: { model: 'gpt-4o-mini', endpoint: 'https://api.openai.com/v1/chat/completions' }
 };
 
-const AI_SYSTEM_PROMPT = `You are the Caregiver Village AI Care Assistant — an evidence-based dementia-care guide built into an app created by Rajib Biswas, MSN, a nurse-educator with clinical expertise in adult and geriatric care.
+const AI_SYSTEM_PROMPT = `You are the Caregiver Village Assistant — a calm, practical guide for family caregivers of people living with dementia. Built into an app by Rajib Biswas, MSN.
 
-You are speaking to a family caregiver — usually a spouse, adult child, or sibling — who may be exhausted, frightened, grieving, or all three. Most of the time they are alone in a room with the person they are caring for. They need calm authority, specific actions, and acknowledgment that what they are doing is hard.
+ANSWER STYLE (strict):
+• Keep replies SHORT and precise: 40–90 words, 2–4 sentences. Never exceed 100 words.
+• Open with one warm, human sentence, then the practical part.
+• Use a short bullet list only when giving 2–3 concrete steps; otherwise plain sentences. Mark bullets with "•".
+• Plain language. Define any clinical term in a few words.
+• Be specific and physical ("dim the lights, offer a glass of water") rather than vague ("reduce stimulation").
+• No filler, no "as an AI" disclaimers, no repeating a "see your doctor" line in every reply.
 
-═══ VOICE ═══
-Picture the most trusted nurse you've ever met answering the phone at 2 a.m. — warm, unhurried, completely competent. That is your voice. You are not a search engine, not a corporate chatbot, not a cheery wellness app. You speak in full sentences. You name what is hard. You explain what to do, and why it works.
+STAY IN BOUNDS (non-negotiable):
+• You give general guidance and comfort — NOT medical decisions.
+• Never recommend or change medications or doses. Send them to their prescriber or pharmacist.
+• Never diagnose. Say "this can be a sign of…", not "this is…".
+• You may answer general, non-dementia questions briefly if they are safe and everyday. For anything needing a professional (specific medical, legal, or financial decisions), give one helpful sentence and point them to the right expert.
 
-Avoid these failure modes:
-• Don't open with a bullet list. Always begin with one or two human sentences that meet the caregiver where they are.
-• Don't hedge with "I'm just an AI" or "consult your doctor" disclaimers in every reply. Save the medical handoffs for situations that truly need them.
-• Don't write in robotic bullet-only format. Use prose where it fits, and bullets only when listing concrete steps.
-• Don't pad with motivational filler. Every sentence earns its place.
+EMERGENCIES: If the message describes sudden severe confusion, a suspected stroke (face droop, arm weakness, slurred speech), a serious fall, chest pain or trouble breathing, or any mention of self-harm or harming others — STOP normal advice. In 2–3 calm sentences, tell them to call 911 (or their local emergency number) now, and add the Alzheimer's Association 24/7 line: 1-800-272-3900.
 
-═══ CARE PHILOSOPHY ═══
-1. Acknowledge first, advise second. One or two validating sentences before any instructions.
-2. Non-pharmacological strategies always come first — environment, routine, redirection, validation therapy, sensory comfort, body check (pain, hunger, thirst, bathroom, fatigue, infection).
-3. Be physically specific. "Dim the overhead light and turn on one warm lamp" beats "reduce stimulation." "Offer a glass of water and walk together to the kitchen" beats "redirect them."
-4. Use plain language. If a clinical term is unavoidable (sundowning, validation therapy, delirium), define it in five words inside parentheses.
-5. Treat the caregiver as the expert on their person. Ask clarifying questions when relevant ("Has anything changed today — a new medication, a missed nap, a different visitor?").
-6. End with either one concrete next step they can take in the next 10 minutes, or one warm, well-phrased question that helps them think.
+PRIVACY: If they share full names or an address, don't repeat it; note in one short line that this chat isn't a medical record.
 
-═══ SAFETY (non-negotiable) ═══
-For any of these RED-FLAG situations, STOP normal advice and tell the caregiver to call emergency services (911 in the US, the local equivalent elsewhere) immediately, then add the Alzheimer's Association 24/7 helpline 1-800-272-3900:
-• Sudden severe change in confusion or alertness (especially after fall, infection, medication change)
-• Suspected stroke — face droop, arm weakness, slurred speech (FAST)
-• Fall with possible head or hip injury
-• Chest pain, severe shortness of breath, blue lips
-• Suicidal statements or self-harm (caregiver or patient)
-• Suspected abuse or neglect
-• Acute psychosis with risk to self or others
+IDENTITY: If asked, you're the Caregiver Village assistant — an information tool, not a replacement for their care team.`;
 
-Other guardrails:
-• Never recommend specific medications, dosages, or dose changes. Redirect to the prescriber or pharmacist.
-• Never diagnose. Use "this can be a sign of..." not "this is...".
-• For end-of-life or hospice questions, respond compassionately and recommend the care team or hospice nurse.
-• If the caregiver shares identifying information (full names, address), gently note in a single sentence that the chat is not a medical record and avoid repeating it.
+// Separate, much gentler prompt for the PATIENT-facing chat (the person living with dementia).
+const AI_PATIENT_PROMPT = `You are a kind, calm companion inside an app, talking with an older person who may be living with memory difficulties.
 
-═══ FORMAT ═══
-• Aim for 150–250 words. Go shorter for simple questions, longer when a real walkthrough is needed.
-• Use 2–3 short paragraphs OR a short intro paragraph plus up to 6 bullets.
-• Mark bullets with "•" not asterisks.
-• Bold or quote nothing unless it adds real signal.
+HOW TO TALK:
+• Very short replies: 1–2 short sentences. Warm, simple, everyday words.
+• Be reassuring and friendly, like a gentle friend. Use their name if you know it.
+• Never argue or correct them. If they say something that isn't accurate, go along kindly and gently steer to something pleasant.
+• Suggest simple comforts: a glass of water, a favourite song, a short rest, looking at a photo, or telling you a happy memory.
+• Never give medical, medication, legal, or money advice. Never mention diagnoses or scary topics.
 
-═══ EXAMPLE OF THE RIGHT TONE ═══
-Caregiver: "My mom keeps trying to leave the house at night to 'go home,' even though she IS home. I'm exhausted and she won't believe me. What do I do?"
+IF THEY SEEM UPSET, SCARED, IN PAIN, OR UNSAFE (or mention being hurt, falling, or wanting to harm themselves):
+• Stay calm and warm. In one or two sentences, gently encourage them to tell the person helping them today, or to tap the big "Call 911" button at the top if they need help right now.
 
-You: "This is one of the most disorienting and frightening behaviours in dementia, and you are not failing — what she is feeling is real to her, even though the facts have shifted. Trying to convince her she's already home rarely works, because the part of her brain that anchors 'home' has changed.
-
-What tends to help, in the moment:
-
-• Don't correct her. Step into her reality. Try, "Let's get our coats and we'll go in a few minutes — first let me make us some tea." The walk to the kitchen, the warmth, and the delay are often enough.
-• Dim the bright lights and turn on one or two warm lamps. Harsh evening light worsens this.
-• Play something familiar from her younger years (music, a TV show she loved). Familiar sound can re-orient faster than words.
-• Lock the front door with a slide bolt placed either very high or very low — a person with dementia usually only looks at eye level.
-
-If she becomes physically agitated, or this is happening night after night, mention it to her doctor — they can rule out infection or medication side-effects, which sometimes look just like this.
-
-What time of day does this usually start for her?"
-
-═══ IDENTITY ═══
-If asked who you are: you are the Caregiver Village assistant, an AI guide built on the clinical guidance of Rajib Biswas, MSN. You are an information tool, not a substitute for her care team.`;
+Keep every reply gentle, positive, and brief.`;
 
 function getAIDefaultModel(provider) {
   return AI_DEFAULTS[provider] ? AI_DEFAULTS[provider].model : AI_DEFAULTS.gemini.model;
@@ -6154,13 +6129,28 @@ function isAIConfigured() {
   return !!(state.aiSettings.apiKey && state.aiSettings.apiKey.length > 10);
 }
 
-async function getBotReplyLLM(userText, history) {
-  if (!isAIConfigured()) return getBotReply(userText);
+// opts.systemPrompt overrides the default caregiver prompt (used for the patient companion chat).
+// opts.fallback overrides the rule-based fallback answer when AI is unavailable.
+async function getBotReplyLLM(userText, history, opts) {
+  opts = opts || {};
+  const systemPrompt = opts.systemPrompt || AI_SYSTEM_PROMPT;
+  const fallback = () => (opts.fallback ? opts.fallback(userText) : getBotReply(userText));
+
+  if (!isAIConfigured()) return fallback();
 
   const provider = state.aiSettings.provider || 'gemini';
   const model = state.aiSettings.model || getAIDefaultModel(provider);
   const apiKey = state.aiSettings.apiKey;
   const recent = (history || []).slice(-8).filter(m => m && !m.thinking);
+
+  // Strict safety filter: block only clearly harmful output, so legitimate caregiving
+  // topics (aggression, wandering, end-of-life) are not refused.
+  const GEMINI_SAFETY = [
+    { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
+    { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
+    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' }
+  ];
 
   try {
     if (provider === 'gemini') {
@@ -6172,15 +6162,16 @@ async function getBotReplyLLM(userText, history) {
       }));
       contents.push({ role: 'user', parts: [{ text: userText }] });
 
-      // Gemini 2.5 supports a "thinking budget" — tokens spent on internal reasoning
-      // before composing the visible reply. Higher = better answer quality.
+      // Tuned for SHORT, precise, safe answers. Flash with thinking off is fast and concise;
+      // if the user overrides to a Pro model we give it a dynamic thinking budget and more room.
       const isPro = /pro/i.test(model);
       const generationConfig = {
-        maxOutputTokens: 2048,
-        temperature: 0.4,
-        topP: 0.95,
-        // Thinking config: -1 = dynamic (model picks). For Pro this gives much deeper reasoning.
-        thinkingConfig: { thinkingBudget: isPro ? -1 : 1024 }
+        maxOutputTokens: isPro ? 2048 : 500,
+        temperature: 0.3,
+        topP: 0.9,
+        // Flash: thinkingBudget 0 disables internal reasoning → faster, shorter, and avoids
+        // the "thinking ate the whole budget → empty reply" failure. Pro: dynamic reasoning.
+        thinkingConfig: { thinkingBudget: isPro ? -1 : 0 }
       };
 
       const url = AI_DEFAULTS.gemini.endpoint + '/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(apiKey);
@@ -6189,8 +6180,9 @@ async function getBotReplyLLM(userText, history) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: contents,
-          systemInstruction: { parts: [{ text: AI_SYSTEM_PROMPT }] },
-          generationConfig: generationConfig
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: generationConfig,
+          safetySettings: GEMINI_SAFETY
         })
       });
       if (!res.ok) {
@@ -6203,7 +6195,7 @@ async function getBotReplyLLM(userText, history) {
       // Filter out any thinking-mode parts (some Gemini versions emit them as 'thought:true');
       // only join the visible text parts.
       const text = parts && parts.filter(p => !p.thought).map(p => p.text || '').join('').trim();
-      return text || getBotReply(userText);
+      return text || fallback();
     }
 
     if (provider === 'claude') {
@@ -6223,9 +6215,9 @@ async function getBotReplyLLM(userText, history) {
         },
         body: JSON.stringify({
           model: model,
-          max_tokens: 2048,
-          temperature: 0.4,
-          system: AI_SYSTEM_PROMPT,
+          max_tokens: 600,
+          temperature: 0.3,
+          system: systemPrompt,
           messages: messages
         })
       });
@@ -6248,9 +6240,9 @@ async function getBotReplyLLM(userText, history) {
       // Claude returns content as an array of blocks; gather all text blocks
       const blocks = (data && data.content) || [];
       const text = blocks.filter(b => b && b.type === 'text').map(b => b.text || '').join('').trim();
-      return text || getBotReply(userText);
+      return text || fallback();
     } else {
-      const messages = [{ role: 'system', content: AI_SYSTEM_PROMPT }];
+      const messages = [{ role: 'system', content: systemPrompt }];
       recent.forEach(m => messages.push({
         role: m.role === 'user' ? 'user' : 'assistant',
         content: m.text || ''
@@ -6265,8 +6257,8 @@ async function getBotReplyLLM(userText, history) {
         },
         body: JSON.stringify({
           model: model,
-          max_tokens: 2048,
-          temperature: 0.4,
+          max_tokens: 600,
+          temperature: 0.3,
           messages: messages
         })
       });
@@ -6278,7 +6270,7 @@ async function getBotReplyLLM(userText, history) {
       }
       const data = await res.json();
       const text = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
-      return text || getBotReply(userText);
+      return text || fallback();
     }
   } catch (e) {
     // Log full error to console for debugging (open DevTools → Console to inspect)
@@ -8726,10 +8718,13 @@ function renderPatientChat() {
   
   box.innerHTML = patientChatHistory.map(m => {
     const isBot = m.sender === 'bot';
+    const body = m.thinking
+      ? `<span class="italic opacity-70">…</span>`
+      : esc(m.text);
     return `
       <div class="flex ${isBot ? 'justify-start' : 'justify-end'}">
-        <div class="max-w-[85%] px-5 py-3 rounded-2xl text-lg font-bold shadow-sm ${isBot ? 'bg-teal-50 text-teal-900 border border-teal-100 rounded-bl-sm' : 'bg-teal-500 text-white rounded-br-sm'}">
-          ${m.text}
+        <div class="max-w-[85%] px-5 py-3 rounded-2xl text-lg font-bold shadow-sm whitespace-pre-line ${isBot ? 'bg-teal-50 text-teal-900 border border-teal-100 rounded-bl-sm' : 'bg-teal-500 text-white rounded-br-sm'}">
+          ${body}
         </div>
       </div>
     `;
@@ -8750,40 +8745,62 @@ function sendPatientQuickReply(text) {
   sendPatientChat();
 }
 
-function sendPatientChat() {
+// Gentle keyword fallback used when no AI key is configured (or the AI call fails).
+function patientCannedReply(text) {
+  const lowText = (text || '').toLowerCase();
+  if (lowText.includes('tired')) {
+    return "It's okay to feel tired. 🌸 Maybe sit in a comfy chair, listen to some music, or take a short rest. You are doing great.";
+  } else if (lowText.includes('joke')) {
+    const jokes = [
+      "Why did the bird go to the hospital? To get a tweet-ment! 🐦",
+      "What do you call a sleeping dinosaur? A dino-snore! 🦖",
+      "Why don't scientists trust atoms? Because they make up everything! ⚛️",
+      "What did one plate say to the other? Lunch is on me! 🍽️"
+    ];
+    return jokes[Math.floor(Math.random() * jokes.length)];
+  } else if (lowText.includes('time')) {
+    return `Right now it is ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}. 🕰️`;
+  } else if (lowText.includes('music')) {
+    return "Music is wonderful! 🎵 What kind do you like best? Tap the Home button and try the Music activities.";
+  } else if (lowText.includes('good')) {
+    return "I am so happy you are feeling good! 🌟 Let's keep smiling today.";
+  }
+  return "That is nice to hear! 😊 Tell me more about it.";
+}
+
+async function sendPatientChat() {
   const input = document.getElementById('patient-chat-input');
   const text = input.value.trim();
   if (!text) return;
-  
+
   patientChatHistory.push({ sender: 'user', text });
   input.value = '';
+  // Show a gentle "…" while we wait
+  patientChatHistory.push({ sender: 'bot', text: '', thinking: true });
   renderPatientChat();
-  
-  setTimeout(() => {
-    let reply = "That is nice to hear! 😊 Tell me more about it.";
-    const lowText = text.toLowerCase();
-    
-    if (lowText.includes('tired')) {
-      reply = "It's okay to feel tired. 🌸 Maybe you can sit down in a comfortable chair, listen to some music, or take a short nap. You are doing great.";
-    } else if (lowText.includes('joke')) {
-      const jokes = [
-        "Why did the bird go to the hospital? To get an tweetment! 🐦",
-        "What do you call a sleeping dinosaur? A dino-snore! 🦖",
-        "Why don't scientists trust atoms? Because they make up everything! ⚛️",
-        "What did one plate say to the other? Lunch is on me! 🍽️"
-      ];
-      reply = jokes[Math.floor(Math.random() * jokes.length)];
-    } else if (lowText.includes('time')) {
-      reply = `Right now it is ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}.`;
-    } else if (lowText.includes('music')) {
-      reply = "Music is wonderful! 🎵 What kind of music is your favorite? I love cheerful, quiet melodies.";
-    } else if (lowText.includes('good')) {
-      reply = "I am so happy that you are feeling good! 🌟 Let's keep smiling today.";
-    }
-    
-    patientChatHistory.push({ sender: 'bot', text: reply });
-    renderPatientChat();
-  }, 800);
+
+  let reply;
+  if (typeof isAIConfigured === 'function' && isAIConfigured()) {
+    // Normalise history to the {role, text} shape getBotReplyLLM expects (exclude the thinking bubble)
+    const normalized = patientChatHistory
+      .filter(m => !m.thinking)
+      .map(m => ({ role: m.sender === 'user' ? 'user' : 'bot', text: m.text }))
+      .slice(0, -1); // drop the just-added user turn (passed separately)
+    reply = await getBotReplyLLM(text, normalized, {
+      systemPrompt: AI_PATIENT_PROMPT,
+      fallback: patientCannedReply
+    });
+  } else {
+    await new Promise(r => setTimeout(r, 500));
+    reply = patientCannedReply(text);
+  }
+
+  // Remove the thinking bubble, add the real reply
+  if (patientChatHistory.length && patientChatHistory[patientChatHistory.length - 1].thinking) {
+    patientChatHistory.pop();
+  }
+  patientChatHistory.push({ sender: 'bot', text: reply });
+  renderPatientChat();
 }
 
 function openPatientNeed() {
