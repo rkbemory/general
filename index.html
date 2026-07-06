@@ -5330,19 +5330,13 @@ function logMood(score) {
   saveState();
 
   const insights = {
-    5: "Wonderful! We are so glad you are having a good day. Cherish these moments of brightness.",
-    4: "Glad you are doing okay. Remember to pace yourself and take small breaks.",
-    3: "It's completely normal to feel tired. Can you delegate one small task today to your village?",
-    2: "Feeling anxious is a very natural response to caregiving. Take a slow, deep breath. We are here.",
-    1: "Frustration is valid. Caregiving is hard. Please reach out to someone in your village or take a 5-minute break."
+    5: "Wonderful! We are so glad you are having a good day. Cherish it. ☀️",
+    4: "Glad you are doing okay. Remember to pace yourself. 🌿",
+    3: "It's normal to feel tired. Can you delegate one small task to your village today? 💙",
+    2: "Feeling anxious is a natural response to caregiving. Take a slow deep breath. We are here. 🕊️",
+    1: "Frustration is valid. Please reach out to someone in your village, or take a 5-minute break. ❤️"
   };
-
-  const container = document.getElementById('mood-insight-container');
-  if (container) {
-    container.textContent = insights[score] || "Take a deep breath. You are doing the best you can.";
-    container.classList.remove('hidden');
-  }
-  toast("Mood logged. Thank you for checking in! ❤️");
+  toast(insights[score] || "Thank you for checking in with yourself. ❤️");
 
   // Refresh dashboard to update onboarding progress
   renderDashboard();
@@ -5360,18 +5354,12 @@ function logPatientMood(score, label) {
 
   const insights = {
     5: "Wonderful! We are so happy you feel good today! Enjoy your beautiful day! ☀️",
-    4: "Glad you are doing okay. Take it easy and enjoy some relaxing music or a nice walk. 🌿",
-    3: "It is okay to feel tired. Be sure to rest and drink some water. Someone is always close by to help. 💧",
-    2: "Feeling worried is okay. Take a slow, deep breath. You are safe and cared for. ❤️",
-    1: "It is okay to feel frustrated. Take a deep breath. We are here to support you. Let's listen to some music. 🎵"
+    4: "Glad you are doing okay. Take it easy. Some music or a walk sounds nice. 🌿",
+    3: "It is okay to feel tired. Rest and drink some water. Someone is close by. 💧",
+    2: "Feeling worried is okay. Take a slow deep breath. You are safe and cared for. ❤️",
+    1: "It is okay to feel frustrated. We are here for you. Some music might help. 🎵"
   };
-
-  const container = document.getElementById('patient-mood-insight-container');
-  if (container) {
-    container.textContent = insights[score] || "You are safe and cared for. Take a deep breath.";
-    container.classList.remove('hidden');
-  }
-  toast(`Mood logged: ${label}. Thank you! ❤️`);
+  toast(insights[score] || `Mood logged. Thank you! ❤️`);
 }
 
 
@@ -5755,12 +5743,6 @@ function enterPatientMode() {
   if (pClock) {
     pClock.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     document.getElementById('patient-day').textContent = now.toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric'});
-  }
-  
-  const patientMoodInsight = document.getElementById('patient-mood-insight-container');
-  if (patientMoodInsight) {
-    patientMoodInsight.classList.add('hidden');
-    patientMoodInsight.textContent = '';
   }
   
   renderPatientHelper();
