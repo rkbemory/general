@@ -4766,6 +4766,11 @@ function getBotReply(input) {
     if (score > bestScore) { bestScore = score; best = entry; }
   }
   if (best && bestScore > 0) return best.reply;
+  // No keyword match. If the real AI isn't turned on, say so plainly — otherwise this
+  // generic reply makes it look like a broken assistant when it just needs a free key.
+  if (typeof isAIConfigured === 'function' && !isAIConfigured()) {
+    return 'I\'m running in **basic mode** right now, so I can only answer common questions.\n\nTo get real, conversational answers to questions like this, tap **AI Setup** (or the ✨ banner above) and paste a free Google Gemini key — it takes about 60 seconds and stays private on your device.\n\nIn the meantime you can:\n• Visit **alz.org** for detailed guidance\n• Check the **Education** tab in this app — it has a full section on Lewy body, FTD, and vascular dementia\n• Call the Alzheimer\'s Association helpline: **1-800-272-3900** (24/7)';
+  }
   return 'That\'s a great question. I don\'t have a specific answer for that right now, but here are some suggestions:\n\n• Talk to your doctor or a dementia care specialist\n• Visit **alz.org** or **alzheimers.org.uk** for detailed guidance\n• Post your question in the **Q&A** section — other caregivers may have experience with this\n• Call the Alzheimer\'s Association helpline: **1-800-272-3900** (available 24/7)\n\nIs there anything else I can help with?';
 }
 
