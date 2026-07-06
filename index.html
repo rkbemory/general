@@ -1982,74 +1982,93 @@
     <button onclick="closeModal('modal-ai-settings')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
     <div class="text-center mb-5">
       <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-2xl mx-auto mb-3"><i class="fas fa-robot"></i></div>
-      <h2 class="text-xl font-extrabold text-gray-800 mb-1">AI Assistant Setup</h2>
-      <p class="text-xs text-gray-500 font-medium leading-relaxed px-2">Paste your API key once. It's stored only in this browser — never uploaded, never shared.</p>
+      <h2 class="text-xl font-extrabold text-gray-800 mb-1">AI Assistant</h2>
+      <p class="text-xs text-gray-500 font-medium leading-relaxed px-2">The AI Care Assistant is ready to use — no setup, no key needed.</p>
     </div>
 
-    <!-- Provider stacked -->
-    <div class="mb-4">
-      <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Choose how AI runs</label>
-      <div class="space-y-2">
-        <button type="button" id="ai-provider-gemini-btn" onclick="selectAIProvider('gemini')" class="w-full border-2 rounded-xl p-3 text-left transition-all">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">🟦</span>
-            <span class="text-sm font-extrabold text-gray-800">Google Gemini</span>
-            <span class="ml-auto text-[9px] font-black uppercase tracking-wider bg-green-500 text-white px-2 py-0.5 rounded-full">Free · Recommended</span>
-          </div>
-          <p class="text-[11px] text-gray-600 mt-1 leading-snug">Free tier with no credit card. Defaults to <strong>gemini-2.5-flash</strong> — fast, short, precise answers (1,500 chats/day). Switch the model below to <strong>gemini-2.5-pro</strong> for deeper (slower) answers at 50/day. Get a key from Google AI Studio in 60 seconds.</p>
-        </button>
-        <button type="button" id="ai-provider-claude-btn" onclick="selectAIProvider('claude')" class="w-full border-2 rounded-xl p-3 text-left transition-all">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">🤖</span>
-            <span class="text-sm font-extrabold text-gray-800">Bring your own Claude key</span>
-          </div>
-          <p class="text-[11px] text-gray-600 mt-1 leading-snug">Paste your Anthropic key &mdash; chats go directly from your browser to Anthropic.</p>
-        </button>
-        <button type="button" id="ai-provider-openai-btn" onclick="selectAIProvider('openai')" class="w-full border-2 rounded-xl p-3 text-left transition-all">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">⚡</span>
-            <span class="text-sm font-extrabold text-gray-800">Bring your own OpenAI key</span>
-          </div>
-          <p class="text-[11px] text-gray-600 mt-1 leading-snug">Paste your OpenAI key &mdash; chats go directly from your browser to OpenAI.</p>
-        </button>
+    <!-- Server mode (default, no key) -->
+    <div id="ai-server-section" class="mb-4">
+      <div class="bg-green-50 border-2 border-green-200 rounded-2xl p-4 text-center">
+        <div class="text-3xl mb-2">✨</div>
+        <p class="text-sm font-extrabold text-green-900 mb-1">AI is on and ready</p>
+        <p id="ai-server-status" class="text-xs text-green-800 leading-snug">Powered by Caregiver Village. Just start typing your question in the chat — answers are short, practical, and safe.</p>
       </div>
+      <button onclick="testAIConnection()" class="w-full mt-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl py-2.5 font-bold text-sm">Test the connection</button>
     </div>
 
-    <!-- API key -->
-    <div id="ai-key-section" class="mb-4">
-      <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">API Key</label>
-      <input id="ai-api-key" type="password" placeholder="paste your key here" autocomplete="off" spellcheck="false"
-        class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none font-mono text-sm"/>
-      <div class="flex items-center justify-between mt-2">
-        <label class="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
-          <input type="checkbox" id="ai-show-key" onchange="toggleAIKeyVisibility()" class="w-3.5 h-3.5"/>
-          Show key
-        </label>
-        <a id="ai-key-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="text-xs text-indigo-600 hover:underline font-semibold">
-          Get a key →
-        </a>
+    <!-- Advanced: bring-your-own key (hidden by default) -->
+    <div class="mb-2">
+      <button type="button" onclick="toggleAIAdvanced()" id="ai-advanced-toggle" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1.5">
+        <i class="fas fa-chevron-down text-[10px]" id="ai-advanced-chevron"></i> Advanced: use your own API key
+      </button>
+    </div>
+
+    <div id="ai-advanced-section" class="hidden">
+      <p class="text-[11px] text-gray-500 mb-3 leading-snug">Optional. Most people can ignore this. Use your own key if you'd prefer your chats go directly to your chosen provider instead of through the Caregiver Village server.</p>
+
+      <!-- Provider stacked -->
+      <div class="mb-4">
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Provider</label>
+        <div class="space-y-2">
+          <button type="button" id="ai-provider-gemini-btn" onclick="selectAIProvider('gemini')" class="w-full border-2 rounded-xl p-3 text-left transition-all">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🟦</span>
+              <span class="text-sm font-extrabold text-gray-800">Your own Google Gemini key</span>
+            </div>
+            <p class="text-[11px] text-gray-600 mt-1 leading-snug">Free tier, no credit card. <strong>gemini-2.5-flash</strong> (1,500/day) or <strong>gemini-2.5-pro</strong> (50/day). Get a key from Google AI Studio.</p>
+          </button>
+          <button type="button" id="ai-provider-claude-btn" onclick="selectAIProvider('claude')" class="w-full border-2 rounded-xl p-3 text-left transition-all">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🤖</span>
+              <span class="text-sm font-extrabold text-gray-800">Your own Claude key</span>
+            </div>
+            <p class="text-[11px] text-gray-600 mt-1 leading-snug">Chats go directly from your browser to Anthropic.</p>
+          </button>
+          <button type="button" id="ai-provider-openai-btn" onclick="selectAIProvider('openai')" class="w-full border-2 rounded-xl p-3 text-left transition-all">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">⚡</span>
+              <span class="text-sm font-extrabold text-gray-800">Your own OpenAI key</span>
+            </div>
+            <p class="text-[11px] text-gray-600 mt-1 leading-snug">Chats go directly from your browser to OpenAI.</p>
+          </button>
+        </div>
       </div>
-    </div>
 
-    <!-- Model (optional override) -->
-    <div class="mb-4">
-      <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Model <span class="text-gray-400 font-normal normal-case">(optional)</span></label>
-      <input id="ai-model" type="text" placeholder="leave blank for default"
-        class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none font-mono text-sm"/>
-      <p id="ai-model-hint" class="text-[10px] text-gray-400 mt-1">Default: gemini-2.5-flash</p>
-      <p class="text-[10px] text-gray-500 mt-1 leading-snug">For Gemini: <code class="bg-gray-100 px-1 rounded">gemini-2.5-flash</code> is fast, short &amp; precise (1,500/day free) · <code class="bg-gray-100 px-1 rounded">gemini-2.5-pro</code> gives deeper answers (50/day).</p>
-    </div>
+      <!-- API key -->
+      <div id="ai-key-section" class="mb-4">
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">API Key</label>
+        <input id="ai-api-key" type="password" placeholder="paste your key here" autocomplete="off" spellcheck="false"
+          class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none font-mono text-sm"/>
+        <div class="flex items-center justify-between mt-2">
+          <label class="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
+            <input type="checkbox" id="ai-show-key" onchange="toggleAIKeyVisibility()" class="w-3.5 h-3.5"/>
+            Show key
+          </label>
+          <a id="ai-key-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="text-xs text-indigo-600 hover:underline font-semibold">
+            Get a key →
+          </a>
+        </div>
+      </div>
 
-    <!-- Privacy note -->
-    <div class="bg-amber-50 border border-amber-100 rounded-xl p-3 mb-4 text-[11px] text-amber-900 leading-relaxed">
-      <i class="fas fa-shield-alt mr-1"></i> <strong>Privacy:</strong> Your key never leaves this device. Chat questions are sent directly to your chosen provider. Don't share screenshots of this screen.
-    </div>
+      <!-- Model (optional override) -->
+      <div class="mb-4">
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Model <span class="text-gray-400 font-normal normal-case">(optional)</span></label>
+        <input id="ai-model" type="text" placeholder="leave blank for default"
+          class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-indigo-400 outline-none font-mono text-sm"/>
+        <p id="ai-model-hint" class="text-[10px] text-gray-400 mt-1">Default: gemini-2.5-flash</p>
+      </div>
 
-    <div class="flex gap-2">
-      <button onclick="testAIConnection()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl py-3 font-bold text-sm">Test</button>
-      <button onclick="saveAISettings()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-3 font-bold text-sm shadow">Save</button>
+      <!-- Privacy note -->
+      <div class="bg-amber-50 border border-amber-100 rounded-xl p-3 mb-4 text-[11px] text-amber-900 leading-relaxed">
+        <i class="fas fa-shield-alt mr-1"></i> <strong>Privacy:</strong> Your key never leaves this device. Don't share screenshots of this screen.
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="testAIConnection()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl py-3 font-bold text-sm">Test</button>
+        <button onclick="saveAISettings()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-3 font-bold text-sm shadow">Save</button>
+      </div>
+      <button onclick="clearAISettings()" class="w-full mt-2 text-xs text-gray-500 hover:text-gray-700 font-semibold py-1">Back to the free Caregiver Village AI</button>
     </div>
-    <button onclick="clearAISettings()" class="w-full mt-2 text-xs text-red-500 hover:text-red-700 font-semibold py-1">Remove saved key</button>
   </div>
 </div>
 
@@ -2699,7 +2718,7 @@ let state = {
   villageMessages: {},
   lastViewedVillageChat: {},
   seenNotifications: [],
-  aiSettings: { provider: 'gemini', apiKey: '', model: '' },
+  aiSettings: { provider: 'server', apiKey: '', model: '' },
   sundowningLog: [],
   feelingsLog: [],
   caregiverName: '',
@@ -2748,15 +2767,19 @@ function sanitizeState() {
   if (!Array.isArray(state.seenNotifications)) state.seenNotifications = [];
 
   if (!state.aiSettings || typeof state.aiSettings !== 'object') {
-    state.aiSettings = { provider: 'gemini', apiKey: '', model: '' };
+    state.aiSettings = { provider: 'server', apiKey: '', model: '' };
   }
-  const validProviders = ['gemini', 'claude', 'openai'];
-  // Migrate any legacy 'puter' setting -> Gemini (no third-party prompt, free tier)
+  const validProviders = ['server', 'gemini', 'claude', 'openai'];
+  // Migrate legacy 'puter', and any old default 'gemini'-without-key users, onto the
+  // shared server (one key for everyone). Deliberate BYO key setups are preserved.
   if (state.aiSettings.provider === 'puter') {
-    state.aiSettings.provider = 'gemini';
+    state.aiSettings.provider = 'server';
     state.aiSettings.model = '';
   }
-  if (!validProviders.includes(state.aiSettings.provider)) state.aiSettings.provider = 'gemini';
+  if (state.aiSettings.provider === 'gemini' && !(state.aiSettings.apiKey && state.aiSettings.apiKey.length > 10)) {
+    state.aiSettings.provider = 'server';
+  }
+  if (!validProviders.includes(state.aiSettings.provider)) state.aiSettings.provider = 'server';
   if (typeof state.aiSettings.apiKey !== 'string') state.aiSettings.apiKey = '';
   if (typeof state.aiSettings.model !== 'string') state.aiSettings.model = '';
 
@@ -2803,13 +2826,15 @@ function loadState() {
     state.lastViewedVillageChat = parsed.lastViewedVillageChat || {};
     state.seenNotifications = parsed.seenNotifications || [];
     if (parsed.aiSettings && typeof parsed.aiSettings === 'object') {
-      const allowed = ['gemini', 'claude', 'openai'];
+      const allowed = ['server', 'gemini', 'claude', 'openai'];
       let savedProvider = parsed.aiSettings.provider;
-      // Migrate legacy 'puter' selections to Gemini on load
-      if (savedProvider === 'puter') savedProvider = 'gemini';
+      const savedKey = typeof parsed.aiSettings.apiKey === 'string' ? parsed.aiSettings.apiKey : '';
+      // Migrate legacy 'puter', and default 'gemini'-without-key users, onto the shared server.
+      if (savedProvider === 'puter') savedProvider = 'server';
+      if (savedProvider === 'gemini' && !(savedKey && savedKey.length > 10)) savedProvider = 'server';
       state.aiSettings = {
-        provider: allowed.includes(savedProvider) ? savedProvider : 'gemini',
-        apiKey: typeof parsed.aiSettings.apiKey === 'string' ? parsed.aiSettings.apiKey : '',
+        provider: allowed.includes(savedProvider) ? savedProvider : 'server',
+        apiKey: savedKey,
         model: typeof parsed.aiSettings.model === 'string' ? parsed.aiSettings.model : ''
       };
     }
@@ -6083,6 +6108,8 @@ function removeCustomResource(id) {
 //  AI ASSISTANT (real LLM)
 // ============================================================
 const AI_DEFAULTS = {
+  // 'server' = the shared Caregiver Village key, held in a Netlify Function. No user key needed.
+  server: { model: 'gemini-2.5-flash', endpoint: '/.netlify/functions/gemini' },
   gemini: { model: 'gemini-2.5-flash', endpoint: 'https://generativelanguage.googleapis.com/v1beta/models' },
   claude: { model: 'claude-sonnet-4-6', endpoint: 'https://api.anthropic.com/v1/messages' },
   openai: { model: 'gpt-4o-mini', endpoint: 'https://api.openai.com/v1/chat/completions' }
@@ -6131,6 +6158,9 @@ function getAIDefaultModel(provider) {
 
 function isAIConfigured() {
   if (!state.aiSettings) return false;
+  // The shared server holds the key, so 'server' mode is always "configured" on the client.
+  // If the server env var isn't set, the call fails gracefully and falls back to basic mode.
+  if (state.aiSettings.provider === 'server') return true;
   return !!(state.aiSettings.apiKey && state.aiSettings.apiKey.length > 10);
 }
 
@@ -6143,7 +6173,7 @@ async function getBotReplyLLM(userText, history, opts) {
 
   if (!isAIConfigured()) return fallback();
 
-  const provider = state.aiSettings.provider || 'gemini';
+  const provider = state.aiSettings.provider || 'server';
   const model = state.aiSettings.model || getAIDefaultModel(provider);
   const apiKey = state.aiSettings.apiKey;
   const recent = (history || []).slice(-8).filter(m => m && !m.thinking);
@@ -6158,7 +6188,9 @@ async function getBotReplyLLM(userText, history, opts) {
   ];
 
   try {
-    if (provider === 'gemini') {
+    // Both 'server' (shared key via Netlify Function) and 'gemini' (user's own key)
+    // speak the Gemini API shape. They differ only in the URL and whether a key is attached.
+    if (provider === 'gemini' || provider === 'server') {
       // Gemini wants {role:'user'|'model', parts:[{text}]}, system instruction is separate.
       const contents = [];
       recent.forEach(m => contents.push({
@@ -6179,20 +6211,33 @@ async function getBotReplyLLM(userText, history, opts) {
         thinkingConfig: { thinkingBudget: isPro ? -1 : 0 }
       };
 
-      const url = AI_DEFAULTS.gemini.endpoint + '/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(apiKey);
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: contents,
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: generationConfig,
-          safetySettings: GEMINI_SAFETY
-        })
-      });
+      const requestBody = {
+        contents: contents,
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: generationConfig,
+        safetySettings: GEMINI_SAFETY
+      };
+
+      let res;
+      if (provider === 'server') {
+        // The Netlify Function adds the shared key; we pass the model so it can validate it.
+        res = await fetch(AI_DEFAULTS.server.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...requestBody, model: model })
+        });
+      } else {
+        const url = AI_DEFAULTS.gemini.endpoint + '/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(apiKey);
+        res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+      }
       if (!res.ok) {
         const err = await res.text();
-        throw new Error('Gemini API error: ' + res.status + ' — ' + err.slice(0, 200));
+        const label = provider === 'server' ? 'AI service' : 'Gemini API';
+        throw new Error(label + ' error: ' + res.status + ' — ' + err.slice(0, 200));
       }
       const data = await res.json();
       const cand = data && data.candidates && data.candidates[0];
@@ -6285,16 +6330,37 @@ async function getBotReplyLLM(userText, history, opts) {
 }
 
 function openAISettings() {
-  selectAIProvider(state.aiSettings.provider || 'gemini', true);
-  document.getElementById('ai-api-key').value = state.aiSettings.apiKey || '';
-  document.getElementById('ai-api-key').type = 'password';
-  document.getElementById('ai-show-key').checked = false;
-  document.getElementById('ai-model').value = state.aiSettings.model || '';
+  const usingOwnKey = state.aiSettings.provider !== 'server';
+  // If the user already set up their own key, open straight into the advanced view.
+  const adv = document.getElementById('ai-advanced-section');
+  const chev = document.getElementById('ai-advanced-chevron');
+  if (adv) adv.classList.toggle('hidden', !usingOwnKey);
+  if (chev) chev.className = usingOwnKey ? 'fas fa-chevron-up text-[10px]' : 'fas fa-chevron-down text-[10px]';
+
+  if (usingOwnKey) selectAIProvider(state.aiSettings.provider, true);
+  const keyEl = document.getElementById('ai-api-key');
+  if (keyEl) { keyEl.value = state.aiSettings.apiKey || ''; keyEl.type = 'password'; }
+  const showEl = document.getElementById('ai-show-key');
+  if (showEl) showEl.checked = false;
+  const modelEl = document.getElementById('ai-model');
+  if (modelEl) modelEl.value = state.aiSettings.model || '';
+  updateAIStatusLine();
   openModal('modal-ai-settings');
 }
 
+function toggleAIAdvanced() {
+  const adv = document.getElementById('ai-advanced-section');
+  const chev = document.getElementById('ai-advanced-chevron');
+  if (!adv) return;
+  const willShow = adv.classList.contains('hidden');
+  adv.classList.toggle('hidden', !willShow);
+  if (chev) chev.className = (willShow ? 'fas fa-chevron-up' : 'fas fa-chevron-down') + ' text-[10px]';
+  // Default the advanced view to the Gemini-key option if nothing chosen yet
+  if (willShow && state.aiSettings.provider === 'server') selectAIProvider('gemini', false);
+}
+
 function selectAIProvider(provider, skipFieldUpdate) {
-  state.aiSettings = state.aiSettings || { provider: 'gemini', apiKey: '', model: '' };
+  state.aiSettings = state.aiSettings || { provider: 'server', apiKey: '', model: '' };
   state.aiSettings.provider = provider;
   const geminiBtn = document.getElementById('ai-provider-gemini-btn');
   const claudeBtn = document.getElementById('ai-provider-claude-btn');
@@ -6340,47 +6406,70 @@ function toggleAIKeyVisibility() {
 function saveAISettings() {
   const key = document.getElementById('ai-api-key').value.trim();
   const model = document.getElementById('ai-model').value.trim();
-  state.aiSettings.apiKey = key;
-  state.aiSettings.model = model;
-  saveStateLocal();
-  updateAIStatusLine();
   if (key) {
-    toast('AI assistant enabled ✨');
+    // A personal key was entered. Make sure we're on a key-using provider (not 'server').
+    if (state.aiSettings.provider === 'server') state.aiSettings.provider = 'gemini';
+    state.aiSettings.apiKey = key;
+    state.aiSettings.model = model;
+    saveStateLocal();
+    updateAIStatusLine();
+    toast('Your own AI key is now in use ✨');
   } else {
-    toast('Saved. Add a key to enable real AI.');
+    // No key entered — stay on / return to the free shared server.
+    state.aiSettings.provider = 'server';
+    state.aiSettings.apiKey = '';
+    state.aiSettings.model = '';
+    saveStateLocal();
+    updateAIStatusLine();
+    toast('Using the free Caregiver Village AI ✨');
   }
   closeModal('modal-ai-settings');
 }
 
 function clearAISettings() {
+  // "Back to the free Caregiver Village AI" — drop the personal key, return to server mode.
   state.aiSettings.apiKey = '';
   state.aiSettings.model = '';
-  state.aiSettings.provider = 'gemini';
+  state.aiSettings.provider = 'server';
   saveStateLocal();
   updateAIStatusLine();
-  toast('Reset. Add a Gemini key in AI Setup to re-enable.');
-  closeModal('modal-ai-settings');
+  const adv = document.getElementById('ai-advanced-section');
+  if (adv) adv.classList.add('hidden');
+  const chev = document.getElementById('ai-advanced-chevron');
+  if (chev) chev.className = 'fas fa-chevron-down text-[10px]';
+  toast('Using the free Caregiver Village AI ✨');
 }
 
 async function testAIConnection() {
-  const model = document.getElementById('ai-model').value.trim();
+  const prevProvider = state.aiSettings.provider;
   const prevKey = state.aiSettings.apiKey;
   const prevModel = state.aiSettings.model;
 
-  const key = document.getElementById('ai-api-key').value.trim();
-  if (!key) { shake('ai-api-key'); toast('Paste a key first.'); return; }
-  state.aiSettings.apiKey = key;
-  state.aiSettings.model = model;
+  const advVisible = !document.getElementById('ai-advanced-section')?.classList.contains('hidden');
+  if (advVisible) {
+    // Testing a user-entered key
+    const model = document.getElementById('ai-model').value.trim();
+    const key = document.getElementById('ai-api-key').value.trim();
+    if (!key) { shake('ai-api-key'); toast('Paste a key first.'); return; }
+    state.aiSettings.apiKey = key;
+    state.aiSettings.model = model;
+  } else {
+    // Testing the shared server
+    state.aiSettings.provider = 'server';
+    state.aiSettings.apiKey = '';
+    state.aiSettings.model = '';
+  }
 
   toast('Testing connection…');
   const reply = await getBotReplyLLM('Say the single word READY and nothing else.', []);
   if (/ready/i.test(reply) && !reply.startsWith('⚠️')) {
-    toast('✅ Connected! Provider responded.');
+    toast('✅ Connected! The AI is working.');
+    if (!advVisible) { saveStateLocal(); updateAIStatusLine(); }
   } else {
-    // Surface the actual reason. The reply text starts with "⚠️ <message>" when there was an error.
     let detail = reply.startsWith('⚠️') ? reply.split('\n')[0].replace(/^⚠️\s*/, '') : 'No reply received';
     if (detail.length > 140) detail = detail.slice(0, 137) + '…';
     toast('❌ ' + detail);
+    state.aiSettings.provider = prevProvider;
     state.aiSettings.apiKey = prevKey;
     state.aiSettings.model = prevModel;
   }
@@ -6389,14 +6478,19 @@ async function testAIConnection() {
 function updateAIStatusLine() {
   const line = document.getElementById('ai-status-line');
   const banner = document.getElementById('ai-setup-banner');
+  const serverStatus = document.getElementById('ai-server-status');
+  if (serverStatus && state.aiSettings.provider === 'server') {
+    serverStatus.textContent = 'Powered by Caregiver Village. Just start typing your question in the chat — answers are short, practical, and safe.';
+  }
   if (!line) return;
   if (isAIConfigured()) {
     const provider = state.aiSettings.provider;
     const m = state.aiSettings.model || getAIDefaultModel(provider);
     let label;
-    if (provider === 'gemini') label = '✨ AI mode: Google Gemini · ' + m;
-    else if (provider === 'openai') label = '✨ AI mode: OpenAI · ' + m;
-    else label = '✨ AI mode: Claude · ' + m;
+    if (provider === 'server') label = '✨ AI Care Assistant is on';
+    else if (provider === 'gemini') label = '✨ AI mode: your Google Gemini key · ' + m;
+    else if (provider === 'openai') label = '✨ AI mode: your OpenAI key · ' + m;
+    else label = '✨ AI mode: your Claude key · ' + m;
     line.textContent = label;
     line.className = 'text-[11px] text-indigo-700 font-semibold mt-1';
     if (banner) banner.classList.add('hidden');

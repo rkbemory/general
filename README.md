@@ -43,9 +43,28 @@ This is a static file — no build step.
 2. Or double-click the file
 3. Or host it on any static host (Netlify, Vercel, GitHub Pages, S3, etc.)
 
-For the **AI Chat** to work with a real LLM (instead of the rule-based fallback), open the AI Settings modal in the chat tab and paste your own Google Gemini, Anthropic Claude, or OpenAI API key. Keys are stored only in browser `localStorage` and never leave your device.
+The **AI Chat** runs on a shared server key by default (see "Server AI setup" below) — no per-user key needed. Users who prefer to use their own key can open AI Settings → "Advanced" and paste a Google Gemini, Anthropic Claude, or OpenAI key (stored only in their browser `localStorage`).
 
 For **notifications via email**, configure EmailJS in the Notifications Settings modal.
+
+---
+
+## Server AI setup (one shared key for all users)
+
+The AI Chat calls a Netlify serverless function (`netlify/functions/gemini.mjs`) that holds a single Google Gemini API key. The key lives **only** in a Netlify environment variable — it is never exposed to browsers.
+
+**To enable it (one time, in the Netlify dashboard):**
+
+1. Get a free key at <https://aistudio.google.com/apikey>.
+2. In Netlify: **Site configuration → Environment variables → Add a variable**
+   - Key: `GEMINI_API_KEY`
+   - Value: *(your key, starts with `AIza…`)*
+3. (Optional) `ALLOWED_MODELS` — comma-separated list to restrict which models can be requested. Defaults to Flash/Flash-Lite/Pro/2.0-Flash.
+4. Redeploy (or trigger a deploy) so the function picks up the variable.
+
+Once set, every visitor gets AI with zero setup. If the variable is missing, the app degrades gracefully to rule-based "basic mode" and the chat shows a clear message.
+
+**Note:** the server key is open to anyone who can reach the site (no per-user auth yet). Google's free Gemini tier is ~1,500 requests/day. For a larger pilot, add authentication (planned) and/or rate limiting.
 
 ---
 

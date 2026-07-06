@@ -1,0 +1,13 @@
+# Netlify configuration for Caregiver Village
+# The site is a single static index.html plus one serverless function that
+# proxies AI requests using a server-held key (GEMINI_API_KEY env var).
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Friendly short path: /api/gemini  ->  the function
+[[redirects]]
+  from = "/api/gemini"
+  to = "/.netlify/functions/gemini"
+  status = 200
