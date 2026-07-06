@@ -32,6 +32,17 @@ export default async (req) => {
     return json({ error: 'Method not allowed' }, 405, cors);
   }
 
+  // Optional origin lock — only enforced if ALLOWED_ORIGIN is set (prevents open-proxy abuse).
+  const allowedHost = (process.env.ALLOWED_ORIGIN || '').trim();
+  if (allowedHost) {
+    const origin = req.headers.get('origin') || '';
+    const referer = req.headers.get('referer') || '';
+    const ok = (origin && origin.startsWith(allowedHost)) || (referer && referer.startsWith(allowedHost));
+    if ((origin || referer) && !ok) {
+      return json({ error: 'Forbidden origin.' }, 403, cors);
+    }
+  }
+
   const key = process.env.GEMINI_API_KEY;
   if (!key) {
     return json({ error: 'Server AI key not configured. Set GEMINI_API_KEY in Netlify.' }, 503, cors);

@@ -6108,8 +6108,9 @@ function removeCustomResource(id) {
 //  AI ASSISTANT (real LLM)
 // ============================================================
 const AI_DEFAULTS = {
-  // 'server' = the shared Caregiver Village key, held in a Netlify Function. No user key needed.
-  server: { model: 'gemini-2.5-flash', endpoint: '/.netlify/functions/gemini' },
+  // 'server' = the shared Caregiver Village key, held in a serverless function. No user key needed.
+  // Host-neutral path: works on Cloudflare Pages (functions/api/gemini.js) and Netlify (redirect).
+  server: { model: 'gemini-2.5-flash', endpoint: '/api/gemini' },
   gemini: { model: 'gemini-2.5-flash', endpoint: 'https://generativelanguage.googleapis.com/v1beta/models' },
   claude: { model: 'claude-sonnet-4-6', endpoint: 'https://api.anthropic.com/v1/messages' },
   openai: { model: 'gpt-4o-mini', endpoint: 'https://api.openai.com/v1/chat/completions' }
